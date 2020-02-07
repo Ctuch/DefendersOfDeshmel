@@ -37,6 +37,8 @@ public class Board {
         return board;
     }
 
+    //MODIFIES: this
+    //EFFECTS: fills every board index with a null value
     private void fillBoardWithNull() {
         for (int i = 0; i < 25; i++) {
             board.add(null);
@@ -57,63 +59,11 @@ public class Board {
     //         returns false if square is taken or character is already dead/in play
     public boolean addCharacter(int squareNum, Person person) {
         if (person.isAvailable() && board.get(squareNum) == null) {
-            board.add(squareNum, person);
+            board.set(squareNum, person);
             person.setAvailable(false);
             return true;
         }
         return false;
-    }
-
-    //REQUIRES: person is not null, and already on board, 0 <= direction <= 3
-    //MODIFIES: this
-    //EFFECTS:  moves character one square left and returns true, or false if square is full or
-    //          or off the board
-    private boolean moveLeft(int currentPosition, Person person) {
-        if (currentPosition % 5 == 0 || board.get(currentPosition - 1) != null) {
-            return false;
-        }
-        board.remove(person);
-        board.add(currentPosition - 1, person);
-        return true;
-    }
-
-    //REQUIRES: person is not null, and already on board, 0 <= direction <= 3
-    //MODIFIES: this
-    //EFFECTS:  moves character one square right and returns true, or false if square is full or
-    //          or off the board
-    private boolean moveRight(int currentPosition, Person person) {
-        if (currentPosition % 5 == 4 || board.get(currentPosition + 1) != null) {
-            return false;
-        }
-        board.remove(person);
-        board.add(currentPosition + 1, person);
-        return true;
-    }
-
-    //REQUIRES: person is not null, and already on board, 0 <= direction <= 3
-    //MODIFIES: this
-    //EFFECTS:  moves character one square up and returns true, or false if square is full or
-    //          or off the board
-    private boolean moveUp(int currentPosition, Person person) {
-        if (currentPosition <= 4 || board.get(currentPosition - 5) != null) {
-            return false;
-        }
-        board.remove(person);
-        board.add(currentPosition - 5, person);
-        return true;
-    }
-
-    //REQUIRES: person is not null, and already on board, 0 <= direction <= 3
-    //MODIFIES: this
-    //EFFECTS:  moves character one square down and returns true, or false if square is full or
-    //          or off the board
-    private boolean moveDown(int currentPosition, Person person) {
-        if (currentPosition >= 20 || board.get(currentPosition + 5) != null) {
-            return false;
-        }
-        board.remove(person);
-        board.add(currentPosition + 5, person);
-        return true;
     }
 
     //REQUIRES: person is not null, and already on board, 0 <= direction <= 3
@@ -136,6 +86,58 @@ public class Board {
         }
     }
 
+    //REQUIRES: person is not null, and already on board, 0 <= direction <= 3
+    //MODIFIES: this
+    //EFFECTS:  moves character one square left and returns true, or false if square is full or
+    //          or off the board
+    private boolean moveLeft(int currentPosition, Person person) {
+        if (currentPosition % 5 == 0 || board.get(currentPosition - 1) != null) {
+            return false;
+        }
+        board.remove(person);
+        board.set(currentPosition - 1, person);
+        return true;
+    }
+
+    //REQUIRES: person is not null, and already on board, 0 <= direction <= 3
+    //MODIFIES: this
+    //EFFECTS:  moves character one square right and returns true, or false if square is full or
+    //          or off the board
+    private boolean moveRight(int currentPosition, Person person) {
+        if (currentPosition % 5 == 4 || board.get(currentPosition + 1) != null) {
+            return false;
+        }
+        board.remove(person);
+        board.set(currentPosition + 1, person);
+        return true;
+    }
+
+    //REQUIRES: person is not null, and already on board, 0 <= direction <= 3
+    //MODIFIES: this
+    //EFFECTS:  moves character one square up and returns true, or false if square is full or
+    //          or off the board
+    private boolean moveUp(int currentPosition, Person person) {
+        if (currentPosition <= 4 || board.get(currentPosition - 5) != null) {
+            return false;
+        }
+        board.remove(person);
+        board.set(currentPosition - 5, person);
+        return true;
+    }
+
+    //REQUIRES: person is not null, and already on board, 0 <= direction <= 3
+    //MODIFIES: this
+    //EFFECTS:  moves character one square down and returns true, or false if square is full or
+    //          or off the board
+    private boolean moveDown(int currentPosition, Person person) {
+        if (currentPosition >= 20 || board.get(currentPosition + 5) != null) {
+            return false;
+        }
+        board.remove(person);
+        board.set(currentPosition + 5, person);
+        return true;
+    }
+
     //REQUIRES: person1 and person2 are not null and on board
     //EFFECTS: returns true if person1 is next to person2 (not diagonally)
     public boolean isAdjacent(Person person1, Person person2) {
@@ -150,10 +152,10 @@ public class Board {
         int weaponRangeP1 = person1.getWeapon().getRange();
         int positionP1 = board.indexOf(person1);
         int positionP2 = board.indexOf(person2);
-        int rowNumP1 = positionP1 % 5;
-        int colNumP1 = positionP1 / 5;
-        int rowNumP2 = positionP2 % 5;
-        int colNumP2 = positionP2 / 5;
+        int rowNumP1 = positionP1 / 5;
+        int colNumP1 = positionP1 % 5;
+        int rowNumP2 = positionP2 / 5;
+        int colNumP2 = positionP2 % 5;
 
         if (rowNumP1 == rowNumP2 && Math.abs(colNumP1 - colNumP2) <= weaponRangeP1) {
             return true;

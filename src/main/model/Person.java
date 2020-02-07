@@ -16,6 +16,7 @@ public class Person {
     public Person(String name) {
         this.name = name;
         this.available = true;
+        setAttributes(name);
         //this.moveSpeed = moveSpeed;
     }
 
@@ -35,7 +36,7 @@ public class Person {
         return weapon;
     }
 
-    public void setAttributes(String name) {
+    private void setAttributes(String name) {
         if (name.equals("Ice Sorcerer")) {
             createIceSorcerer();
         } else if (name.equals("Fire Sorceress")) {
@@ -46,13 +47,13 @@ public class Person {
     }
 
     private void createIceSorcerer() {
-        this.weapon = new Weapon("Freeze Ray", 4);
+        this.weapon = new Weapon("Freeze Ray", 3);
         this.attackPower = 5;
         this.health = 8;
     }
 
     private void createFireSorceress() {
-        this.weapon = new Weapon("Fire Beam", 5);
+        this.weapon = new Weapon("Fire Beam", 4);
         this.attackPower = 3;
         this.health = 10;
     }

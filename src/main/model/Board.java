@@ -23,13 +23,24 @@ public class Board {
 
     private ArrayList<Person> board;
     private ArrayList<Integer> wallConfig;
-    private ArrayList<String> unusedCharacterList;
+
 
     //EFFECTS: An empty board grid is generated and a wall configuration is created
     public Board() {
         board = new ArrayList<>(25);
+        fillBoardWithNull();
         wallConfig = generateWallConfig();
 
+    }
+
+    public ArrayList<Person> getBoard() {
+        return board;
+    }
+
+    private void fillBoardWithNull() {
+        for (int i = 0; i < 25; i++) {
+            board.add(null);
+        }
     }
 
     //EFFECTS: randomly selects on of the wall configs and converts it into an
@@ -40,11 +51,14 @@ public class Board {
         //5 options, randomly select one. statically create them as finals above?
     }
 
+    //REQUIRES: 0 <= squareNum <= 24
+    //MODIFIES: this
     //EFFECTS: adds character of name (and associated attributes) to selected tile if available and returns true
     //         returns false if square is taken or character is already dead/in play
-    public boolean addCharacter(int squareNum, String name) {
-        if (unusedCharacterList.contains(name) && board.get(squareNum) == null) {
-
+    public boolean addCharacter(int squareNum, Person person) {
+        if (person.isAvailable() && board.get(squareNum) == null) {
+            board.add(squareNum, person);
+            person.setAvailable(false);
             return true;
         }
         return false;
@@ -143,9 +157,8 @@ public class Board {
 
         if (rowNumP1 == rowNumP2 && Math.abs(colNumP1 - colNumP2) <= weaponRangeP1) {
             return true;
-        } else if (colNumP1 == colNumP2 && Math.abs(rowNumP1 - rowNumP2) <= weaponRangeP1) {
-            return true;
+        } else {
+            return colNumP1 == colNumP2 && Math.abs(rowNumP1 - rowNumP2) <= weaponRangeP1;
         }
-        return false;
     }
 }

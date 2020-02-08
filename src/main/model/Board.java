@@ -18,7 +18,7 @@ public class Board {
     public static final int RIGHT = 1;
     public static final int UP = 2;
     public static final int DOWN = 3;
-    private static final ArrayList<SquareWall> WALL_OPTIONS = new ArrayList<>();
+    //private static final ArrayList<SquareWall> WALL_OPTIONS = new ArrayList<>();
 
 
     private ArrayList<Person> board;
@@ -29,7 +29,7 @@ public class Board {
     public Board() {
         board = new ArrayList<>(25);
         fillBoardWithNull();
-        wallConfig = generateWallConfig();
+        //wallConfig = generateWallConfig();
 
     }
 
@@ -45,13 +45,14 @@ public class Board {
         }
     }
 
-    //EFFECTS: randomly selects on of the wall configs and converts it into an
-    private ArrayList<Integer> generateWallConfig() {
+    //EFFECTS: randomly selects on of the wall configs
+    //         NOT IN USE CURRENTLY NO TESTS IMPLEMENTED
+    /*private ArrayList<Integer> generateWallConfig() {
         Random rn = new Random();
         int selection = rn.nextInt(5) + 1;
         return null;
         //5 options, randomly select one. statically create them as finals above?
-    }
+    }*/
 
     //REQUIRES: 0 <= squareNum <= 24
     //MODIFIES: this

@@ -53,6 +53,13 @@ class BoardTest {
     }
 
     @Test
+    public void testMoveCharacterNotDirection() {
+        board.addCharacter(12, iceSor);
+        assertFalse(board.moveCharacter(-1, iceSor));
+        assertEquals(iceSor, board.getBoard().get(12));
+    }
+
+    @Test
     public void testMoveCharacterLeftValid() {
         board.addCharacter(12, iceSor);
         assertTrue(board.moveCharacter(Board.LEFT, iceSor));

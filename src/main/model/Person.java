@@ -1,5 +1,7 @@
 package model;
 
+import com.sun.tools.javac.comp.Todo;
+
 /*
 Represents a character on the board with a name, weapon, attack power, health, and availability (dependent on if
 already in game or dead). A person can be an enemy or a player character, and occupies one space on the board. A
@@ -12,6 +14,7 @@ public class Person {
     private int attackPower;
     private int health;
     private boolean available;
+    private String characterCode;
     //private int moveSpeed;
 
     //EFFECTS: creates a new person that is available to put on the map and sets their attributes
@@ -68,6 +71,7 @@ public class Person {
         this.weapon = new Weapon("Freeze Ray", 3);
         this.attackPower = 5;
         this.health = 8;
+        this.characterCode = "IC";
     }
 
     //MODIFIES: this
@@ -76,6 +80,7 @@ public class Person {
         this.weapon = new Weapon("Fire Beam", 4);
         this.attackPower = 3;
         this.health = 10;
+        this.characterCode = "FR";
     }
 
     //MODIFIES: this
@@ -84,6 +89,7 @@ public class Person {
         this.weapon = new Weapon("Great Sword", 1);
         this.attackPower = 6;
         this.health = 12;
+        this.characterCode = "FS";
     }
 
     public String getName() {
@@ -96,5 +102,29 @@ public class Person {
 
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    public String getCharacterCode() {
+        return characterCode;
+    }
+
+    @Override
+    public String toString() {
+        String ts = "Name: " + name;
+        ts += "\nWeapon: " + weapon.toString();
+        ts += "\nAttack Power: " + attackPower;
+        ts += "\nHealth Status: ";
+        if (isDead()) {
+            ts += "Dead";
+        } else {
+            ts += health + " remaining health";
+            ts += "\nIn Play: ";
+            if (isAvailable()) {
+                ts += "false";
+            } else {
+                ts += "true";
+            }
+        }
+        return ts;
     }
 }

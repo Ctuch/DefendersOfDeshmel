@@ -18,6 +18,7 @@ public class DefenderOfDeshmelApp {
     private ArrayList<Person> players;
     private Scanner input;
     private BufferedReader br;
+    private boolean gameOver;
 
     // EFFECTS: runs the teller application
     public DefenderOfDeshmelApp() {
@@ -37,7 +38,7 @@ public class DefenderOfDeshmelApp {
             command = input.next();
             command = command.toLowerCase();
 
-            if (command.equals("q")) {
+            if (gameOver || command.equals("q")) {
                 keepGoing = false;
             } else {
                 processCommand(command);
@@ -58,6 +59,7 @@ public class DefenderOfDeshmelApp {
             displayBoard();
         } else if (command.equals("x")) {
             attackAction();
+            checkGameOver();
             displayBoard();
         } else if (command.equals("h")) {
             displayHelp();
@@ -69,9 +71,11 @@ public class DefenderOfDeshmelApp {
         }
     }
 
+
     // MODIFIES: this
     // EFFECTS: initializes board and characters
     private void init() {
+        gameOver = false;
         board = new Board();
 
         enemies = new ArrayList<>();
@@ -140,11 +144,9 @@ public class DefenderOfDeshmelApp {
         command = input.next();
         command = command.toUpperCase();
 
-        ArrayList<Person> boardState = board.getBoard();
-        for (int i = 0; i < 25; i++) {
-            if (boardState.get(i) != null && boardState.get(i).getCharacterCode().equals(command)) {
-                return boardState.get(i);
-            }
+        Person person = board.findPersonByCharacterCode(command);
+        if (person != null) {
+            return person;
         }
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i).getCharacterCode().equals(command)) {
@@ -179,12 +181,124 @@ public class DefenderOfDeshmelApp {
     }
 
     private void attackAction() {
+        String command;
+        Person player;
+        Person enemy;
+
+        while (true) {
+            System.out.println("Enter the codes for the character you wish to attack with + attack, comma separated: ");
+            System.out.println("Example: AA,EE");
+            command = input.next();
+            command = command.toUpperCase();
+            if (command.length() != 5) {
+                System.out.println("Please enter 5 characters");
+            } else {
+                String playerCode = command.substring(0, 2);
+                String enemyCode = command.substring(3);
+                player = board.findPersonByCharacterCode(playerCode);
+                enemy = board.findPersonByCharacterCode(enemyCode);
+                if (player == null || enemy == null) {
+                    System.out.println("Please make sure both characters selected are on the board.");
+                } else {
+                    break;
+                }
+            }
+        }
+        attack(player, enemy);
+    }
+
+    private void attack(Person attacker, Person defender) {
+        if (board.isInWeaponRange(attacker, defender)) {
+            defender.takeDamage(attacker.getAttackPower());
+            System.out.println(defender.getName() + " has lost " + attacker.getAttackPower() + " health");
+            if (defender.isDead()) {
+                System.out.println(defender.getName() + " is dead");
+                int square = board.getBoard().indexOf(defender);
+                board.getBoard().set(square, null);
+                if (enemies.contains(defender)) {
+                    enemies.remove(defender);
+                } else {
+                    players.remove(defender);
+                }
+            }
+        }
+    }
+
+    private void checkGameOver() {
+        if (enemies.isEmpty()) {
+            System.out.println("Congratulations you have vanquished the enemy!");
+            gameOver = true;
+        } else if (players.isEmpty()) {
+            System.out.println("Oh no you have been destroyed.");
+            gameOver = true;
+        }
     }
 
     private void moveCharacter() {
+        String command;
+        boolean successful = false;
+
+        while (!successful) {
+            System.out.println("Enter the character code for the player you wish to move: ");
+            command = input.next();
+            command = command.toUpperCase();
+
+            Person person = board.findPersonByCharacterCode(command);
+            if (person == null) {
+                System.out.println("That character is not on the board. Please try again");
+            } else {
+                System.out.println("Enter the number of the direction to move, 0 = Left, 1 = Right, 2 = Up, 3 = Down:");
+                command = input.next();
+                int direction = Integer.parseInt(command);
+
+                successful = board.moveCharacter(direction, person);
+                if (!successful) {
+                    System.out.println("That character is unable to move in that direction.");
+                }
+            }
+        }
     }
 
     private void addCharacter() {
+        boolean remainingCharacters = false;
+        System.out.println("The following characters are available to place on the board: ");
+        for (Person p : players) {
+            if (p.isAvailable()) {
+                System.out.println("(" + p.getCharacterCode() + ")" + p.getName());
+                remainingCharacters = true;
+            }
+        }
+        if (!remainingCharacters) {
+            System.out.println("There are no characters remaining that can be placed on the board");
+        } else {
+            String command;
+            while (true) {
+                System.out.println("Enter the character code you wish to add to the board: ");
+                command = input.next();
+                command = command.toUpperCase();
+
+                Person person = null;
+                for (int i = 0; i < players.size(); i++) {
+                    if (players.get(i).getCharacterCode().equals(command)) {
+                        person = players.get(i);
+                    }
+                }
+                if (person == null) {
+                    System.out.println("Please enter an available person code");
+                } else {
+                    System.out.println("Enter the number of the square you want to add to (1-25 by row): ");
+                    command = input.next();
+                    int squareNum = Integer.parseInt(command);
+                    boolean available = board.addCharacter(squareNum - 1, person);
+                    if (available) {
+                        break;
+                    }
+                    System.out.println("The square you want to add to is full, please try again");
+                }
+            }
+
+        }
     }
+
 
 }

@@ -29,6 +29,10 @@ public class Person {
         return health;
     }
 
+    public int getAttackPower() {
+        return attackPower;
+    }
+
     //REQUIRES: health > 0
     //MODIFIES: this
     //EFFECTS: adds health to this character

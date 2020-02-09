@@ -95,7 +95,7 @@ public class Board {
         if (currentPosition % 5 == 0 || board.get(currentPosition - 1) != null) {
             return false;
         }
-        board.remove(person);
+        board.set(currentPosition, null);
         board.set(currentPosition - 1, person);
         return true;
     }
@@ -108,7 +108,7 @@ public class Board {
         if (currentPosition % 5 == 4 || board.get(currentPosition + 1) != null) {
             return false;
         }
-        board.remove(person);
+        board.set(currentPosition, null);
         board.set(currentPosition + 1, person);
         return true;
     }
@@ -121,7 +121,7 @@ public class Board {
         if (currentPosition <= 4 || board.get(currentPosition - 5) != null) {
             return false;
         }
-        board.remove(person);
+        board.set(currentPosition, null);
         board.set(currentPosition - 5, person);
         return true;
     }
@@ -134,7 +134,7 @@ public class Board {
         if (currentPosition >= 20 || board.get(currentPosition + 5) != null) {
             return false;
         }
-        board.remove(person);
+        board.set(currentPosition, null);
         board.set(currentPosition + 5, person);
         return true;
     }
@@ -163,5 +163,14 @@ public class Board {
         } else {
             return colNumP1 == colNumP2 && Math.abs(rowNumP1 - rowNumP2) <= weaponRangeP1;
         }
+    }
+
+    public Person findPersonByCharacterCode(String code) {
+        for (int i = 0; i < 25; i++) {
+            if (board.get(i) != null && board.get(i).getCharacterCode().equals(code)) {
+                return board.get(i);
+            }
+        }
+        return null;
     }
 }

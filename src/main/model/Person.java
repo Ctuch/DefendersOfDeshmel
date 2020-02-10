@@ -1,7 +1,5 @@
 package model;
 
-import com.sun.tools.javac.comp.Todo;
-
 /*
 Represents a character on the board with a name, weapon, attack power, health, and availability (dependent on if
 already in game or dead). A person can be an enemy or a player character, and occupies one space on the board. A

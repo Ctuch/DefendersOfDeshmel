@@ -52,7 +52,7 @@ public class DefenderOfDeshmelApp {
     // EFFECTS: processes user command
     private void processCommand(String command) {
         if (command.equals("a")) {
-            addCharacter();
+            displayRemainingCharacters();
             displayBoard();
         } else if (command.equals("m")) {
             moveCharacter();
@@ -73,7 +73,7 @@ public class DefenderOfDeshmelApp {
 
 
     // MODIFIES: this
-    // EFFECTS: initializes board and characters
+    // EFFECTS: initializes board and characters, reads in rules
     private void init() {
         gameOver = false;
         board = new Board();
@@ -111,6 +111,7 @@ public class DefenderOfDeshmelApp {
         System.out.println("\tq -> quit");
     }
 
+    //EFFECTS: displays current state of board to user
     private void displayBoard() {
         ArrayList<Person> boardState = board.getBoard();
 
@@ -136,7 +137,8 @@ public class DefenderOfDeshmelApp {
         }
     }
 
-
+    //EFFECTS: prompts user to select a character code and produces the associated character or null if doesn't exist/
+    //         is already dead
     private Person selectCharacterToDisplay() {
         String command;
 
@@ -148,22 +150,24 @@ public class DefenderOfDeshmelApp {
         if (person != null) {
             return person;
         }
-        for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).getCharacterCode().equals(command)) {
-                return players.get(i);
+        for (Person player : players) {
+            if (player.getCharacterCode().equals(command)) {
+                return player;
             }
         }
         return null;
     }
 
+    //EFFECTS: displays character stats if person is not null
     private void displayCharacterStats(Person person) {
         if (person == null) {
-            System.out.println("I'm sorry no character with that code exists");
+            System.out.println("I'm sorry no alive character with that code exists");
         } else {
             System.out.println(person.toString());
         }
     }
 
+    //EFFECTS: displays rules from the rules.txt file
     private void displayHelp() {
         String readingRules = "";
         while (true) {
@@ -180,6 +184,8 @@ public class DefenderOfDeshmelApp {
         }
     }
 
+    //MODIFIES: board
+    //EFFECTS: specifies and attacker and a defender, and has the defender take damage if in range
     private void attackAction() {
         String command;
         Person player;
@@ -207,6 +213,8 @@ public class DefenderOfDeshmelApp {
         attack(player, enemy);
     }
 
+    //MODIFIES: board, enemies or players if defender dies
+    //EFFECTS: has defender take damage from attacker if in range, and removes defender from game if dead
     private void attack(Person attacker, Person defender) {
         if (board.isInWeaponRange(attacker, defender)) {
             defender.takeDamage(attacker.getAttackPower());
@@ -221,9 +229,14 @@ public class DefenderOfDeshmelApp {
                     players.remove(defender);
                 }
             }
+        } else {
+            System.out.println("You are out of range to make that attack");
         }
     }
 
+    //MODIFIES: gameOver
+    //EFFECTS: determines whether the game should end if there are no enemies or no players remaining
+    //         displays phrase indicating winning team
     private void checkGameOver() {
         if (enemies.isEmpty()) {
             System.out.println("Congratulations you have vanquished the enemy!");
@@ -234,6 +247,8 @@ public class DefenderOfDeshmelApp {
         }
     }
 
+    //MODIFIES: board
+    //EFFECTS: prompts character for a user and direction, and moves that character if both are valid inputs
     private void moveCharacter() {
         String command;
         boolean successful = false;
@@ -259,7 +274,8 @@ public class DefenderOfDeshmelApp {
         }
     }
 
-    private void addCharacter() {
+    //EFFECTS: displays a list of remaining characters and prompts you to selects and place one if any are available
+    private void displayRemainingCharacters() {
         boolean remainingCharacters = false;
         System.out.println("The following characters are available to place on the board: ");
         for (Person p : players) {
@@ -271,34 +287,37 @@ public class DefenderOfDeshmelApp {
         if (!remainingCharacters) {
             System.out.println("There are no characters remaining that can be placed on the board");
         } else {
-            String command;
-            while (true) {
-                System.out.println("Enter the character code you wish to add to the board: ");
-                command = input.next();
-                command = command.toUpperCase();
-
-                Person person = null;
-                for (int i = 0; i < players.size(); i++) {
-                    if (players.get(i).getCharacterCode().equals(command)) {
-                        person = players.get(i);
-                    }
-                }
-                if (person == null) {
-                    System.out.println("Please enter an available person code");
-                } else {
-                    System.out.println("Enter the number of the square you want to add to (1-25 by row): ");
-                    command = input.next();
-                    int squareNum = Integer.parseInt(command);
-                    boolean available = board.addCharacter(squareNum - 1, person);
-                    if (available) {
-                        break;
-                    }
-                    System.out.println("The square you want to add to is full, please try again");
-                }
-            }
-
+            addCharacter();
         }
     }
 
+    //MODIFIES: board
+    //EFFECTS: places character onto board if available and square is available, otherwise prompts for new character
+    //         or square until a proper one is given
+    private void addCharacter() {
+        String command;
+        while (true) {
+            System.out.println("Enter the character code you wish to add to the board: ");
+            command = input.next();
+            command = command.toUpperCase();
 
+            Person person = null;
+            for (Person player : players) {
+                if (player.getCharacterCode().equals(command) && player.isAvailable()) {
+                    person = player;
+                }
+            }
+            if (person == null) {
+                System.out.println("Please enter an available person code");
+            } else {
+                System.out.println("Enter the number of the square you want to add to (1-25 by row): ");
+                command = input.next();
+                int squareNum = Integer.parseInt(command);
+                if (board.addCharacter(squareNum - 1, person)) {
+                    break;
+                }
+                System.out.println("The square you want to add to is full, please try again");
+            }
+        }
+    }
 }

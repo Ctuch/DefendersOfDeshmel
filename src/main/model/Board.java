@@ -140,14 +140,6 @@ public class Board {
     }
 
     //REQUIRES: person1 and person2 are not null and on board
-    //EFFECTS: returns true if person1 is next to person2 (not diagonally)
-    public boolean isAdjacent(Person person1, Person person2) {
-        int positionP1 = board.indexOf(person1);
-        int positionP2 = board.indexOf(person2);
-        return (Math.abs(positionP1 - positionP2) == 1 || Math.abs(positionP1 - positionP2) == 5);
-    }
-
-    //REQUIRES: person1 and person2 are not null and on board
     //EFFECTS: returns true if person2 is in weapon range of person1 (not diagonally for now)
     public boolean isInWeaponRange(Person person1, Person person2) {
         int weaponRangeP1 = person1.getWeapon().getRange();
@@ -165,9 +157,10 @@ public class Board {
         }
     }
 
+    //EFFECTS: returns the Person object associated with the given character code
     public Person findPersonByCharacterCode(String code) {
         for (int i = 0; i < 25; i++) {
-            if (board.get(i) != null && board.get(i).getCharacterCode().equals(code)) {
+            if (board.get(i) != null && board.get(i).getCharacterCode().equalsIgnoreCase(code)) {
                 return board.get(i);
             }
         }

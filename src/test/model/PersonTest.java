@@ -66,4 +66,36 @@ public class PersonTest {
         ice.setAvailable(false);
         assertFalse(ice.isAvailable());
     }
+
+    @Test
+    public void testGetAttacKPower() {
+        assertEquals(fire.getAttackPower(), 3);
+    }
+
+    @Test
+    public void testGetCharacterCode() {
+        assertEquals(ice.getCharacterCode(), "IC");
+    }
+
+    @Test
+    public void testToStringDead() {
+        fire.takeDamage(30);
+        assertEquals(fire.toString(), "Name: Fire Sorceress\nWeapon: " + fire.getWeapon().toString()
+                + "\nAttack Power: 3\nHealth Status: Dead");
+    }
+
+    @Test
+    public void testToStringNotDeadAvailable() {
+        fire.takeDamage(3);
+        assertEquals(fire.toString(), "Name: Fire Sorceress\nWeapon: " + fire.getWeapon().toString()
+                + "\nAttack Power: 3\nHealth Status: 7 remaining health\nIn Play: false");
+    }
+
+    @Test
+    public void testToStringNotDeadANotvailable() {
+        fire.takeDamage(4);
+        fire.setAvailable(false);
+        assertEquals(fire.toString(), "Name: Fire Sorceress\nWeapon: " + fire.getWeapon().toString()
+                + "\nAttack Power: 3\nHealth Status: 6 remaining health\nIn Play: true");
+    }
 }

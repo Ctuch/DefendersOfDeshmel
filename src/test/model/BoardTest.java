@@ -156,22 +156,6 @@ class BoardTest {
     }
 
     @Test
-    public void testIsAdjacentLeftRightAdj() {
-        board.addCharacter(13, iceSor);
-        board.addCharacter(12, soldier);
-        assertTrue(board.isAdjacent(iceSor, soldier));
-        assertTrue(board.isAdjacent(soldier, iceSor));
-    }
-
-    @Test
-    public void testIsAdjacentUpDownAdj() {
-        board.addCharacter(11, iceSor);
-        board.addCharacter(16, soldier);
-        assertTrue(board.isAdjacent(iceSor, soldier));
-        assertTrue(board.isAdjacent(soldier, iceSor));
-    }
-
-    @Test
     public void testIsInWeaponRangeOneRightLeft() {
         board.addCharacter(9, iceSor);
         board.addCharacter(8, soldier);
@@ -254,5 +238,14 @@ class BoardTest {
         board.addCharacter(22, soldier);
         assertFalse(board.isInWeaponRange(iceSor, soldier));
         assertFalse(board.isInWeaponRange(soldier, iceSor));
+    }
+
+    @Test
+    public void testFindCharacterCode() {
+        board.addCharacter(3, iceSor);
+        Person findable = board.findPersonByCharacterCode("iC");
+        assertEquals(findable, iceSor);
+        Person notFindable = board.findPersonByCharacterCode("ww");
+        assertNull(notFindable);
     }
 }

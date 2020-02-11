@@ -110,6 +110,7 @@ public class Person {
         return characterCode;
     }
 
+    //EFFECTS: produces description of person
     @Override
     public String toString() {
         String ts = "Name: " + name;

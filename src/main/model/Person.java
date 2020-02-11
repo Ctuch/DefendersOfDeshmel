@@ -23,13 +23,6 @@ public class Person {
         //this.moveSpeed = moveSpeed;
     }
 
-    public int getHealth() {
-        return health;
-    }
-
-    public int getAttackPower() {
-        return attackPower;
-    }
 
     //REQUIRES: health > 0
     //MODIFIES: this
@@ -48,10 +41,6 @@ public class Person {
     //EFFECTS: returns true if character's health is zero or less
     public boolean isDead() {
         return this.health <= 0;
-    }
-
-    public Weapon getWeapon() {
-        return weapon;
     }
 
     //REQUIRES: name is one of the characters with an assigned create method
@@ -109,6 +98,19 @@ public class Person {
     public String getCharacterCode() {
         return characterCode;
     }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public int getAttackPower() {
+        return attackPower;
+    }
+
+    public Weapon getWeapon() {
+        return weapon;
+    }
+
 
     //EFFECTS: produces description of person
     @Override

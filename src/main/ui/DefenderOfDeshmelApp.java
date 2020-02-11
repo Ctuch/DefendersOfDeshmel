@@ -2,6 +2,7 @@ package ui;
 
 import model.Board;
 import model.Person;
+import model.SquareWall;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -113,27 +114,88 @@ public class DefenderOfDeshmelApp {
 
     //EFFECTS: displays current state of board to user
     private void displayBoard() {
-        ArrayList<Person> boardState = board.getBoard();
+        String bottomBorder = " ";
 
-        String topBottomBorder = " ";
-        String noTextRow = "|";
         for (int i = 0; i < 5; i++) {
-            topBottomBorder += "------ ";
-            noTextRow += "      |";
-        }
-        System.out.println(topBottomBorder);
-        for (int i = 0; i < 5; i++) {
-            String textRow = "|";
+            String topBorder = " ";
+            String textRow = "";
+            String noTextRow = "";
+            SquareWall wall = null;
+
             for (int j = 0; j < 5; j++) {
-                if (boardState.get(5 * i + j) != null) {
-                    textRow += "  " + boardState.get(5 * i + j).getCharacterCode() + "  |";
-                } else {
-                    textRow += "      |";
+                wall = board.getWallConfig().get(5 * i + j);
+                Person person = board.getBoard().get(5 * i + j);
+
+                topBorder += createUpperBorder(wall);
+
+                if (i == 4) {
+                    bottomBorder += createLowerBorder(wall);
                 }
+                String[] middleRows = createLeftBorder(wall, person);
+                textRow += middleRows[0];
+                noTextRow += middleRows[1];
             }
-            System.out.println(textRow);
-            System.out.println(noTextRow);
-            System.out.println(topBottomBorder);
+            String[] finalCharacters = createRightMostCharacter(wall);
+            textRow += finalCharacters[0];
+            noTextRow += finalCharacters[1];
+
+            System.out.println(topBorder + "\n" + textRow + "\n" + noTextRow);
+        }
+        System.out.println(bottomBorder);
+    }
+
+    //EFFECTS: adds the final character of each row depending on whether there is a wall there or not
+    private String[] createRightMostCharacter(SquareWall wall) {
+        String textRow;
+        String noTextRow;
+        if (wall.isRightWall()) {
+            textRow = "#";
+            noTextRow = "#";
+        } else {
+            textRow = "|";
+            noTextRow = "|";
+        }
+        return new String[] {textRow, noTextRow};
+    }
+
+    //EFFECTS: left side of each square and the character codes depending on whether there is a wall there or not
+    //         and if the square is full
+    private String[] createLeftBorder(SquareWall wall, Person person) {
+        String textRow = "";
+        String noTextRow = "";
+        if (wall.isLeftWall()) {
+            if (person != null) {
+                textRow += "#  " + person.getCharacterCode() + "  ";
+            } else {
+                textRow += "#      ";
+            }
+            noTextRow += "#      ";
+        } else {
+            if (person != null) {
+                textRow += "|  " + person.getCharacterCode() + "  ";
+            } else {
+                textRow += "|      ";
+            }
+            noTextRow += "|      ";
+        }
+        return new String[] {textRow, noTextRow};
+    }
+
+    //EFFECTS: adds the final border row depending on whether there is a wall there or not
+    private String createLowerBorder(SquareWall wall) {
+        if (wall.isLowerWall()) {
+            return  "###### ";
+        } else {
+            return  "------ ";
+        }
+    }
+
+    //EFFECTS: adds the border row above the square depending on whether there is a wall there or not
+    private String createUpperBorder(SquareWall wall) {
+        if (wall.isUpperWall()) {
+            return  "###### ";
+        } else {
+            return  "------ ";
         }
     }
 

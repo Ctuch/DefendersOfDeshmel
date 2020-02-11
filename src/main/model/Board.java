@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 //represents a 5v5 grid with filled or empty squares, some separated by walls
 //a filled square will display a 2 character code indicating what occupies that space
@@ -18,23 +17,18 @@ public class Board {
     public static final int RIGHT = 1;
     public static final int UP = 2;
     public static final int DOWN = 3;
-    //private static final ArrayList<SquareWall> WALL_OPTIONS = new ArrayList<>();
-
 
     private ArrayList<Person> board;
-    private ArrayList<Integer> wallConfig;
+    private ArrayList<SquareWall> wallConfig;
 
 
     //EFFECTS: An empty board grid is generated and a wall configuration is created
     public Board() {
         board = new ArrayList<>(25);
         fillBoardWithNull();
-        //wallConfig = generateWallConfig();
+        SquareWallConfigs squareWallConfigs = new SquareWallConfigs();
+        wallConfig = squareWallConfigs.getWalls();
 
-    }
-
-    public ArrayList<Person> getBoard() {
-        return board;
     }
 
     //MODIFIES: this
@@ -44,15 +38,6 @@ public class Board {
             board.add(null);
         }
     }
-
-    //EFFECTS: randomly selects on of the wall configs
-    //         NOT IN USE CURRENTLY NO TESTS IMPLEMENTED
-    /*private ArrayList<Integer> generateWallConfig() {
-        Random rn = new Random();
-        int selection = rn.nextInt(5) + 1;
-        return null;
-        //5 options, randomly select one. statically create them as finals above?
-    }*/
 
     //REQUIRES: 0 <= squareNum <= 24
     //MODIFIES: this
@@ -166,4 +151,13 @@ public class Board {
         }
         return null;
     }
+
+    public ArrayList<SquareWall> getWallConfig() {
+        return wallConfig;
+    }
+
+    public ArrayList<Person> getBoard() {
+        return board;
+    }
+
 }

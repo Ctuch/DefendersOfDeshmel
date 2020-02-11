@@ -248,4 +248,9 @@ class BoardTest {
         Person notFindable = board.findPersonByCharacterCode("ww");
         assertNull(notFindable);
     }
+
+    @Test
+    public void testGetWallConfig() {
+        assertEquals(board.getWallConfig().size(), 25);
+    }
 }

@@ -11,7 +11,7 @@ import java.util.Scanner;
 //Based off of TellerApp provided to CPSC 210. URL: https://github.students.cs.ubc.ca/CPSC210/TellerApp
 //Specifically references class TellerApp.java
 public class DefenderOfDeshmelApp {
-
+    //TODO: create a main menu that you return to if lose/can start game from (easy, med, hard) determines enemy #?
     private Board board;
     private ArrayList<Enemy> enemies;
     private ArrayList<Person> players;
@@ -163,9 +163,9 @@ public class DefenderOfDeshmelApp {
             while (true) {
                 boolean successful = board.addCharacter(random.nextInt(25), enemy);
                 if (successful) {
+                    System.out.println("Enemy " + enemy.getName() + " has been added to the board.");
                     break;
                 }
-                System.out.println("Enemy " + enemy.getName() + " has been added to the board.");
             }
         } else if (action == Action.ATTACK) {
             Person defender = enemy.canAttackPerson(board);

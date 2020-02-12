@@ -19,6 +19,11 @@ public class Board {
     public static final int DOWN = 3;
 
     private ArrayList<Person> board;
+
+    public void setWallConfig(ArrayList<SquareWall> wallConfig) {
+        this.wallConfig = wallConfig;
+    }
+
     private ArrayList<SquareWall> wallConfig;
 
 

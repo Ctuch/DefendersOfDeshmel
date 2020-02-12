@@ -1,5 +1,32 @@
 Welcome to Defenders of Deshmel!
 
-The rules are simple, and when I figure them out, you can read them here.
+You control the players - a bank of characters that you can add to the board, move around, and attack enemies with.
+
+In this simple turn based application, you take an action and the enemies will retaliate.
+
+To Win: Defeat all of the enemies before they defeat you.
+
+On your turn you can do on of the following actions for free:
+
+   h -> help menu
+        Display this window at any time to view the rules.
+   d -> display character stats
+        Take this action at any time to learn about any character. Here you can view their attack power, weapon range,
+        health remaining, special action, and whether it has already been triggered (if it is one use)
+   q -> quit
+        Take this action to end the game early
+
+Or one of these actions that consumes your turn action:
+    a -> add character
+         Add a character from your character bank if there are any remaining
+    m -> move character
+         Move a character who is already on the board to an adjacent square, horizontally or vertically
+    x -> attack
+         Attack any enemy in range of your weapon, vertically or horizontally
+
+To end the game, take the quit action.
+
+In the console version of the game, the board displays as a series of - , | , and # symbols. You can pass through - and
+|, but not through # which represent walls.
 
 Thanks for visiting the help menu.

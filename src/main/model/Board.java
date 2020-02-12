@@ -19,13 +19,7 @@ public class Board {
     public static final int DOWN = 3;
 
     private ArrayList<Person> board;
-
-    public void setWallConfig(ArrayList<SquareWall> wallConfig) {
-        this.wallConfig = wallConfig;
-    }
-
     private ArrayList<SquareWall> wallConfig;
-
 
     //EFFECTS: An empty board grid is generated and a wall configuration is created
     public Board() {
@@ -76,13 +70,14 @@ public class Board {
                 return false;
         }
     }
-
+    
     //REQUIRES: person is not null, and already on board, 0 <= direction <= 3
     //MODIFIES: this
     //EFFECTS:  moves character one square left and returns true, or false if square is full or
-    //          or off the board
+    //          or off the board, or through a wall
     private boolean moveLeft(int currentPosition, Person person) {
-        if (currentPosition % 5 == 0 || board.get(currentPosition - 1) != null) {
+        boolean isWall = wallConfig.get(currentPosition).isLeftWall();
+        if (currentPosition % 5 == 0 || board.get(currentPosition - 1) != null || isWall) {
             return false;
         }
         board.set(currentPosition, null);
@@ -93,9 +88,10 @@ public class Board {
     //REQUIRES: person is not null, and already on board, 0 <= direction <= 3
     //MODIFIES: this
     //EFFECTS:  moves character one square right and returns true, or false if square is full or
-    //          or off the board
+    //          or off the board, or through a wall
     private boolean moveRight(int currentPosition, Person person) {
-        if (currentPosition % 5 == 4 || board.get(currentPosition + 1) != null) {
+        boolean isWall = wallConfig.get(currentPosition).isRightWall();
+        if (currentPosition % 5 == 4 || board.get(currentPosition + 1) != null || isWall) {
             return false;
         }
         board.set(currentPosition, null);
@@ -106,9 +102,10 @@ public class Board {
     //REQUIRES: person is not null, and already on board, 0 <= direction <= 3
     //MODIFIES: this
     //EFFECTS:  moves character one square up and returns true, or false if square is full or
-    //          or off the board
+    //          or off the board, or through a wall
     private boolean moveUp(int currentPosition, Person person) {
-        if (currentPosition <= 4 || board.get(currentPosition - 5) != null) {
+        boolean isWall = wallConfig.get(currentPosition).isUpperWall();
+        if (currentPosition <= 4 || board.get(currentPosition - 5) != null || isWall) {
             return false;
         }
         board.set(currentPosition, null);
@@ -119,9 +116,10 @@ public class Board {
     //REQUIRES: person is not null, and already on board, 0 <= direction <= 3
     //MODIFIES: this
     //EFFECTS:  moves character one square down and returns true, or false if square is full or
-    //          or off the board
+    //          or off the board, or through a wall
     private boolean moveDown(int currentPosition, Person person) {
-        if (currentPosition >= 20 || board.get(currentPosition + 5) != null) {
+        boolean isWall = wallConfig.get(currentPosition).isLowerWall();
+        if (currentPosition >= 20 || board.get(currentPosition + 5) != null || isWall) {
             return false;
         }
         board.set(currentPosition, null);
@@ -145,11 +143,15 @@ public class Board {
         }
     }
 
+    //REQUIRES: person is not null and on board
+    //EFFECTS: retrieves the row of the person, 0 to 4
     public int getRowNumber(Person person) {
         int positionP1 = board.indexOf(person);
         return positionP1 / 5;
     }
 
+    //REQUIRES: person is not null and on board
+    //EFFECTS: retrieves the column of the person, 0 to 4
     public int getColumnNumber(Person person) {
         int positionP1 = board.indexOf(person);
         return positionP1 % 5;
@@ -172,6 +174,10 @@ public class Board {
 
     public ArrayList<Person> getBoard() {
         return board;
+    }
+
+    public void setWallConfig(ArrayList<SquareWall> wallConfig) {
+        this.wallConfig = wallConfig;
     }
 
 }

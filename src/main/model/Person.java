@@ -6,14 +6,15 @@ already in game or dead). A person can be an enemy or a player character, and oc
 person's move speed is one (for now), and can take move or attack actions on their turn against rivals
 */
 public class Person {
-
     private String name;
     private Weapon weapon;
+
     private int attackPower;
     private int health;
     private boolean available;
     private String characterCode;
     protected boolean isEnemy;
+    private int numSpecialActionCharges;
     //private int moveSpeed;
 
     //EFFECTS: creates a new person that is available to put on the map and sets their attributes
@@ -72,6 +73,7 @@ public class Person {
         this.attackPower = 4;
         this.health = 12;
         this.characterCode = "RS";
+        this.numSpecialActionCharges = 0;
     }
 
     //MODIFIES: this
@@ -81,6 +83,7 @@ public class Person {
         this.attackPower = 5;
         this.health = 8;
         this.characterCode = "IC";
+        this.numSpecialActionCharges = 2;
     }
 
     //MODIFIES: this
@@ -90,6 +93,7 @@ public class Person {
         this.attackPower = 3;
         this.health = 10;
         this.characterCode = "FR";
+        this.numSpecialActionCharges = 2;
     }
 
     //MODIFIES: this
@@ -99,6 +103,41 @@ public class Person {
         this.attackPower = 6;
         this.health = 12;
         this.characterCode = "FS";
+        this.numSpecialActionCharges = 0;
+    }
+
+    public void specialAction(Board board) {
+        switch (name) {
+            case "Ice Sorcerer":
+                reduceEnemyAttackPower(1, board);
+                break;
+            case "Fire Sorceress":
+                attackAllEnemies(3, board);
+                break;
+            default:
+                break;
+        }
+        numSpecialActionCharges--;
+    }
+
+    private void attackAllEnemies(int damage, Board board) {
+        for (Person person: board.getBoard()) {
+            if (person != null && person.isEnemy()) {
+                person.takeDamage(damage);
+            }
+        }
+    }
+
+    private void reduceEnemyAttackPower(int attackPower, Board board) {
+        for (Person person: board.getBoard()) {
+            if (person != null && person.isEnemy()) {
+                person.setAttackPower(person.getAttackPower() - attackPower);
+            }
+        }
+    }
+
+    public boolean hasChargesRemaining() {
+        return numSpecialActionCharges > 0;
     }
 
     public String getName() {
@@ -129,6 +168,14 @@ public class Person {
         return weapon;
     }
 
+    public boolean isEnemy() {
+        return isEnemy;
+    }
+
+    public void setAttackPower(int attackPower) {
+        this.attackPower = attackPower;
+    }
+
 
     //EFFECTS: produces description of person
     @Override
@@ -148,10 +195,11 @@ public class Person {
                 ts += "true";
             }
         }
-        return ts;
-    }
+        if (!isEnemy) {
+            ts += "\nSpecial Action: Has " + numSpecialActionCharges
+                    + " charges remaining. See the help menu for ability.";
+        }
 
-    public boolean isEnemy() {
-        return isEnemy;
+        return ts;
     }
 }

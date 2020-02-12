@@ -32,5 +32,4 @@ As a user I want to be able to:
 - add a new character to the board, and have enemies be added to the board
 - attack an enemy with my character's weapon
 - display the help and stats views
-- see what special abilities the character I'm currently controlling has
-- remove a character when their Hit Points drop below 0
+- remove a character when their health drops below 0

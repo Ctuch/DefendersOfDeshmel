@@ -35,10 +35,11 @@ public class DefenderOfDeshmelApp {
         init();
 
         while (keepGoing) {
+            if (gameOver) {
+                break;
+            }
             if (playerTurn) {
-                if (gameOver) {
-                    break;
-                }
+
                 displayMenu();
                 command = input.next();
                 command = command.toLowerCase();
@@ -73,7 +74,18 @@ public class DefenderOfDeshmelApp {
             checkGameOver();
             displayBoard();
             playerTurn = false;
-        } else if (command.equals("h")) {
+        } else if (command.equals("s")) {
+            if (specialAction()) {
+                playerTurn = false;
+            }
+            checkGameOver();
+        } else {
+            displays(command);
+        }
+    }
+
+    private void displays(String command) {
+        if (command.equals("h")) {
             displayHelp();
         } else if (command.equals("d")) {
             Person p = selectCharacterToDisplay();
@@ -82,7 +94,6 @@ public class DefenderOfDeshmelApp {
             System.out.println("Selection not valid...");
         }
     }
-
 
     // MODIFIES: this
     // EFFECTS: initializes board and characters, reads in rules
@@ -120,6 +131,7 @@ public class DefenderOfDeshmelApp {
         System.out.println("\ta -> add character");
         System.out.println("\tm -> move character");
         System.out.println("\tx -> attack");
+        System.out.println("\ts -> special action");
         System.out.println("\th -> help menu");
         System.out.println("\td -> display character stats");
         System.out.println("\tq -> quit");
@@ -130,27 +142,27 @@ public class DefenderOfDeshmelApp {
         String bottomBorder = " ";
 
         for (int i = 0; i < 5; i++) {
-            String topBorder = " ";
-            String textRow = "";
-            String noTextRow = "";
+            StringBuilder topBorder = new StringBuilder(" ");
+            StringBuilder textRow = new StringBuilder();
+            StringBuilder noTextRow = new StringBuilder();
             SquareWall wall = null;
 
             for (int j = 0; j < 5; j++) {
                 wall = board.getWallConfig().get(5 * i + j);
                 Person person = board.getBoard().get(5 * i + j);
 
-                topBorder += createUpperBorder(wall);
+                topBorder.append(createUpperBorder(wall));
 
                 if (i == 4) {
                     bottomBorder += createLowerBorder(wall);
                 }
                 String[] middleRows = createLeftBorder(wall, person);
-                textRow += middleRows[0];
-                noTextRow += middleRows[1];
+                textRow.append(middleRows[0]);
+                noTextRow.append(middleRows[1]);
             }
             String[] finalCharacters = createRightMostCharacter(wall);
-            textRow += finalCharacters[0];
-            noTextRow += finalCharacters[1];
+            textRow.append(finalCharacters[0]);
+            noTextRow.append(finalCharacters[1]);
 
             System.out.println(topBorder + "\n" + textRow + "\n" + noTextRow);
         }
@@ -306,6 +318,25 @@ public class DefenderOfDeshmelApp {
             }
         }
         attack(player, enemy);
+    }
+
+    private boolean specialAction() {
+        String command;
+
+        System.out.println("Enter the codes for the character you want to trigger the special action from: ");
+        command = input.next();
+        command = command.toUpperCase();
+
+        Person player = board.findPersonByCharacterCode(command);
+        if (player == null) {
+            System.out.println("That player is not on the board");
+        } else if (!player.hasChargesRemaining()) {
+            System.out.println("That player has already used their special ability");
+        } else {
+            player.specialAction(board);
+            return true;
+        }
+        return false;
     }
 
     //MODIFIES: board, enemies or players if defender dies

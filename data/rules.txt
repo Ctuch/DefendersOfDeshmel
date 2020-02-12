@@ -12,7 +12,7 @@ On your turn you can do on of the following actions for free:
         Display this window at any time to view the rules.
    d -> display character stats
         Take this action at any time to learn about any character. Here you can view their attack power, weapon range,
-        health remaining, special action, and whether it has already been triggered (if it is one use)
+        health remaining, and remaining charges of special actions
    q -> quit
         Take this action to end the game early
 
@@ -28,5 +28,9 @@ To end the game, take the quit action.
 
 In the console version of the game, the board displays as a series of - , | , and # symbols. You can pass through - and
 |, but not through # which represent walls.
+
+Special actions:
+    - Fire Sorceress: Deal 3 damage to all enemies on the board
+    - Ice Sorcerer: Reduces the attack power of all enemies by 1
 
 Thanks for visiting the help menu.

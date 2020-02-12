@@ -79,7 +79,7 @@ public class Enemy extends Person {
         int rowDif = rowPosThis - rowPosPerson;
         int colDif = colPosThis - colPosPerson;
         SquareWall wallSet = board.getWallConfig().get(boardState.indexOf(this));
-        ArrayList<Action> viableDirections = getViableDirectionsToMove(wallSet);
+        ArrayList<Action> viableDirections = getViableDirectionsToMove(wallSet, rowPosThis, colPosThis, boardState);
 
         if (Math.abs(rowDif) > Math.abs(colDif)) {
             if (rowDif > 0 && viableDirections.contains(Action.MOVE_UP)) {
@@ -100,20 +100,18 @@ public class Enemy extends Person {
 
     //REQUIRES: wallSet not null
     //EFFECTS: generates a list of viable directions to move in
-    public ArrayList<Action> getViableDirectionsToMove(SquareWall wallSet) {
-        //TODO: BUG: NOT A VIABLE DIRECTION IF ENEMY IN NEXT SQUARE
-        //TODO: BUG DOES NOT CHECK BORDER CONDITIONS
+    public ArrayList<Action> getViableDirectionsToMove(SquareWall wallSet, int row, int col, ArrayList<Person> bs) {
         ArrayList<Action> viableDirections = new ArrayList<>();
-        if (!wallSet.isLeftWall()) {
+        if (!wallSet.isLeftWall() && col != 0 && bs.get(row * 5 + col - 1) == null) {
             viableDirections.add(Action.MOVE_LEFT);
         }
-        if (!wallSet.isRightWall()) {
+        if (!wallSet.isRightWall() && col != 4 && bs.get(row * 5 + col + 1) == null) {
             viableDirections.add(Action.MOVE_RIGHT);
         }
-        if (!wallSet.isUpperWall()) {
+        if (!wallSet.isUpperWall() && row != 0 && bs.get((row - 1) * 5 + col) == null) {
             viableDirections.add(Action.MOVE_UP);
         }
-        if (!wallSet.isLowerWall()) {
+        if (!wallSet.isLowerWall() && row != 4 && bs.get((row + 1) * 5 + col) == null) {
             viableDirections.add(Action.MOVE_DOWN);
         }
         return viableDirections;

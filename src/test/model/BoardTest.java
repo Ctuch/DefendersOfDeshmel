@@ -16,6 +16,7 @@ class BoardTest {
         board = new Board();
         iceSor = new Person("Ice Sorcerer");
         soldier = new Person("Foot Soldier");
+        board.setWallConfig(SquareWallConfigs.generateWallSetEmpty());
     }
 
     @Test
@@ -75,6 +76,14 @@ class BoardTest {
     }
 
     @Test
+    public void testMoveCharacterLeftInvalidWall() {
+        board.setWallConfig(SquareWallConfigs.generateWallSetOne());
+        board.addCharacter(12, iceSor);
+        assertFalse(board.moveCharacter(Board.LEFT, iceSor));
+        assertEquals(iceSor, board.getBoard().get(12));
+    }
+
+    @Test
     public void testMoveCharacterLeftInvalidFullSquare() {
         board.addCharacter(12, iceSor);
         board.addCharacter(11, soldier);
@@ -96,6 +105,14 @@ class BoardTest {
         board.addCharacter(14, iceSor);
         assertFalse(board.moveCharacter(Board.RIGHT, iceSor));
         assertEquals(iceSor, board.getBoard().get(14));
+    }
+
+    @Test
+    public void testMoveCharacterRightInvalidWall() {
+        board.setWallConfig(SquareWallConfigs.generateWallSetOne());
+        board.addCharacter(17, iceSor);
+        assertFalse(board.moveCharacter(Board.RIGHT, iceSor));
+        assertEquals(iceSor, board.getBoard().get(17));
     }
 
     @Test
@@ -123,6 +140,14 @@ class BoardTest {
     }
 
     @Test
+    public void testMoveCharacterUpInvalidWall() {
+        board.setWallConfig(SquareWallConfigs.generateWallSetOne());
+        board.addCharacter(13, iceSor);
+        assertFalse(board.moveCharacter(Board.UP, iceSor));
+        assertEquals(iceSor, board.getBoard().get(13));
+    }
+
+    @Test
     public void testMoveCharacterUpInvalidFullSquare() {
         board.addCharacter(6, iceSor);
         board.addCharacter(1, soldier);
@@ -144,6 +169,14 @@ class BoardTest {
         board.addCharacter(23, iceSor);
         assertFalse(board.moveCharacter(Board.DOWN, iceSor));
         assertEquals(iceSor, board.getBoard().get(23));
+    }
+
+    @Test
+    public void testMoveCharacterDownInvalidWall() {
+        board.setWallConfig(SquareWallConfigs.generateWallSetOne());
+        board.addCharacter(16, iceSor);
+        assertFalse(board.moveCharacter(Board.DOWN, iceSor));
+        assertEquals(iceSor, board.getBoard().get(16));
     }
 
     @Test

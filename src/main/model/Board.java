@@ -128,12 +128,10 @@ public class Board {
     //EFFECTS: returns true if person2 is in weapon range of person1 (not diagonally for now)
     public boolean isInWeaponRange(Person person1, Person person2) {
         int weaponRangeP1 = person1.getWeapon().getRange();
-        int positionP1 = board.indexOf(person1);
-        int positionP2 = board.indexOf(person2);
-        int rowNumP1 = positionP1 / 5;
-        int colNumP1 = positionP1 % 5;
-        int rowNumP2 = positionP2 / 5;
-        int colNumP2 = positionP2 % 5;
+        int rowNumP1 = getRowNumber(person1);
+        int colNumP1 = getColumnNumber(person1);
+        int rowNumP2 = getRowNumber(person2);
+        int colNumP2 = getColumnNumber(person2);
 
         if (rowNumP1 == rowNumP2 && Math.abs(colNumP1 - colNumP2) <= weaponRangeP1) {
             return true;
@@ -141,6 +139,17 @@ public class Board {
             return colNumP1 == colNumP2 && Math.abs(rowNumP1 - rowNumP2) <= weaponRangeP1;
         }
     }
+
+    public int getRowNumber(Person person) {
+        int positionP1 = board.indexOf(person);
+        return positionP1 / 5;
+    }
+
+    public int getColumnNumber(Person person) {
+        int positionP1 = board.indexOf(person);
+        return positionP1 % 5;
+    }
+
 
     //EFFECTS: returns the Person object associated with the given character code
     public Person findPersonByCharacterCode(String code) {

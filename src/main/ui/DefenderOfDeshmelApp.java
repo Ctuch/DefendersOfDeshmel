@@ -1,11 +1,10 @@
 package ui;
 
-import model.Board;
-import model.Person;
-import model.SquareWall;
+import model.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 //Defenders of Deshmel application - provides user interaction with board and characters
@@ -13,13 +12,14 @@ import java.util.Scanner;
 //Specifically references class TellerApp.java
 public class DefenderOfDeshmelApp {
 
-    private File rules;
     private Board board;
-    private ArrayList<Person> enemies;
+    private ArrayList<Enemy> enemies;
     private ArrayList<Person> players;
     private Scanner input;
     private BufferedReader br;
     private boolean gameOver;
+    private boolean playerTurn;
+    private Random random;
 
     // EFFECTS: runs the teller application
     public DefenderOfDeshmelApp() {
@@ -30,19 +30,27 @@ public class DefenderOfDeshmelApp {
     // EFFECTS: processes user input
     private void runGame() {
         boolean keepGoing = true;
-        String command = null;
+        String command;
 
         init();
 
         while (keepGoing) {
-            displayMenu();
-            command = input.next();
-            command = command.toLowerCase();
+            if (playerTurn) {
+                if (gameOver) {
+                    break;
+                }
+                displayMenu();
+                command = input.next();
+                command = command.toLowerCase();
 
-            if (gameOver || command.equals("q")) {
-                keepGoing = false;
+                if (command.equals("q")) {
+                    keepGoing = false;
+                } else {
+                    processCommand(command);
+                }
             } else {
-                processCommand(command);
+                enemyTurn(enemies.get(random.nextInt(enemies.size())));
+                displayBoard();
             }
         }
 
@@ -55,13 +63,16 @@ public class DefenderOfDeshmelApp {
         if (command.equals("a")) {
             displayRemainingCharacters();
             displayBoard();
+            playerTurn = false;
         } else if (command.equals("m")) {
             moveCharacter();
             displayBoard();
+            playerTurn = false;
         } else if (command.equals("x")) {
             attackAction();
             checkGameOver();
             displayBoard();
+            playerTurn = false;
         } else if (command.equals("h")) {
             displayHelp();
         } else if (command.equals("d")) {
@@ -77,12 +88,14 @@ public class DefenderOfDeshmelApp {
     // EFFECTS: initializes board and characters, reads in rules
     private void init() {
         gameOver = false;
+        playerTurn = true;
         board = new Board();
+        random = new Random();
 
         enemies = new ArrayList<>();
         // need to get a real list together of enemies and player characters, add here
-        enemies.add(new Person("Foot Soldier"));
-        enemies.add(new Person("Foot Soldier"));
+        enemies.add(new Enemy("Foot Soldier"));
+        enemies.add(new Enemy("Ranged Shooter"));
 
         players = new ArrayList<>();
         players.add(new Person("Fire Sorceress"));
@@ -90,7 +103,7 @@ public class DefenderOfDeshmelApp {
 
         input = new Scanner(System.in);
 
-        rules = new File("data/rules.txt");
+        File rules = new File("data/rules.txt");
         try {
             br = new BufferedReader(new FileReader(rules));
         } catch (FileNotFoundException e) {
@@ -142,6 +155,26 @@ public class DefenderOfDeshmelApp {
             System.out.println(topBorder + "\n" + textRow + "\n" + noTextRow);
         }
         System.out.println(bottomBorder);
+    }
+
+    private void enemyTurn(Enemy enemy) {
+        Action action = enemy.decideAction(board);
+        if (action == Action.ADD) {
+            while (true) {
+                boolean successful = board.addCharacter(random.nextInt(25), enemy);
+                if (successful) {
+                    break;
+                }
+                System.out.println("Enemy " + enemy.getName() + " has been added to the board.");
+            }
+        } else if (action == Action.ATTACK) {
+            Person defender = enemy.canAttackPerson(board);
+            attack(enemy, defender);
+            checkGameOver();
+        } else {
+            enemyMoveInDirection(action, enemy);
+        }
+        playerTurn = true;
     }
 
     //EFFECTS: adds the final character of each row depending on whether there is a wall there or not
@@ -265,8 +298,8 @@ public class DefenderOfDeshmelApp {
                 String enemyCode = command.substring(3);
                 player = board.findPersonByCharacterCode(playerCode);
                 enemy = board.findPersonByCharacterCode(enemyCode);
-                if (player == null || enemy == null) {
-                    System.out.println("Please make sure both characters selected are on the board.");
+                if (player == null || player.isEnemy() || enemy == null) {
+                    System.out.println("Make sure both characters selected are on the board and yours to control.");
                 } else {
                     break;
                 }
@@ -333,6 +366,23 @@ public class DefenderOfDeshmelApp {
                     System.out.println("That character is unable to move in that direction.");
                 }
             }
+        }
+    }
+
+    private void enemyMoveInDirection(Action action, Enemy enemy) {
+        String statement = enemy.getName() + " has moved ";
+        if (action == Action.MOVE_LEFT) {
+            board.moveCharacter(Board.LEFT, enemy);
+            System.out.println(statement + "left");
+        } else if (action == Action.MOVE_RIGHT) {
+            board.moveCharacter(Board.RIGHT, enemy);
+            System.out.println(statement + "right");
+        } else if (action == Action.MOVE_UP) {
+            board.moveCharacter(Board.UP, enemy);
+            System.out.println(statement + "up");
+        } else if (action == Action.MOVE_DOWN) {
+            board.moveCharacter(Board.DOWN, enemy);
+            System.out.println(statement + "down");
         }
     }
 

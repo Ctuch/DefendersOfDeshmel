@@ -13,12 +13,14 @@ public class Person {
     private int health;
     private boolean available;
     private String characterCode;
+    protected boolean isEnemy;
     //private int moveSpeed;
 
     //EFFECTS: creates a new person that is available to put on the map and sets their attributes
     public Person(String name) {
         this.name = name;
         this.available = true;
+        this.isEnemy = false;
         setAttributes(name);
         //this.moveSpeed = moveSpeed;
     }
@@ -47,13 +49,29 @@ public class Person {
     //MODIFIES: this
     //EFFECTS: adds weapon, attackPower and health attributes to the created Person
     private void setAttributes(String name) {
-        if (name.equals("Ice Sorcerer")) {
-            createIceSorcerer();
-        } else if (name.equals("Fire Sorceress")) {
-            createFireSorceress();
-        } else {
-            createFootSoldier();
+        switch (name) {
+            case "Ice Sorcerer":
+                createIceSorcerer();
+                break;
+            case "Fire Sorceress":
+                createFireSorceress();
+                break;
+            case "Ranged Shooter":
+                createRangedShooter();
+                break;
+            default:
+                createFootSoldier();
+                break;
         }
+    }
+
+    //MODIFIES: this
+    //EFFECTS: adds weapon, attackPower and health attributes for an ranged shooter
+    private void createRangedShooter() {
+        this.weapon = new Weapon("Cross Bow", 3);
+        this.attackPower = 4;
+        this.health = 12;
+        this.characterCode = "RS";
     }
 
     //MODIFIES: this
@@ -131,5 +149,9 @@ public class Person {
             }
         }
         return ts;
+    }
+
+    public boolean isEnemy() {
+        return isEnemy;
     }
 }

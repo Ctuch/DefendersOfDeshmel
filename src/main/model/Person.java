@@ -15,7 +15,7 @@ public class Person {
     private String characterCode;
     protected boolean isEnemy;
     private int numSpecialActionCharges;
-    //private int moveSpeed;
+    private String specialActionString;
 
     //EFFECTS: creates a new person that is available to put on the map and sets their attributes
     public Person(String name) {
@@ -23,7 +23,6 @@ public class Person {
         this.available = true;
         this.isEnemy = false;
         setAttributes(name);
-        //this.moveSpeed = moveSpeed;
     }
 
 
@@ -74,6 +73,7 @@ public class Person {
         this.health = 12;
         this.characterCode = "RS";
         this.numSpecialActionCharges = 0;
+        this.specialActionString = "";
     }
 
     //MODIFIES: this
@@ -84,6 +84,7 @@ public class Person {
         this.health = 8;
         this.characterCode = "IC";
         this.numSpecialActionCharges = 2;
+        this.specialActionString = "Decrease all enemy attack power by 1";
     }
 
     //MODIFIES: this
@@ -94,6 +95,7 @@ public class Person {
         this.health = 10;
         this.characterCode = "FR";
         this.numSpecialActionCharges = 2;
+        this.specialActionString = "Damage all enemies by 3";
     }
 
     //MODIFIES: this
@@ -104,8 +106,12 @@ public class Person {
         this.health = 12;
         this.characterCode = "FS";
         this.numSpecialActionCharges = 0;
+        this.specialActionString = "";
     }
 
+    //REQUIRES: board is not null
+    //MODIFIES: board
+    //EFFECTS: triggers special action associated with this person
     public void specialAction(Board board) {
         switch (name) {
             case "Ice Sorcerer":
@@ -120,6 +126,9 @@ public class Person {
         numSpecialActionCharges--;
     }
 
+    //REQUIRES: board is not null, damage > 0
+    //MODIFIES: board
+    //EFFECTS: damages all enemies on the board by damage
     private void attackAllEnemies(int damage, Board board) {
         for (Person person: board.getBoard()) {
             if (person != null && person.isEnemy()) {
@@ -128,6 +137,9 @@ public class Person {
         }
     }
 
+    //REQUIRES: board is not null, attackPower > 0
+    //MODIFIES: board
+    //EFFECTS: reduces the attack power of all enemies on the board by attackPower
     private void reduceEnemyAttackPower(int attackPower, Board board) {
         for (Person person: board.getBoard()) {
             if (person != null && person.isEnemy()) {
@@ -136,8 +148,18 @@ public class Person {
         }
     }
 
+    //EFFECTS: returns true if person has charges of special action remaining
     public boolean hasChargesRemaining() {
         return numSpecialActionCharges > 0;
+    }
+
+
+    public String getSpecialActionString() {
+        return specialActionString;
+    }
+
+    public void setNumSpecialActionCharges(int numSpecialActionCharges) {
+        this.numSpecialActionCharges = numSpecialActionCharges;
     }
 
     public String getName() {

@@ -11,7 +11,8 @@ import java.util.Scanner;
 //Based off of TellerApp provided to CPSC 210. URL: https://github.students.cs.ubc.ca/CPSC210/TellerApp
 //Specifically references class TellerApp.java
 public class DefenderOfDeshmelApp {
-    //TODO: create a main menu that you return to if lose/can start game from (easy, med, hard) determines enemy #?
+
+    //TODO: create a main menu that you return to if lose/can start game from (easy, med, hard) determines enemy #
     private Board board;
     private ArrayList<Enemy> enemies;
     private ArrayList<Person> players;
@@ -79,11 +80,13 @@ public class DefenderOfDeshmelApp {
                 playerTurn = false;
             }
             checkGameOver();
+            displayBoard();
         } else {
             displays(command);
         }
     }
 
+    //EFFECTS: processes user input for displaying information
     private void displays(String command) {
         if (command.equals("h")) {
             displayHelp();
@@ -169,6 +172,12 @@ public class DefenderOfDeshmelApp {
         System.out.println(bottomBorder);
     }
 
+    //REQUIRES: enemy is not null
+    //MODIFIES: this
+    //EFFECTS: Selects and enemy action and performs it, printing out a message to indicate to the player the action
+    //         either: adds enemy to the board in a random unoccupied location
+    //                 attacks a player in range
+    //                 moves the enemy toward a player if possible
     private void enemyTurn(Enemy enemy) {
         Action action = enemy.decideAction(board);
         if (action == Action.ADD) {
@@ -334,9 +343,23 @@ public class DefenderOfDeshmelApp {
             System.out.println("That player has already used their special ability");
         } else {
             player.specialAction(board);
+            System.out.println(player.getName() + " has taken a special action: " + player.getSpecialActionString());
+            removeDeadEnemies();
             return true;
         }
         return false;
+    }
+
+    //MODIFIES: this
+    //EFFECTS: removes dead enemies from the board and enemy list
+    private void removeDeadEnemies() {
+        ArrayList<Person> boardState = board.getBoard();
+        for (int i = 0; i < 25; i++) {
+            if (boardState.get(i) != null && boardState.get(i).isDead()) {
+                boardState.set(i, null);
+            }
+        }
+        enemies.removeIf(Person::isDead);
     }
 
     //MODIFIES: board, enemies or players if defender dies
@@ -373,6 +396,7 @@ public class DefenderOfDeshmelApp {
         }
     }
 
+    //REQUIRES: direction supplied by user must be an integer between 0 and 3
     //MODIFIES: board
     //EFFECTS: prompts character for a user and direction, and moves that character if both are valid inputs
     private void moveCharacter() {
@@ -400,6 +424,9 @@ public class DefenderOfDeshmelApp {
         }
     }
 
+    //REQUIRES: enemy is not null, action not null
+    //MODIFIES: board
+    //EFFECTS: moves enemy in the direction specified by the action
     private void enemyMoveInDirection(Action action, Enemy enemy) {
         String statement = enemy.getName() + " has moved ";
         if (action == Action.MOVE_LEFT) {
@@ -434,6 +461,7 @@ public class DefenderOfDeshmelApp {
         }
     }
 
+    //REQUIRES: number square user inputs must be between 1 - 25 inclusive
     //MODIFIES: board
     //EFFECTS: places character onto board if available and square is available, otherwise prompts for new character
     //         or square until a proper one is given

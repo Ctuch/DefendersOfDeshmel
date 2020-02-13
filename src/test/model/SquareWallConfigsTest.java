@@ -30,6 +30,18 @@ public class SquareWallConfigsTest {
         assertFalse(square10.isUpperWall());
         assertFalse(square10.isLowerWall());
     }
+
+    @Test
+    public void generateWallSetDefault() {
+        ArrayList<SquareWall> wallEmpty = sqCon.generateRandomWallSet(-1);
+        for (int i = 0; i < 25; i++) {
+            assertFalse(wallEmpty.get(i).isLowerWall());
+            assertFalse(wallEmpty.get(i).isUpperWall());
+            assertFalse(wallEmpty.get(i).isLeftWall());
+            assertFalse(wallEmpty.get(i).isRightWall());
+        }
+    }
+
     @Test
     public void testGetWalls() {
         assertEquals(sqCon.getWalls().size(), 25);

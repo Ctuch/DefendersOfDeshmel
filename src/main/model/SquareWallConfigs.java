@@ -9,6 +9,7 @@ public class SquareWallConfigs {
 
     private ArrayList<SquareWall> walls;
 
+    //EFFECTS: generates a random wall set
     public SquareWallConfigs() {
         Random random = new Random();
         walls = generateRandomWallSet(random.nextInt(1) + 1);
@@ -51,6 +52,7 @@ public class SquareWallConfigs {
                 new SquareWall())); //24
     }
 
+    //EFFECTS: generates a squareWall for each square of the board, configuration empty (no walls)
     public static ArrayList<SquareWall> generateWallSetEmpty() {
         ArrayList<SquareWall> wallSet = new ArrayList<>();
         for (int i = 0; i < 25; i++) {

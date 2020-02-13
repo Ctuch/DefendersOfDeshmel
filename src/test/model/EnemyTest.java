@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -65,7 +64,8 @@ public class EnemyTest {
     }
 
     @Test
-    public void testGetViableDirectionsAll() {
+    public void testGetViableDirectionsAllWallCondition() {
+        board.addCharacter(12, enemyFS);
         SquareWall wall = new SquareWall();
         ArrayList<Action> viableDirections = new ArrayList<>();
         viableDirections.add(Action.MOVE_LEFT);
@@ -73,59 +73,193 @@ public class EnemyTest {
         viableDirections.add(Action.MOVE_UP);
         viableDirections.add(Action.MOVE_DOWN);
 
-        ArrayList<Action> viableDirFromMethod = enemyFS.getViableDirectionsToMove(wall);
+        ArrayList<Action> viableDirFromMethod = enemyFS.getViableDirectionsToMove(wall, 2, 2, board.getBoard());
         for (int i = 0; i < viableDirections.size(); i++) {
             assertEquals(viableDirections.get(i), viableDirFromMethod.get(i));
         }
     }
 
     @Test
-    public void testGetViableDirectionsLeftRight() {
+    public void testGetViableDirectionsLeftRightWallCondition() {
+        board.addCharacter(12, enemyFS);
         SquareWall wall = new SquareWall(false, false, true, true);
         ArrayList<Action> viableDirections = new ArrayList<>();
         viableDirections.add(Action.MOVE_LEFT);
         viableDirections.add(Action.MOVE_RIGHT);
 
-        ArrayList<Action> viableDirFromMethod = enemyFS.getViableDirectionsToMove(wall);
+        ArrayList<Action> viableDirFromMethod = enemyFS.getViableDirectionsToMove(wall, 2, 2, board.getBoard());
         for (int i = 0; i < viableDirections.size(); i++) {
             assertEquals(viableDirections.get(i), viableDirFromMethod.get(i));
         }
     }
 
     @Test
-    public void testGetViableDirectionsDownLeft() {
+    public void testGetViableDirectionsDownLeftWallCondition() {
+        board.addCharacter(12, enemyFS);
         SquareWall wall = new SquareWall(false, true, true, false);
         ArrayList<Action> viableDirections = new ArrayList<>();
         viableDirections.add(Action.MOVE_LEFT);
         viableDirections.add(Action.MOVE_DOWN);
 
-        ArrayList<Action> viableDirFromMethod = enemyFS.getViableDirectionsToMove(wall);
+        ArrayList<Action> viableDirFromMethod = enemyFS.getViableDirectionsToMove(wall, 2, 2, board.getBoard());
         for (int i = 0; i < viableDirections.size(); i++) {
             assertEquals(viableDirections.get(i), viableDirFromMethod.get(i));
         }
     }
 
     @Test
-    public void testGetViableDirectionsUpRightDown() {
+    public void testGetViableDirectionsUpRightDownWallCondition() {
+        board.addCharacter(12, enemyFS);
         SquareWall wall = new SquareWall(true, false, false, false);
         ArrayList<Action> viableDirections = new ArrayList<>();
         viableDirections.add(Action.MOVE_RIGHT);
         viableDirections.add(Action.MOVE_UP);
         viableDirections.add(Action.MOVE_DOWN);
 
-        ArrayList<Action> viableDirFromMethod = enemyFS.getViableDirectionsToMove(wall);
+        ArrayList<Action> viableDirFromMethod = enemyFS.getViableDirectionsToMove(wall, 2, 2, board.getBoard());
         for (int i = 0; i < viableDirections.size(); i++) {
             assertEquals(viableDirections.get(i), viableDirFromMethod.get(i));
         }
     }
 
     @Test
-    public void testGetViableDirectionsUp() {
+    public void testGetViableDirectionsUpWallCondition() {
+        board.addCharacter(12, enemyFS);
         SquareWall wall = new SquareWall(true, true, false, true);
         ArrayList<Action> viableDirections = new ArrayList<>();
         viableDirections.add(Action.MOVE_UP);
 
-        ArrayList<Action> viableDirFromMethod = enemyFS.getViableDirectionsToMove(wall);
+        ArrayList<Action> viableDirFromMethod = enemyFS.getViableDirectionsToMove(wall, 2, 2, board.getBoard());
+        for (int i = 0; i < viableDirections.size(); i++) {
+            assertEquals(viableDirections.get(i), viableDirFromMethod.get(i));
+        }
+    }
+
+    @Test
+    public void testGetViableDirectionsNotLeftBoundaryCondition() {
+        board.addCharacter(10, enemyFS);
+        SquareWall wall = new SquareWall();
+
+        ArrayList<Action> viableDirections = new ArrayList<>();
+        viableDirections.add(Action.MOVE_RIGHT);
+        viableDirections.add(Action.MOVE_UP);
+        viableDirections.add(Action.MOVE_DOWN);
+
+        ArrayList<Action> viableDirFromMethod = enemyFS.getViableDirectionsToMove(wall, 2, 0, board.getBoard());
+        for (int i = 0; i < viableDirections.size(); i++) {
+            assertEquals(viableDirections.get(i), viableDirFromMethod.get(i));
+        }
+    }
+
+    @Test
+    public void testGetViableDirectionsNotRightBoundaryCondition() {
+        board.addCharacter(14, enemyFS);
+        SquareWall wall = new SquareWall();
+
+        ArrayList<Action> viableDirections = new ArrayList<>();
+        viableDirections.add(Action.MOVE_LEFT);
+        viableDirections.add(Action.MOVE_UP);
+        viableDirections.add(Action.MOVE_DOWN);
+
+        ArrayList<Action> viableDirFromMethod = enemyFS.getViableDirectionsToMove(wall, 2, 4, board.getBoard());
+        for (int i = 0; i < viableDirections.size(); i++) {
+            assertEquals(viableDirections.get(i), viableDirFromMethod.get(i));
+        }
+    }
+
+    @Test
+    public void testGetViableDirectionsNotUpBoundaryCondition() {
+        board.addCharacter(3, enemyFS);
+        SquareWall wall = new SquareWall();
+
+        ArrayList<Action> viableDirections = new ArrayList<>();
+        viableDirections.add(Action.MOVE_LEFT);
+        viableDirections.add(Action.MOVE_RIGHT);
+        viableDirections.add(Action.MOVE_DOWN);
+
+        ArrayList<Action> viableDirFromMethod = enemyFS.getViableDirectionsToMove(wall, 0, 3, board.getBoard());
+        for (int i = 0; i < viableDirections.size(); i++) {
+            assertEquals(viableDirections.get(i), viableDirFromMethod.get(i));
+        }
+    }
+
+    @Test
+    public void testGetViableDirectionsNotDownBoundaryCondition() {
+        board.addCharacter(22, enemyFS);
+        SquareWall wall = new SquareWall();
+
+        ArrayList<Action> viableDirections = new ArrayList<>();
+        viableDirections.add(Action.MOVE_LEFT);
+        viableDirections.add(Action.MOVE_RIGHT);
+        viableDirections.add(Action.MOVE_UP);
+
+        ArrayList<Action> viableDirFromMethod = enemyFS.getViableDirectionsToMove(wall, 4, 2, board.getBoard());
+        for (int i = 0; i < viableDirections.size(); i++) {
+            assertEquals(viableDirections.get(i), viableDirFromMethod.get(i));
+        }
+    }
+
+    @Test
+    public void testGetViableDirectionsNotLeftOccupied() {
+        board.addCharacter(22, enemyFS);
+        board.addCharacter(21, enemyRS);
+        SquareWall wall = new SquareWall();
+
+        ArrayList<Action> viableDirections = new ArrayList<>();
+        viableDirections.add(Action.MOVE_RIGHT);
+        viableDirections.add(Action.MOVE_UP);
+
+        ArrayList<Action> viableDirFromMethod = enemyFS.getViableDirectionsToMove(wall, 4, 2, board.getBoard());
+        for (int i = 0; i < viableDirections.size(); i++) {
+            assertEquals(viableDirections.get(i), viableDirFromMethod.get(i));
+        }
+    }
+
+    @Test
+    public void testGetViableDirectionsNotRightOccupied() {
+        board.addCharacter(13, enemyFS);
+        board.addCharacter(14, enemyRS);
+        SquareWall wall = new SquareWall();
+
+        ArrayList<Action> viableDirections = new ArrayList<>();
+        viableDirections.add(Action.MOVE_LEFT);
+        viableDirections.add(Action.MOVE_UP);
+        viableDirections.add(Action.MOVE_DOWN);
+
+        ArrayList<Action> viableDirFromMethod = enemyFS.getViableDirectionsToMove(wall, 2, 3, board.getBoard());
+        for (int i = 0; i < viableDirections.size(); i++) {
+            assertEquals(viableDirections.get(i), viableDirFromMethod.get(i));
+        }
+    }
+
+    @Test
+    public void testGetViableDirectionsNotUpOccupied() {
+        board.addCharacter(17, enemyFS);
+        board.addCharacter(12, enemyRS);
+        SquareWall wall = new SquareWall();
+
+        ArrayList<Action> viableDirections = new ArrayList<>();
+        viableDirections.add(Action.MOVE_LEFT);
+        viableDirections.add(Action.MOVE_RIGHT);
+        viableDirections.add(Action.MOVE_DOWN);
+
+        ArrayList<Action> viableDirFromMethod = enemyFS.getViableDirectionsToMove(wall, 3, 2, board.getBoard());
+        for (int i = 0; i < viableDirections.size(); i++) {
+            assertEquals(viableDirections.get(i), viableDirFromMethod.get(i));
+        }
+    }
+
+    @Test
+    public void testGetViableDirectionsNotDownOccupied() {
+        board.addCharacter(9, enemyFS);
+        board.addCharacter(14, enemyRS);
+        SquareWall wall = new SquareWall();
+
+        ArrayList<Action> viableDirections = new ArrayList<>();
+        viableDirections.add(Action.MOVE_LEFT);
+        viableDirections.add(Action.MOVE_UP);
+
+        ArrayList<Action> viableDirFromMethod = enemyFS.getViableDirectionsToMove(wall, 1, 4, board.getBoard());
         for (int i = 0; i < viableDirections.size(); i++) {
             assertEquals(viableDirections.get(i), viableDirFromMethod.get(i));
         }
@@ -229,5 +363,27 @@ public class EnemyTest {
         board.addCharacter(14, personIce);
         board.addCharacter(14, personFire);
         assertEquals(Action.MOVE_LEFT, enemyRS.findClosestPerson(board));
+    }
+
+    //TODO: finish testing for moving toward target, specifically when walls are in the way
+
+    @Test
+    public void testDecideActionNotOnBoard() {
+        assertEquals(Action.ADD, enemyRS.decideAction(board));
+        assertEquals(Action.ADD, enemyFS.decideAction(board));
+    }
+
+    @Test
+    public void testDecideActionAttack() {
+        board.addCharacter(12, enemyFS);
+        board.addCharacter(17, personFire);
+        assertEquals(Action.ATTACK, enemyFS.decideAction(board));
+    }
+
+    @Test
+    public void testDecideActionMove() {
+        board.addCharacter(12, enemyFS);
+        board.addCharacter(18, personFire);
+        assertEquals(Action.MOVE_RIGHT, enemyFS.decideAction(board));
     }
 }

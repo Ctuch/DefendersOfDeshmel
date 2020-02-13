@@ -76,22 +76,22 @@ public class Enemy extends Person {
 
         int rowPosPerson = board.getRowNumber(boardState.get(index));
         int colPosPerson = board.getColumnNumber(boardState.get(index));
-        int rowDif = rowPosThis - rowPosPerson;
-        int colDif = colPosThis - colPosPerson;
         SquareWall wallSet = board.getWallConfig().get(boardState.indexOf(this));
         ArrayList<Action> viableDirections = getViableDirectionsToMove(wallSet, rowPosThis, colPosThis, boardState);
-
-        if (Math.abs(rowDif) > Math.abs(colDif)) {
-            if (rowDif > 0 && viableDirections.contains(Action.MOVE_UP)) {
-                return Action.MOVE_UP;
-            } else if (rowDif < 0 && viableDirections.contains(Action.MOVE_DOWN)) {
-                return Action.MOVE_DOWN;
-            }
-        } else {
-            if (colDif > 0 && viableDirections.contains(Action.MOVE_LEFT)) {
-                return Action.MOVE_LEFT;
-            } else if (colDif < 0 && viableDirections.contains(Action.MOVE_RIGHT)) {
-                return Action.MOVE_RIGHT;
+        ArrayList<Action> desiredDirections = new ArrayList<>();
+        if (colPosThis - colPosPerson > 0) {
+            desiredDirections.add(Action.MOVE_LEFT);
+        } else if (colPosThis - colPosPerson < 0) {
+            desiredDirections.add(Action.MOVE_RIGHT);
+        }
+        if (rowPosThis - rowPosPerson > 0) {
+            desiredDirections.add(Action.MOVE_UP);
+        } else if (rowPosThis - rowPosPerson < 0) {
+            desiredDirections.add(Action.MOVE_DOWN);
+        }
+        for (Action direction : desiredDirections) {
+            if (viableDirections.contains(direction)) {
+                return direction;
             }
         }
         Random random = new Random();

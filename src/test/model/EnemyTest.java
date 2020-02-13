@@ -311,7 +311,7 @@ public class EnemyTest {
     public void testMoveTowardTargetDownRowGreater() {
         board.addCharacter(3, enemyFS);
         board.addCharacter(22, personIce);
-        assertEquals(Action.MOVE_DOWN, enemyFS.moveTowardTarget(board, 22, 0, 3));
+        assertEquals(Action.MOVE_LEFT, enemyFS.moveTowardTarget(board, 22, 0, 3));
     }
 
     @Test
@@ -349,23 +349,37 @@ public class EnemyTest {
 
     @Test
     public void testFindClosestPersonLeft() {
-        board.addCharacter(14, enemyRS);
+        board.addCharacter(13, enemyRS);
         board.addCharacter(14, enemyFS);
-        board.addCharacter(14, personIce);
-        board.addCharacter(14, personFire);
+        board.addCharacter(6, personIce);
+        board.addCharacter(24, personFire);
         assertEquals(Action.MOVE_LEFT, enemyRS.findClosestPerson(board));
     }
 
     @Test
     public void testFindClosestPersonRight() {
-        board.addCharacter(14, enemyRS);
+        board.addCharacter(6, enemyRS);
         board.addCharacter(14, enemyFS);
-        board.addCharacter(14, personIce);
-        board.addCharacter(14, personFire);
-        assertEquals(Action.MOVE_LEFT, enemyRS.findClosestPerson(board));
+        board.addCharacter(4, personIce);
+        board.addCharacter(18, personFire);
+        assertEquals(Action.MOVE_RIGHT, enemyRS.findClosestPerson(board));
     }
 
-    //TODO: finish testing for moving toward target, specifically when walls are in the way
+    @Test
+    public void testFindClosestPersonRightUpOnlyRightViable() {
+        board.setWallConfig(SquareWallConfigs.generateWallSetOne());
+        board.addCharacter(13, enemyRS);
+        board.addCharacter(4, personIce);
+        assertEquals(Action.MOVE_RIGHT, enemyRS.findClosestPerson(board));
+    }
+
+    @Test
+    public void testFindClosestPersonRightDownOnlyDownViable() {
+        board.setWallConfig(SquareWallConfigs.generateWallSetOne());
+        board.addCharacter(11, enemyRS);
+        board.addCharacter(22, personIce);
+        assertEquals(Action.MOVE_DOWN, enemyRS.findClosestPerson(board));
+    }
 
     @Test
     public void testDecideActionNotOnBoard() {

@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 //creates a weapon to be wielded by a character with a name and a range
 public class Weapon {
 
@@ -25,5 +27,23 @@ public class Weapon {
     @Override
     public String toString() {
         return "Name: " + name + ", Range: " + range;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Weapon weapon = (Weapon) o;
+        return range == weapon.range
+                && name.equals(weapon.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, range);
     }
 }

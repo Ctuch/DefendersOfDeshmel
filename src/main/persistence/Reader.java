@@ -35,6 +35,30 @@ public class Reader {
 
         Person[] playerArray = gson.fromJson(bufferedReader.readLine(), Person[].class);
         players.addAll(Arrays.asList(playerArray));
+
+        combineObjects();
+    }
+
+    private void combineObjects() {
+        for (int i = 0; i < enemies.size(); i++) {
+            int index = boardState.indexOf(enemies.get(i));
+            if (index >= 0) {
+                Person personEnemy = boardState.get(index);
+                Enemy enemy = new Enemy(personEnemy.getName());
+                enemy.setAttackPower(personEnemy.getAttackPower());
+                enemy.setAvailable(false);
+                enemy.takeDamage(enemy.getHealth() - personEnemy.getHealth());
+                boardState.set(index, enemy);
+                enemies.set(i, enemy);
+            }
+        }
+
+        for (int i = 0; i < players.size(); i++) {
+            int index = boardState.indexOf(players.get(i));
+            if (index >= 0) {
+                players.set(i, boardState.get(index));
+            }
+        }
     }
 
     public ArrayList<Person> getBoardState() {

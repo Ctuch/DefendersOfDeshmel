@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 /*
 Represents a character on the board with a name, weapon, attack power, health, and availability (dependent on if
 already in game or dead). A person can be an enemy or a player character, and occupies one space on the board. A
@@ -223,5 +225,31 @@ public class Person {
         }
 
         return ts;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Person)) {
+            return false;
+        }
+        Person person = (Person) o;
+        return attackPower == person.attackPower
+                && health == person.health
+                && available == person.available
+                && isEnemy == person.isEnemy
+                && numSpecialActionCharges == person.numSpecialActionCharges
+                && name.equals(person.name)
+                && weapon.equals(person.weapon)
+                && characterCode.equals(person.characterCode)
+                && specialActionString.equals(person.specialActionString);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, weapon, attackPower, health, available, characterCode,
+                isEnemy, numSpecialActionCharges, specialActionString);
     }
 }

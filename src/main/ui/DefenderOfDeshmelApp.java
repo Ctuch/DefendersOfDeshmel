@@ -1,6 +1,9 @@
 package ui;
 
+import com.google.gson.Gson;
 import model.*;
+import persistence.Reader;
+import persistence.Writer;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -12,7 +15,7 @@ import java.util.Scanner;
 //Specifically references class TellerApp.java
 public class DefenderOfDeshmelApp {
 
-    //TODO: create a main menu that you return to if lose/can start game from (easy, med, hard) determines enemy #
+    private static final String GAME_SAVE_FILE = "./data/savedGame.txt";
     private Board board;
     private ArrayList<Enemy> enemies;
     private ArrayList<Person> players;
@@ -21,6 +24,9 @@ public class DefenderOfDeshmelApp {
     private boolean gameOver;
     private boolean playerTurn;
     private Random random;
+    private String rules;
+    private SquareWallConfigs squareWallConfigs;
+    private BoardDisplay boardDisplay;
 
     // EFFECTS: runs the teller application
     public DefenderOfDeshmelApp() {
@@ -30,33 +36,139 @@ public class DefenderOfDeshmelApp {
     // MODIFIES: this
     // EFFECTS: processes user input
     private void runGame() {
-        boolean keepGoing = true;
-        String command;
+        boolean startGame;
 
         init();
-
-        while (keepGoing) {
-            if (gameOver) {
-                break;
-            }
-            if (playerTurn) {
-
-                displayMenu();
-                command = input.next();
-                command = command.toLowerCase();
-
-                if (command.equals("q")) {
-                    keepGoing = false;
-                } else {
-                    processCommand(command);
+        while (true) {
+            startGame = runMainMenu();
+            while (startGame) {
+                if (gameOver) {
+                    gameOver = false;
+                    break;
                 }
-            } else {
-                enemyTurn(enemies.get(random.nextInt(enemies.size())));
-                displayBoard();
+                if (playerTurn) {
+                    boolean toContinue = takePlayerTurn();
+                    if (!toContinue) {
+                        break;
+                    }
+                } else {
+                    enemyTurn(enemies.get(random.nextInt(enemies.size())));
+                    boardDisplay.displayBoard();
+                }
             }
+            resetBoard(board);
         }
+    }
 
-        System.out.println("\nThank you for playing!");
+    private boolean takePlayerTurn() {
+        displayMenu();
+        String command = input.next();
+        command = command.toLowerCase();
+
+        if (command.equals("q")) {
+            saveGame();
+            return false;
+        } else {
+            processCommand(command);
+        }
+        return true;
+    }
+
+    private void resetBoard(Board board) {
+        board.getBoard().clear();
+        board.fillBoardWithNull();
+        board.setWallConfig(squareWallConfigs.getWalls());
+    }
+
+    private boolean runMainMenu() {
+        displayMainMenu();
+        String command = input.next();
+        command = command.toLowerCase();
+        return processMainMenuCommand(command);
+    }
+
+    private boolean processMainMenuCommand(String command) {
+        if (command.equals("e")) {
+            addEnemies(3);
+        } else if (command.equals("m")) {
+            addEnemies(6);
+        } else if (command.equals("h")) {
+            addEnemies(10);
+        } else if (command.equals("l")) {
+            return loadGame();
+        } else if (command.equals("q")) {
+            System.out.println("\nThank you for playing!");
+            System.exit(0);
+            return false;
+        } else {
+            System.out.println("Selection not valid");
+            return false;
+        }
+        addPlayers();
+        playerTurn = true;
+        return true;
+    }
+
+    private boolean loadGame() {
+        Reader reader = new Reader();
+        try {
+            reader.readFile(new File(GAME_SAVE_FILE));
+            board.setBoard(reader.getBoardState());
+            enemies = reader.getEnemies();
+            players = reader.getPlayers();
+            System.out.println("Game Loaded");
+            boardDisplay.displayBoard();
+            return true;
+        } catch (IOException e) {
+            System.out.println("I'm sorry, your game cannot be loaded. Please start a new game");
+            return false;
+        } catch (NullPointerException e) {
+            System.out.println("There is no game to load. Please start a new game");
+            return false;
+        }
+    }
+
+    private void saveGame() {
+        try {
+            Writer writer = new Writer(new File(GAME_SAVE_FILE));
+            writer.write(board, players, enemies);
+        } catch (IOException e) {
+            System.out.println("uh oh, your game could not be saved.");
+        }
+    }
+
+    private void addEnemies(int i) {
+        enemies.clear();
+        if (i >= 3) {
+            enemies.add(new Enemy("Foot Soldier"));
+            enemies.add(new Enemy("Ranged Shooter"));
+            //TESTING
+            saveGame();
+            //add a third enemy
+            //TODO: design 8 more enemies
+        }
+        if (i >= 6) {
+            //add 3 more enemies
+        }
+        if (i == 10) {
+            //add 4 more enemies
+        }
+    }
+
+    private void addPlayers() {
+        players.clear();
+        players.add(new Person("Fire Sorceress"));
+        players.add(new Person("Ice Sorcerer"));
+    }
+
+    private void displayMainMenu() {
+        System.out.println("Welcome to Defenders of Deshmel");
+        System.out.println("\nSelect from:");
+        System.out.println("\te -> new easy game");
+        System.out.println("\tm -> new medium game");
+        System.out.println("\th -> new hard game");
+        System.out.println("\tl -> load previous game");
+        System.out.println("\tq -> quit");
     }
 
     // MODIFIES: this
@@ -64,23 +176,23 @@ public class DefenderOfDeshmelApp {
     private void processCommand(String command) {
         if (command.equals("a")) {
             displayRemainingCharacters();
-            displayBoard();
+            boardDisplay.displayBoard();
             playerTurn = false;
         } else if (command.equals("m")) {
             moveCharacter();
-            displayBoard();
+            boardDisplay.displayBoard();
             playerTurn = false;
         } else if (command.equals("x")) {
             attackAction();
             checkGameOver();
-            displayBoard();
+            boardDisplay.displayBoard();
             playerTurn = false;
         } else if (command.equals("s")) {
             if (specialAction()) {
                 playerTurn = false;
             }
             checkGameOver();
-            displayBoard();
+            boardDisplay.displayBoard();
         } else {
             displays(command);
         }
@@ -104,28 +216,19 @@ public class DefenderOfDeshmelApp {
         gameOver = false;
         playerTurn = true;
         board = new Board();
+        boardDisplay = new BoardDisplay(board);
         random = new Random();
-
+        squareWallConfigs = new SquareWallConfigs();
         enemies = new ArrayList<>();
         // need to get a real list together of enemies and player characters, add here
-        enemies.add(new Enemy("Foot Soldier"));
-        enemies.add(new Enemy("Ranged Shooter"));
 
         players = new ArrayList<>();
-        players.add(new Person("Fire Sorceress"));
-        players.add(new Person("Ice Sorcerer"));
 
         input = new Scanner(System.in);
 
-        File rules = new File("data/rules.txt");
-        try {
-            br = new BufferedReader(new FileReader(rules));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            System.out.println("I'm sorry I guess you'll have to play without rules");
-        }
+        readInHelp();
 
-        displayBoard();
+        boardDisplay.displayBoard();
     }
 
     // EFFECTS: displays menu of options to user
@@ -137,40 +240,10 @@ public class DefenderOfDeshmelApp {
         System.out.println("\ts -> special action");
         System.out.println("\th -> help menu");
         System.out.println("\td -> display character stats");
-        System.out.println("\tq -> quit");
+        System.out.println("\tq -> save and quit");
     }
 
-    //EFFECTS: displays current state of board to user
-    private void displayBoard() {
-        String bottomBorder = " ";
 
-        for (int i = 0; i < 5; i++) {
-            StringBuilder topBorder = new StringBuilder(" ");
-            StringBuilder textRow = new StringBuilder();
-            StringBuilder noTextRow = new StringBuilder();
-            SquareWall wall = null;
-
-            for (int j = 0; j < 5; j++) {
-                wall = board.getWallConfig().get(5 * i + j);
-                Person person = board.getBoard().get(5 * i + j);
-
-                topBorder.append(createUpperBorder(wall));
-
-                if (i == 4) {
-                    bottomBorder += createLowerBorder(wall);
-                }
-                String[] middleRows = createLeftBorder(wall, person);
-                textRow.append(middleRows[0]);
-                noTextRow.append(middleRows[1]);
-            }
-            String[] finalCharacters = createRightMostCharacter(wall);
-            textRow.append(finalCharacters[0]);
-            noTextRow.append(finalCharacters[1]);
-
-            System.out.println(topBorder + "\n" + textRow + "\n" + noTextRow);
-        }
-        System.out.println(bottomBorder);
-    }
 
     //REQUIRES: enemy is not null
     //MODIFIES: this
@@ -196,61 +269,6 @@ public class DefenderOfDeshmelApp {
             enemyMoveInDirection(action, enemy);
         }
         playerTurn = true;
-    }
-
-    //EFFECTS: adds the final character of each row depending on whether there is a wall there or not
-    private String[] createRightMostCharacter(SquareWall wall) {
-        String textRow;
-        String noTextRow;
-        if (wall.isRightWall()) {
-            textRow = "#";
-            noTextRow = "#";
-        } else {
-            textRow = "|";
-            noTextRow = "|";
-        }
-        return new String[] {textRow, noTextRow};
-    }
-
-    //EFFECTS: left side of each square and the character codes depending on whether there is a wall there or not
-    //         and if the square is full
-    private String[] createLeftBorder(SquareWall wall, Person person) {
-        String textRow = "";
-        String noTextRow = "";
-        if (wall.isLeftWall()) {
-            if (person != null) {
-                textRow += "#  " + person.getCharacterCode() + "  ";
-            } else {
-                textRow += "#      ";
-            }
-            noTextRow += "#      ";
-        } else {
-            if (person != null) {
-                textRow += "|  " + person.getCharacterCode() + "  ";
-            } else {
-                textRow += "|      ";
-            }
-            noTextRow += "|      ";
-        }
-        return new String[] {textRow, noTextRow};
-    }
-
-    //EFFECTS: adds the final border row depending on whether there is a wall there or not
-    private String createLowerBorder(SquareWall wall) {
-        if (wall.isLowerWall()) {
-            return  "###### ";
-        } else {
-            return  "------ ";
-        }
-    }
-
-    //EFFECTS: adds the border row above the square depending on whether there is a wall there or not
-    private String createUpperBorder(SquareWall wall) {
-        if (wall.isUpperWall()) {
-            return  "###### ";
-        } else {
-            return  "------ ";
-        }
     }
 
     //EFFECTS: prompts user to select a character code and produces the associated character or null if doesn't exist/
@@ -283,8 +301,16 @@ public class DefenderOfDeshmelApp {
         }
     }
 
-    //EFFECTS: displays rules from the rules.txt file
-    private void displayHelp() {
+    //EFFECTS: reads in rules from the rules.txt file
+    private void readInHelp() {
+        File rulesFile = new File("data/rules.txt");
+        try {
+            br = new BufferedReader(new FileReader(rulesFile));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("I'm sorry I guess you'll have to play without rules");
+        }
+
         String readingRules = "";
         while (true) {
             try {
@@ -296,9 +322,15 @@ public class DefenderOfDeshmelApp {
             if (readingRules == null) {
                 break;
             }
-            System.out.println(readingRules);
+            rules += readingRules + "\n";
         }
     }
+
+    //EFFECTS: displays rules from the rules.txt file
+    private void displayHelp() {
+        System.out.println(rules);
+    }
+
 
     //MODIFIES: board
     //EFFECTS: specifies and attacker and a defender, and has the defender take damage if in range
@@ -400,12 +432,11 @@ public class DefenderOfDeshmelApp {
     //MODIFIES: board
     //EFFECTS: prompts character for a user and direction, and moves that character if both are valid inputs
     private void moveCharacter() {
-        String command;
         boolean successful = false;
 
         while (!successful) {
             System.out.println("Enter the character code for the player you wish to move: ");
-            command = input.next();
+            String command = input.next();
             command = command.toUpperCase();
 
             Person person = board.findPersonByCharacterCode(command);
@@ -414,8 +445,12 @@ public class DefenderOfDeshmelApp {
             } else {
                 System.out.println("Enter the number of the direction to move, 0 = Left, 1 = Right, 2 = Up, 3 = Down:");
                 command = input.next();
-                int direction = Integer.parseInt(command);
-
+                int direction;
+                try {
+                    direction = Integer.parseInt(command);
+                } catch (NumberFormatException e) {
+                    direction = -1;
+                }
                 successful = board.moveCharacter(direction, person);
                 if (!successful) {
                     System.out.println("That character is unable to move in that direction.");
@@ -461,34 +496,44 @@ public class DefenderOfDeshmelApp {
         }
     }
 
-    //REQUIRES: number square user inputs must be between 1 - 25 inclusive
     //MODIFIES: board
     //EFFECTS: places character onto board if available and square is available, otherwise prompts for new character
     //         or square until a proper one is given
     private void addCharacter() {
         String command;
         while (true) {
-            System.out.println("Enter the character code you wish to add to the board: ");
-            command = input.next();
-            command = command.toUpperCase();
-
-            Person person = null;
-            for (Person player : players) {
-                if (player.getCharacterCode().equals(command) && player.isAvailable()) {
-                    person = player;
-                }
-            }
+            Person person = getPersonCodeFromUser();
             if (person == null) {
                 System.out.println("Please enter an available person code");
             } else {
                 System.out.println("Enter the number of the square you want to add to (1-25 by row): ");
                 command = input.next();
-                int squareNum = Integer.parseInt(command);
-                if (board.addCharacter(squareNum - 1, person)) {
-                    break;
+                try {
+                    int squareNum = Integer.parseInt(command);
+                    if (board.addCharacter(squareNum - 1, person)) {
+                        break;
+                    }
+                    System.out.println("The square you want to add to is full, please try again");
+                } catch (IndexOutOfBoundsException e) {
+                    System.out.println("Please enter a square number that is on the board");
+                } catch (NumberFormatException e) {
+                    System.out.println("please enter a number between 1 - 25 inclusive");
                 }
-                System.out.println("The square you want to add to is full, please try again");
             }
         }
+    }
+
+    private Person getPersonCodeFromUser() {
+        System.out.println("Enter the character code you wish to add to the board: ");
+        String command = input.next();
+        command = command.toUpperCase();
+
+        Person person = null;
+        for (Person player : players) {
+            if (player.getCharacterCode().equals(command) && player.isAvailable()) {
+                person = player;
+            }
+        }
+        return person;
     }
 }

@@ -32,7 +32,7 @@ public class Board {
 
     //MODIFIES: this
     //EFFECTS: fills every board index with a null value
-    private void fillBoardWithNull() {
+    public void fillBoardWithNull() {
         for (int i = 0; i < 25; i++) {
             board.add(null);
         }
@@ -174,6 +174,10 @@ public class Board {
 
     public ArrayList<Person> getBoard() {
         return board;
+    }
+
+    public void setBoard(ArrayList<Person> board) {
+        this.board = board;
     }
 
     public void setWallConfig(ArrayList<SquareWall> wallConfig) {

@@ -33,3 +33,5 @@ As a user I want to be able to:
 - attack an enemy with my character's weapon
 - display the help and stats views
 - remove a character when their health drops below 0
+- be able to save their game with all character location and stats preserved
+- be able to reload their previous game and start playing where they left off

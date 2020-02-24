@@ -188,4 +188,25 @@ public class PersonTest {
         assertEquals("Decrease all enemy attack power by 1", ice.getSpecialActionString());
         assertEquals("", soldier.getSpecialActionString());
     }
+
+    @Test
+    public void testEquals() {
+        Person ice2 = new Person("Ice Sorcerer");
+        Person fire2 = new Person("Fire Sorceress");
+        assertEquals(ice, ice2);
+        assertEquals(fire, fire2);
+        assertEquals(ice, ice);
+        assertNotEquals(ice, board);
+        assertNotEquals(ice, fire);
+
+        ice2.takeDamage(3);
+        assertNotEquals(ice, ice2);
+    }
+
+    @Test
+    public void testHashCode() {
+        Person ice2 = new Person("Ice Sorcerer");
+        assertEquals(ice2.hashCode(), ice.hashCode());
+        assertNotEquals(ice.hashCode(), fire.hashCode());
+    }
 }

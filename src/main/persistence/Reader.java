@@ -17,6 +17,7 @@ public class Reader {
     private ArrayList<Person> players;
     private ArrayList<Enemy> enemies;
 
+    //TODO: add wall config
     public Reader() {
         boardState = new ArrayList<>();
         players = new ArrayList<>();

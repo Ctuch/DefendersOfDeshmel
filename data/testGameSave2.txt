@@ -1,3 +1,4 @@
 [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,{"name":"Ranged Shooter","weapon":{"name":"Cross Bow","range":3},"attackPower":4,"health":9,"available":false,"characterCode":"RS","isEnemy":true,"numSpecialActionCharges":0,"specialActionString":""},null,null,null,null,null,null,null]
 [{"name":"Ranged Shooter","weapon":{"name":"Cross Bow","range":3},"attackPower":4,"health":9,"available":false,"characterCode":"RS","isEnemy":true,"numSpecialActionCharges":0,"specialActionString":""},{"name":"Foot Soldier","weapon":{"name":"Great Sword","range":1},"attackPower":6,"health":12,"available":true,"characterCode":"FS","isEnemy":true,"numSpecialActionCharges":0,"specialActionString":""}]
 [{"name":"Ice Sorcerer","weapon":{"name":"Freeze Ray","range":3},"attackPower":5,"health":8,"available":true,"characterCode":"IC","isEnemy":false,"numSpecialActionCharges":2,"specialActionString":"Decrease all enemy attack power by 1"}]
+0

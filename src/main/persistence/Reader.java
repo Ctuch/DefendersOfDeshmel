@@ -1,29 +1,37 @@
 package persistence;
 
 import com.google.gson.Gson;
-import model.Board;
 import model.Enemy;
 import model.Person;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EmptyStackException;
 
+// A reader that reads JSON objects in from a game save text file
 public class Reader {
 
     private BufferedReader bufferedReader;
     private ArrayList<Person> boardState;
     private ArrayList<Person> players;
     private ArrayList<Enemy> enemies;
+    private int wallConfigNumber;
 
-    //TODO: add wall config
+    //EFFECTS: initializes an List each for storing the boardstate, players, and enemies
     public Reader() {
         boardState = new ArrayList<>();
         players = new ArrayList<>();
         enemies = new ArrayList<>();
     }
 
+    //REQUIRES: file must be 4 lines long, in given order: boardstate, enemies, players, wallConfigNumber
+    //MODIFIES: this
+    //EFFECTS: reads in the above mentioned members from file, and points references to identical objects
+    //         to the same object
+    //         throws IOException if exception is raised reading from file
     public void readFile(File file) throws IOException {
         bufferedReader = new BufferedReader(new FileReader(file));
         Gson gson = new Gson();
@@ -37,9 +45,15 @@ public class Reader {
         Person[] playerArray = gson.fromJson(bufferedReader.readLine(), Person[].class);
         players.addAll(Arrays.asList(playerArray));
 
+        wallConfigNumber = gson.fromJson(bufferedReader.readLine(), Integer.TYPE);
         combineObjects();
     }
 
+    //MODIFIES: this
+    //EFFECTS: cross references the enemies and boardstate lists to points references to identical objects to the
+    //         same object
+    //         cross references the players and boardstate lists and points references to identical objects to the same
+    //         object
     private void combineObjects() {
         for (int i = 0; i < enemies.size(); i++) {
             int index = boardState.indexOf(enemies.get(i));
@@ -74,4 +88,7 @@ public class Reader {
         return players;
     }
 
+    public int getWallConfigNumber() {
+        return wallConfigNumber;
+    }
 }

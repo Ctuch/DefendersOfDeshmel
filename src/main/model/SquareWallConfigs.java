@@ -8,6 +8,7 @@ import java.util.Random;
 public class SquareWallConfigs {
 
     private ArrayList<SquareWall> walls;
+    private static int wallSetNum;
 
     //EFFECTS: generates a random wall set
     public SquareWallConfigs() {
@@ -16,7 +17,8 @@ public class SquareWallConfigs {
     }
 
     //EFFECTS: randomly selects on of the wall configs
-    public ArrayList<SquareWall> generateRandomWallSet(int i) {
+    public static ArrayList<SquareWall> generateRandomWallSet(int i) {
+        wallSetNum = i;
         switch (i) {
             case 1:
                 return generateWallSetOne();
@@ -63,5 +65,9 @@ public class SquareWallConfigs {
 
     public ArrayList<SquareWall> getWalls() {
         return walls;
+    }
+
+    public static int getWallSetNum() {
+        return wallSetNum;
     }
 }

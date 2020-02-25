@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PersonTest {
 
     Person ice;
+    Person ice2;
     Person fire;
     Enemy soldier;
     Enemy archer;
@@ -16,6 +17,7 @@ public class PersonTest {
     @BeforeEach
     public void runBefore() {
         ice = new Person("Ice Sorcerer");
+        ice2 = new Person("Ice Sorcerer");
         fire = new Person("Fire Sorceress");
         soldier = new Enemy("Foot Soldier");
         archer = new Enemy("Ranged Shooter");
@@ -191,15 +193,65 @@ public class PersonTest {
 
     @Test
     public void testEquals() {
-        Person ice2 = new Person("Ice Sorcerer");
         Person fire2 = new Person("Fire Sorceress");
         assertEquals(ice, ice2);
         assertEquals(fire, fire2);
         assertEquals(ice, ice);
         assertNotEquals(ice, board);
         assertNotEquals(ice, fire);
+    }
 
-        ice2.takeDamage(3);
+    @Test
+    public void testEqualsDifferentAttackPower() {
+        ice.setAttackPower(10);
+        assertNotEquals(ice, ice2);
+    }
+
+    @Test
+    public void testEqualsDifferentHealth() {
+        ice.gainHealth(15);
+        assertNotEquals(ice, ice2);
+    }
+
+    @Test
+    public void testEqualsDifferentAvailability() {
+        ice.setAvailable(false);
+        assertNotEquals(ice, ice2);
+    }
+
+    @Test
+    public void testEqualsDifferentEnemyStatus() {
+        ice.isEnemy = true;
+        assertNotEquals(ice, ice2);
+    }
+
+    @Test
+    public void testEqualsDifferentNumSpecialCharges() {
+        ice.setNumSpecialActionCharges(30);
+        assertNotEquals(ice, ice2);
+    }
+
+    @Test
+    public void testEqualsDifferentName() {
+        ice.setName("Ice Soldier");
+        assertNotEquals(ice, ice2);
+    }
+
+    @Test
+    public void testEqualsDifferentNumWeapon() {
+        ice.setWeapon(new Weapon("Bayonet", 1));
+        assertNotEquals(ice, ice2);
+    }
+
+    @Test
+    public void testEqualsDifferentCharacterCode() {
+        ice.setCharacterCode("ID");
+        assertNotEquals(ice, ice2);
+    }
+
+    @Test
+    public void testEqualsDifferentSpecialActionString() {
+        ice.setSpecialActionString("Implodes killing all enemies on adjacent squares");
         assertNotEquals(ice, ice2);
     }
 

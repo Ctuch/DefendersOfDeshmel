@@ -1,6 +1,6 @@
 package ui;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import model.*;
 import persistence.Reader;
 import persistence.Writer;
@@ -14,7 +14,7 @@ import java.util.Scanner;
 //Based off of TellerApp provided to CPSC 210. URL: https://github.students.cs.ubc.ca/CPSC210/TellerApp
 //Specifically references class TellerApp.java
 public class DefenderOfDeshmelApp {
-
+    //TODO: enemy takes turn when trying to add a character when you have none left
     private static final String GAME_SAVE_FILE = "./data/savedGame.txt";
     private Board board;
     private ArrayList<Enemy> enemies;
@@ -60,6 +60,7 @@ public class DefenderOfDeshmelApp {
         }
     }
 
+    //EFFECTS: returns false if the player chooses not to take their turn and quit, true otherwise, processes command
     private boolean takePlayerTurn() {
         displayMenu();
         String command = input.next();
@@ -74,12 +75,18 @@ public class DefenderOfDeshmelApp {
         return true;
     }
 
+    //MODIFIES: board. savedGame
+    //EFFECTS: clears all characters off the board, fills each square with null, and sets a new wall config,
+    //         removes save from file
     private void resetBoard(Board board) {
         board.getBoard().clear();
         board.fillBoardWithNull();
         board.setWallConfig(squareWallConfigs.getWalls());
+        clearSave();
     }
 
+
+    //EFFECTS: displays the main menu and processes a command given by the user
     private boolean runMainMenu() {
         displayMainMenu();
         String command = input.next();
@@ -87,6 +94,8 @@ public class DefenderOfDeshmelApp {
         return processMainMenuCommand(command);
     }
 
+    //MODIFIES: this
+    //EFFECTS: processes user main menu command
     private boolean processMainMenuCommand(String command) {
         if (command.equals("e")) {
             addEnemies(3);
@@ -109,6 +118,9 @@ public class DefenderOfDeshmelApp {
         return true;
     }
 
+    //MODIFIES: this
+    //EFFECTS: loads game from the GAME_SAVE_FILE. returns true if the game is loaded, false if the user needs to start
+    //         a new one
     private boolean loadGame() {
         Reader reader = new Reader();
         try {
@@ -116,34 +128,48 @@ public class DefenderOfDeshmelApp {
             board.setBoard(reader.getBoardState());
             enemies = reader.getEnemies();
             players = reader.getPlayers();
+            int wallConfigNum = reader.getWallConfigNumber();
+            board.setWallConfig(SquareWallConfigs.generateRandomWallSet(wallConfigNum));
             System.out.println("Game Loaded");
             boardDisplay.displayBoard();
             return true;
         } catch (IOException e) {
             System.out.println("I'm sorry, your game cannot be loaded. Please start a new game");
             return false;
-        } catch (NullPointerException e) {
+        } catch (NullPointerException | JsonSyntaxException e) {
             System.out.println("There is no game to load. Please start a new game");
             return false;
         }
     }
 
+    //EFFECTS: saves the game to the GAME_SAVE_FILE if no exception thrown
     private void saveGame() {
         try {
             Writer writer = new Writer(new File(GAME_SAVE_FILE));
-            writer.write(board, players, enemies);
+            writer.write(board, players, enemies, SquareWallConfigs.getWallSetNum());
         } catch (IOException e) {
             System.out.println("uh oh, your game could not be saved.");
         }
     }
 
+    //EFFECTS: clears the current save from GAME_SAVE_FILE if no exception thrown
+    private void clearSave() {
+        try {
+            Writer writer = new Writer(new File(GAME_SAVE_FILE));
+            writer.clearSave();
+        } catch (IOException e) {
+            System.out.println("Something went wrong cleaning up old data. Keep on playing");
+        }
+    }
+
+    //REQUIRES: i = 3, 6, or 10
+    //MODIFIES: this
+    //EFFECTS: clears out all enemies, and adds i new enemies to enemies
     private void addEnemies(int i) {
         enemies.clear();
         if (i >= 3) {
             enemies.add(new Enemy("Foot Soldier"));
             enemies.add(new Enemy("Ranged Shooter"));
-            //TESTING
-            saveGame();
             //add a third enemy
             //TODO: design 8 more enemies
         }
@@ -155,12 +181,15 @@ public class DefenderOfDeshmelApp {
         }
     }
 
+    //MODIFIES: this
+    //EFFECTS: clears out players, and adds the persons to players (resets the list to default state)
     private void addPlayers() {
         players.clear();
         players.add(new Person("Fire Sorceress"));
         players.add(new Person("Ice Sorcerer"));
     }
 
+    //EFFECTS: displays the main menu options to the user
     private void displayMainMenu() {
         System.out.println("Welcome to Defenders of Deshmel");
         System.out.println("\nSelect from:");
@@ -361,6 +390,9 @@ public class DefenderOfDeshmelApp {
         attack(player, enemy);
     }
 
+    //MODIFIES: this
+    //EFFECTS: allows the user to select a character and triggers their special action if they have any remaining,
+    //         removes any enemies killed by the special action, returns true if action used, false otherwise
     private boolean specialAction() {
         String command;
 
@@ -523,6 +555,8 @@ public class DefenderOfDeshmelApp {
         }
     }
 
+    //EFFECTS: returns the Person associated with the code or null if no person with that code
+    //TODO: throw exception instead of returning null?
     private Person getPersonCodeFromUser() {
         System.out.println("Enter the character code you wish to add to the board: ");
         String command = input.next();

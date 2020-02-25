@@ -20,6 +20,7 @@ public class WriterTest {
     private Writer writer;
     private Reader reader;
     private Board board;
+    private int wallSetNum;
     private ArrayList<Enemy> enemies;
     private ArrayList<Person> players;
 
@@ -43,17 +44,19 @@ public class WriterTest {
         board.addCharacter(23, players.get(0));
         board.addCharacter(1, players.get(1));
 
+        wallSetNum = 1;
     }
 
     @Test
     public void testWritePlayersAndBoard() {
         try {
-            writer.write(board, players, enemies);
+            writer.write(board, players, enemies, wallSetNum);
 
             reader.readFile(new File(TEST_FILE));
             ArrayList<Person> boardState = reader.getBoardState();
             ArrayList<Enemy> enemyList = reader.getEnemies();
             ArrayList<Person> playerList = reader.getPlayers();
+            int wallSet = reader.getWallConfigNumber();
 
             assertEquals(boardState.get(7), enemies.get(0));
             assertEquals(boardState.get(12), enemies.get(1));
@@ -64,6 +67,8 @@ public class WriterTest {
             assertEquals(enemyList.get(1), enemies.get(1));
             assertEquals(playerList.get(0), players.get(0));
             assertEquals(playerList.get(1), players.get(1));
+
+            assertEquals(wallSetNum, wallSet);
 
         } catch (IOException e) {
             fail();

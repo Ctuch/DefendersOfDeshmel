@@ -34,11 +34,14 @@ public class WeaponTest {
         Weapon weapon2 = new Weapon("Falchion", 3);
         Weapon weapon3 = new Weapon("Falchion", 1);
         Weapon weapon4 = null;
+        Weapon weapon5 = new Weapon("Glave", 3);
         assertEquals(weapon2, weapon);
         assertNotEquals(weapon, weapon3);
         assertEquals(weapon, weapon);
         assertNotEquals(weapon, weapon4);
         assertNotEquals(weapon, "String");
+        assertNotEquals(weapon2, weapon5);
+
     }
 
     @Test

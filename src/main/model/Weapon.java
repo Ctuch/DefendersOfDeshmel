@@ -29,6 +29,7 @@ public class Weapon {
         return "Name: " + name + ", Range: " + range;
     }
 
+    //EFFECTS: overrides default equals method for Weapon objects, returns true if this and o are identical by fields
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -38,10 +39,10 @@ public class Weapon {
             return false;
         }
         Weapon weapon = (Weapon) o;
-        return range == weapon.range
-                && name.equals(weapon.name);
+        return range == weapon.range && name.equals(weapon.name);
     }
 
+    //EFFECTS: overrides default hashcode method for Weapon objects, produces hashcode for this
     @Override
     public int hashCode() {
         return Objects.hash(name, range);

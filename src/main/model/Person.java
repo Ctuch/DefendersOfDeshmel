@@ -8,6 +8,7 @@ already in game or dead). A person can be an enemy or a player character, and oc
 person's move speed is one (for now), and can take move or attack actions on their turn against rivals
 */
 public class Person {
+
     private String name;
     private Weapon weapon;
 
@@ -200,6 +201,21 @@ public class Person {
         this.attackPower = attackPower;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setWeapon(Weapon weapon) {
+        this.weapon = weapon;
+    }
+
+    public void setCharacterCode(String characterCode) {
+        this.characterCode = characterCode;
+    }
+
+    public void setSpecialActionString(String specialActionString) {
+        this.specialActionString = specialActionString;
+    }
 
     //EFFECTS: produces description of person
     @Override
@@ -227,6 +243,7 @@ public class Person {
         return ts;
     }
 
+    //EFFECTS: overrides default equals method for Person objects, returns true if this and o are identical by fields
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -247,6 +264,7 @@ public class Person {
                 && specialActionString.equals(person.specialActionString);
     }
 
+    //EFFECTS: overrides default hashcode method for Person objects, produces hashcode for this
     @Override
     public int hashCode() {
         return Objects.hash(name, weapon, attackPower, health, available, characterCode,

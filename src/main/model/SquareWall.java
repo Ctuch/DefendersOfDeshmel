@@ -1,7 +1,5 @@
 package model;
 
-import java.util.ArrayList;
-
 //represents a single square with where each wall is represented
 public class SquareWall {
 

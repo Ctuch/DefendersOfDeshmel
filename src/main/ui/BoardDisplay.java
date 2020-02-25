@@ -4,6 +4,7 @@ import model.Board;
 import model.Person;
 import model.SquareWall;
 
+//UI class for tasks involving displaying the board to the user
 public class BoardDisplay {
     private Board board;
 

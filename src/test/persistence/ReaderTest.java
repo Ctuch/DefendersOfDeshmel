@@ -86,6 +86,8 @@ public class ReaderTest {
             iceSorcerer.setNumSpecialActionCharges(0);
             assertEquals(iceSorcerer, players.get(1));
 
+            int wallConfig = reader.getWallConfigNumber();
+            assertEquals(1, wallConfig);
         } catch (IOException e) {
             fail();
         }
@@ -110,6 +112,8 @@ public class ReaderTest {
             ArrayList<Person> players = reader.getPlayers();
             assertEquals(iceSorcererExpected, players.get(0));
 
+            int wallConfig = reader.getWallConfigNumber();
+            assertEquals(0, wallConfig);
         } catch (IOException e) {
             fail();
         }

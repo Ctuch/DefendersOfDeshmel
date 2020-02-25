@@ -1,5 +1,6 @@
 package persistence;
 
+import com.google.gson.JsonSyntaxException;
 import model.Board;
 import model.Enemy;
 import model.Person;
@@ -74,5 +75,21 @@ public class WriterTest {
             fail();
         }
 
+
+    }
+
+    @Test
+    public void testClearSave() {
+        try {
+            writer.write(board, players, enemies, wallSetNum);
+            Writer writer2 = new Writer(new File(TEST_FILE));
+            writer2.clearSave();
+            reader.readFile(new File(TEST_FILE));
+            fail();
+        } catch (IOException e) {
+            fail();
+        } catch (JsonSyntaxException e){
+            //good
+        }
     }
 }

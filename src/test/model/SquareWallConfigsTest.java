@@ -46,4 +46,11 @@ public class SquareWallConfigsTest {
     public void testGetWalls() {
         assertEquals(sqCon.getWalls().size(), 25);
     }
+
+    @Test
+    public void testGetWallSetNum() {
+        int wallNum = SquareWallConfigs.getWallSetNum();
+        boolean inRange = wallNum >= 0 && wallNum <= 10;
+        assertTrue(inRange);
+    }
 }

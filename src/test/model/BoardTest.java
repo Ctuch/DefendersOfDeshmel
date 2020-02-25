@@ -3,6 +3,8 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
@@ -285,5 +287,36 @@ class BoardTest {
     @Test
     public void testGetWallConfig() {
         assertEquals(board.getWallConfig().size(), 25);
+    }
+
+    @Test
+    public void testSetWallConfig() {
+        board.setWallConfig(SquareWallConfigs.generateWallSetOne());
+        assertFalse(board.getWallConfig().get(7).isLeftWall());
+        assertTrue(board.getWallConfig().get(7).isRightWall());
+        assertFalse(board.getWallConfig().get(7).isUpperWall());
+        assertFalse(board.getWallConfig().get(7).isLowerWall());
+        assertTrue(board.getWallConfig().get(16).isLeftWall());
+
+        board.setWallConfig(SquareWallConfigs.generateWallSetEmpty());
+        for (SquareWall wall : board.getWallConfig()) {
+            assertFalse(wall.isLeftWall());
+            assertFalse(wall.isRightWall());
+            assertFalse(wall.isUpperWall());
+            assertFalse(wall.isLowerWall());
+        }
+    }
+
+    @Test
+    public void testSetBoard() {
+        ArrayList<Person> board2 = new ArrayList<>();
+        for (int i = 0; i < 25; i++) {
+            board2.add(null);
+        }
+        board2.set(3, new Person("Foot Soldier"));
+        board2.set(15, new Person ("Fire Sorceress"));
+        board.setBoard(board2);
+        assertEquals(board2.get(3), new Person ("Foot Soldier"));
+        assertEquals(board2.get(15), new Person ("Fire Sorceress"));
     }
 }

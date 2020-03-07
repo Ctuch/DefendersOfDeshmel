@@ -43,6 +43,7 @@ public class DefenderOfDeshmelApp {
             startGame = runMainMenu();
             while (startGame) {
                 if (gameOver) {
+                    resetBoard(board);
                     gameOver = false;
                     break;
                 }
@@ -56,7 +57,6 @@ public class DefenderOfDeshmelApp {
                     boardDisplay.displayBoard();
                 }
             }
-            resetBoard(board);
         }
     }
 

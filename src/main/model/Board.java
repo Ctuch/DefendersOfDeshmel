@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 //represents a 5v5 grid with filled or empty squares, some separated by walls
 //a filled square will display a 2 character code indicating what occupies that space
@@ -20,12 +21,13 @@ public class Board {
 
     private ArrayList<Person> board;
     private ArrayList<SquareWall> wallConfig;
+    private SquareWallConfigs squareWallConfigs;
 
     //EFFECTS: An empty board grid is generated and a wall configuration is created
     public Board() {
         board = new ArrayList<>(25);
         fillBoardWithNull();
-        SquareWallConfigs squareWallConfigs = new SquareWallConfigs();
+        squareWallConfigs = new SquareWallConfigs();
         wallConfig = squareWallConfigs.getWalls();
 
     }
@@ -166,6 +168,42 @@ public class Board {
             }
         }
         return null;
+    }
+
+    //MODIFIES: board. savedGame
+    //EFFECTS: clears all characters off the board, fills each square with null, and sets a new wall config,
+    //         removes save from file
+    public void resetBoard() {
+        board.clear();
+        fillBoardWithNull();
+        setWallConfig(squareWallConfigs.getWalls());
+    }
+
+    //REQUIRES: board is not full
+    //MODIFIES: this
+    //EFFECTS: selects a random square and adds enemy to that square
+    public void findEmptySquare(Enemy enemy) {
+        Random random = new Random();
+        boolean successful;
+        while (true) {
+            successful = addCharacter(random.nextInt(25), enemy);
+            if (successful) {
+                break;
+            }
+        }
+    }
+
+    //REQUIRES: defender is dead
+    //MODIFIES: enemies or players, board
+    //EFFECTS: removes dead defender from board
+    public void removeDeadDefender(Person defender, ArrayList<Enemy> enemies, ArrayList<Person> players) {
+        int square = board.indexOf(defender);
+        board.set(square, null);
+        if (enemies.contains(defender)) {
+            enemies.remove(defender);
+        } else {
+            players.remove(defender);
+        }
     }
 
     public ArrayList<SquareWall> getWallConfig() {

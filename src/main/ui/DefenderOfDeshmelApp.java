@@ -25,7 +25,6 @@ public class DefenderOfDeshmelApp {
     private boolean playerTurn;
     private Random random;
     private String rules;
-    private SquareWallConfigs squareWallConfigs;
     private BoardDisplay boardDisplay;
 
     // EFFECTS: runs the teller application
@@ -43,7 +42,7 @@ public class DefenderOfDeshmelApp {
             startGame = runMainMenu();
             while (startGame) {
                 if (gameOver) {
-                    resetBoard(board);
+                    resetBoard();
                     gameOver = false;
                     break;
                 }
@@ -78,10 +77,8 @@ public class DefenderOfDeshmelApp {
     //MODIFIES: board. savedGame
     //EFFECTS: clears all characters off the board, fills each square with null, and sets a new wall config,
     //         removes save from file
-    private void resetBoard(Board board) {
-        board.getBoard().clear();
-        board.fillBoardWithNull();
-        board.setWallConfig(squareWallConfigs.getWalls());
+    private void resetBoard() {
+        board.resetBoard();
         clearSave();
     }
 
@@ -98,11 +95,11 @@ public class DefenderOfDeshmelApp {
     //EFFECTS: processes user main menu command
     private boolean processMainMenuCommand(String command) {
         if (command.equals("e")) {
-            addEnemies(3);
+            Enemy.addEnemies(3, enemies);
         } else if (command.equals("m")) {
-            addEnemies(6);
+            Enemy.addEnemies(6, enemies);
         } else if (command.equals("h")) {
-            addEnemies(10);
+            Enemy.addEnemies(10, enemies);
         } else if (command.equals("l")) {
             return loadGame();
         } else if (command.equals("q")) {
@@ -113,7 +110,7 @@ public class DefenderOfDeshmelApp {
             System.out.println("Selection not valid");
             return false;
         }
-        addPlayers();
+        Person.addPlayers(players);
         playerTurn = true;
         return true;
     }
@@ -162,33 +159,6 @@ public class DefenderOfDeshmelApp {
         }
     }
 
-    //REQUIRES: i = 3, 6, or 10
-    //MODIFIES: this
-    //EFFECTS: clears out all enemies, and adds i new enemies to enemies
-    private void addEnemies(int i) {
-        enemies.clear();
-        if (i >= 3) {
-            enemies.add(new Enemy("Foot Soldier"));
-            enemies.add(new Enemy("Ranged Shooter"));
-            //add a third enemy
-            //TODO: design 8 more enemies
-        }
-        if (i >= 6) {
-            //add 3 more enemies
-        }
-        if (i == 10) {
-            //add 4 more enemies
-        }
-    }
-
-    //MODIFIES: this
-    //EFFECTS: clears out players, and adds the persons to players (resets the list to default state)
-    private void addPlayers() {
-        players.clear();
-        players.add(new Person("Fire Sorceress"));
-        players.add(new Person("Ice Sorcerer"));
-    }
-
     //EFFECTS: displays the main menu options to the user
     private void displayMainMenu() {
         System.out.println("Welcome to Defenders of Deshmel");
@@ -232,8 +202,7 @@ public class DefenderOfDeshmelApp {
         if (command.equals("h")) {
             displayHelp();
         } else if (command.equals("d")) {
-            Person p = selectCharacterToDisplay();
-            displayCharacterStats(p);
+            displayCharacterStats();
         } else {
             System.out.println("Selection not valid...");
         }
@@ -247,7 +216,6 @@ public class DefenderOfDeshmelApp {
         board = new Board();
         boardDisplay = new BoardDisplay(board);
         random = new Random();
-        squareWallConfigs = new SquareWallConfigs();
         enemies = new ArrayList<>();
         // need to get a real list together of enemies and player characters, add here
 
@@ -283,14 +251,10 @@ public class DefenderOfDeshmelApp {
     private void enemyTurn(Enemy enemy) {
         Action action = enemy.decideAction(board);
         if (action == Action.ADD) {
-            while (true) {
-                boolean successful = board.addCharacter(random.nextInt(25), enemy);
-                if (successful) {
-                    System.out.println("Enemy " + enemy.getName() + " has been added to the board.");
-                    break;
-                }
-            }
+            board.findEmptySquare(enemy);
+            System.out.println("Enemy " + enemy.getName() + " has been added to the board.");
         } else if (action == Action.ATTACK) {
+            //TODO: check if needs to be refactored
             Person defender = enemy.canAttackPerson(board);
             attack(enemy, defender);
             checkGameOver();
@@ -302,27 +266,15 @@ public class DefenderOfDeshmelApp {
 
     //EFFECTS: prompts user to select a character code and produces the associated character or null if doesn't exist/
     //         is already dead
-    private Person selectCharacterToDisplay() {
-        String command;
-
-        System.out.println("Enter the character code you wish to learn about: ");
-        command = input.next();
-        command = command.toUpperCase();
-
-        Person person = board.findPersonByCharacterCode(command);
-        if (person != null) {
-            return person;
-        }
-        for (Person player : players) {
-            if (player.getCharacterCode().equals(command)) {
-                return player;
-            }
-        }
-        return null;
+    private Person readInCharacterCodeFromUser() {
+        String command = queryUserForCharacterCode("learn about: ");
+        return Person.selectCharacterByCharacterCode(command, board, players);
     }
 
+
     //EFFECTS: displays character stats if person is not null
-    private void displayCharacterStats(Person person) {
+    private void displayCharacterStats() {
+        Person person = readInCharacterCodeFromUser();
         if (person == null) {
             System.out.println("I'm sorry no alive character with that code exists");
         } else {
@@ -394,11 +346,7 @@ public class DefenderOfDeshmelApp {
     //EFFECTS: allows the user to select a character and triggers their special action if they have any remaining,
     //         removes any enemies killed by the special action, returns true if action used, false otherwise
     private boolean specialAction() {
-        String command;
-
-        System.out.println("Enter the codes for the character you want to trigger the special action from: ");
-        command = input.next();
-        command = command.toUpperCase();
+        String command = queryUserForCharacterCode("trigger the special action from: ");
 
         Person player = board.findPersonByCharacterCode(command);
         if (player == null) {
@@ -408,22 +356,10 @@ public class DefenderOfDeshmelApp {
         } else {
             player.specialAction(board);
             System.out.println(player.getName() + " has taken a special action: " + player.getSpecialActionString());
-            removeDeadEnemies();
+            Enemy.removeDeadEnemies(board, enemies);
             return true;
         }
         return false;
-    }
-
-    //MODIFIES: this
-    //EFFECTS: removes dead enemies from the board and enemy list
-    private void removeDeadEnemies() {
-        ArrayList<Person> boardState = board.getBoard();
-        for (int i = 0; i < 25; i++) {
-            if (boardState.get(i) != null && boardState.get(i).isDead()) {
-                boardState.set(i, null);
-            }
-        }
-        enemies.removeIf(Person::isDead);
     }
 
     //MODIFIES: board, enemies or players if defender dies
@@ -434,13 +370,7 @@ public class DefenderOfDeshmelApp {
             System.out.println(defender.getName() + " has lost " + attacker.getAttackPower() + " health");
             if (defender.isDead()) {
                 System.out.println(defender.getName() + " is dead");
-                int square = board.getBoard().indexOf(defender);
-                board.getBoard().set(square, null);
-                if (enemies.contains(defender)) {
-                    enemies.remove(defender);
-                } else {
-                    players.remove(defender);
-                }
+                board.removeDeadDefender(defender, enemies, players);
             }
         } else {
             System.out.println("You are out of range to make that attack");
@@ -467,9 +397,7 @@ public class DefenderOfDeshmelApp {
         boolean successful = false;
 
         while (!successful) {
-            System.out.println("Enter the character code for the player you wish to move: ");
-            String command = input.next();
-            command = command.toUpperCase();
+            String command = queryUserForCharacterCode("move: ");
 
             Person person = board.findPersonByCharacterCode(command);
             if (person == null) {
@@ -558,16 +486,18 @@ public class DefenderOfDeshmelApp {
     //EFFECTS: returns the Person associated with the code or null if no person with that code
     //TODO: throw exception instead of returning null?
     private Person getPersonCodeFromUser() {
-        System.out.println("Enter the character code you wish to add to the board: ");
-        String command = input.next();
-        command = command.toUpperCase();
-
-        Person person = null;
-        for (Person player : players) {
-            if (player.getCharacterCode().equals(command) && player.isAvailable()) {
-                person = player;
-            }
+        String command = queryUserForCharacterCode("add to the board: ");
+        Person person = Person.selectCharacterByCharacterCode(command, board, players);
+        if (person != null && person.isAvailable()) {
+            return person;
         }
-        return person;
+        return null;
+    }
+
+    //EFFECTS: gets character code from user to process
+    private String queryUserForCharacterCode(String ending) {
+        System.out.println("Enter the character code you wish to " + ending);
+        String command = input.next();
+        return command.toUpperCase();
     }
 }

@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 /*
@@ -215,6 +216,29 @@ public class Person {
 
     public void setSpecialActionString(String specialActionString) {
         this.specialActionString = specialActionString;
+    }
+
+
+    //MODIFIES: this
+    //EFFECTS: clears out players, and adds the persons to players (resets the list to default state)
+    public static void addPlayers(ArrayList<Person> players) {
+        players.clear();
+        players.add(new Person("Fire Sorceress"));
+        players.add(new Person("Ice Sorcerer"));
+    }
+
+    //EFFECTS: produces the associated character with chrCode or null if doesn't exist/ is already dead
+    public static Person selectCharacterByCharacterCode(String chrCode, Board board, ArrayList<Person> players) {
+        Person person = board.findPersonByCharacterCode(chrCode);
+        if (person != null) {
+            return person;
+        }
+        for (Person player : players) {
+            if (player.getCharacterCode().equals(chrCode)) {
+                return player;
+            }
+        }
+        return null;
     }
 
     //EFFECTS: produces description of person

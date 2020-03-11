@@ -116,4 +116,35 @@ public class Enemy extends Person {
         }
         return viableDirections;
     }
+
+    //REQUIRES: i = 3, 6, or 10
+    //MODIFIES: this
+    //EFFECTS: clears out all enemies, and adds i new enemies to enemies
+    public static void addEnemies(int i, ArrayList<Enemy> enemies) {
+        enemies.clear();
+        if (i >= 3) {
+            enemies.add(new Enemy("Foot Soldier"));
+            enemies.add(new Enemy("Ranged Shooter"));
+            //add a third enemy
+            //TODO: design 8 more enemies
+        }
+        if (i >= 6) {
+            //add 3 more enemies
+        }
+        if (i == 10) {
+            //add 4 more enemies
+        }
+    }
+
+    //MODIFIES: this
+    //EFFECTS: removes dead enemies from the board and enemy list
+    public static void removeDeadEnemies(Board board, ArrayList<Enemy> enemies) {
+        ArrayList<Person> boardState = board.getBoard();
+        for (int i = 0; i < 25; i++) {
+            if (boardState.get(i) != null && boardState.get(i).isDead()) {
+                boardState.set(i, null);
+            }
+        }
+        enemies.removeIf(Person::isDead);
+    }
 }

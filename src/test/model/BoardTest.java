@@ -23,7 +23,7 @@ class BoardTest {
 
     @Test
     public void testFillBoardWithNull() {
-        for (Person p: board.getBoard()) {
+        for (Person p : board.getBoard()) {
             assertNull(p);
         }
     }
@@ -204,6 +204,7 @@ class BoardTest {
         board.addCharacter(7, soldier);
         assertFalse(board.isInWeaponRange(soldier, iceSor));
     }
+
     @Test
     public void testIsInWeaponRangeOneUpDown() {
         board.addCharacter(5, iceSor);
@@ -314,9 +315,56 @@ class BoardTest {
             board2.add(null);
         }
         board2.set(3, new Person("Foot Soldier"));
-        board2.set(15, new Person ("Fire Sorceress"));
+        board2.set(15, new Person("Fire Sorceress"));
         board.setBoard(board2);
-        assertEquals(board2.get(3), new Person ("Foot Soldier"));
-        assertEquals(board2.get(15), new Person ("Fire Sorceress"));
+        assertEquals(board2.get(3), new Person("Foot Soldier"));
+        assertEquals(board2.get(15), new Person("Fire Sorceress"));
+    }
+
+    @Test
+    public void testResetBoard() {
+        board.addCharacter(3, iceSor);
+        board.addCharacter(7, soldier);
+        int wallConfigNum = SquareWallConfigs.getWallSetNum();
+        board.resetBoard();
+        //TODO: this is not the best way to do this, update once more wall configs are generated
+        assertEquals(wallConfigNum, SquareWallConfigs.getWallSetNum());
+        assertFalse(board.getBoard().contains(iceSor));
+        assertFalse(board.getBoard().contains(soldier));
+    }
+
+    @Test
+    public void testFindEmptySquare() {
+        for (int i = 0; i < 25; i++) {
+            board.getBoard().set(i, new Person("Fire Sorceress"));
+        }
+        board.getBoard().set(13, null);
+        Enemy enemy = new Enemy("Foot Soldier");
+        board.findEmptySquare(enemy);
+        assertTrue(board.getBoard().contains(enemy));
+        assertEquals(board.getBoard().get(13), enemy);
+    }
+
+    @Test
+    public void testRemoveDeadDefender() {
+        ArrayList<Enemy> enemies = new ArrayList<>();
+        ArrayList<Person> players = new ArrayList<>();
+        Enemy enemy = new Enemy("Foot Soldier");
+        enemies.add(enemy);
+        players.add(iceSor);
+        board.addCharacter(6, iceSor);
+        board.addCharacter(20, enemy);
+
+        iceSor.takeDamage(iceSor.getHealth());
+
+        board.removeDeadDefender(iceSor, enemies, players);
+        assertNull(board.getBoard().get(6));
+        assertFalse(players.contains(iceSor));
+
+        enemy.takeDamage(enemy.getHealth());
+
+        board.removeDeadDefender(enemy, enemies, players);
+        assertNull(board.getBoard().get(20));
+        assertFalse(enemies.contains(enemy));
     }
 }

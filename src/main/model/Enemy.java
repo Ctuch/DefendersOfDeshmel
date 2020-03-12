@@ -128,12 +128,12 @@ public class Enemy extends Person {
             //add a third enemy
             //TODO: design 8 more enemies
         }
-        if (i >= 6) {
-            //add 3 more enemies
-        }
-        if (i == 10) {
-            //add 4 more enemies
-        }
+//        if (i >= 6) {
+//            //add 3 more enemies
+//        }
+//        if (i == 10) {
+//            //add 4 more enemies
+//        }
     }
 
     //MODIFIES: this

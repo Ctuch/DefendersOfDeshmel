@@ -1,7 +1,10 @@
 package model;
 
+import javafx.print.PageLayout;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,6 +16,8 @@ public class PersonTest {
     Enemy soldier;
     Enemy archer;
     Board board;
+    ArrayList<Person> players;
+
 
     @BeforeEach
     public void runBefore() {
@@ -22,6 +27,8 @@ public class PersonTest {
         soldier = new Enemy("Foot Soldier");
         archer = new Enemy("Ranged Shooter");
         board = new Board();
+        players = new ArrayList<>();
+
     }
 
     @Test
@@ -260,5 +267,30 @@ public class PersonTest {
         Person ice2 = new Person("Ice Sorcerer");
         assertEquals(ice2.hashCode(), ice.hashCode());
         assertNotEquals(ice.hashCode(), fire.hashCode());
+    }
+
+    @Test
+    public void testAddEnemies() {
+        Person soldierDecoy = new Enemy("Foot Soldier");
+        players.add(soldierDecoy);
+        Person.addPlayers(players);
+        assertEquals(fire, players.get(0));
+        assertEquals(ice, players.get(1));
+        assertEquals(players.size(), 2);
+        assertFalse(players.contains(soldierDecoy));
+
+        Person.addPlayers(players);
+        assertEquals(fire, players.get(0));
+        assertEquals(ice, players.get(1));
+        assertEquals(players.size(), 2);
+    }
+
+    @Test
+    public void testSelectCharacterByCode() {
+        Person.addPlayers(players);
+        board.addCharacter(3, fire);
+        assertNull(Person.selectCharacterByCharacterCode("__", board, players));
+        assertEquals(fire, Person.selectCharacterByCharacterCode("fr", board, players));
+        assertEquals(ice, Person.selectCharacterByCharacterCode("ic", board, players));
     }
 }

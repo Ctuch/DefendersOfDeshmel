@@ -234,7 +234,7 @@ public class Person {
             return person;
         }
         for (Person player : players) {
-            if (player.getCharacterCode().equals(chrCode)) {
+            if (player.getCharacterCode().equalsIgnoreCase(chrCode)) {
                 return player;
             }
         }

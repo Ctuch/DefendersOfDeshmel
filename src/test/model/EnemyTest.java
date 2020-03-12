@@ -15,6 +15,8 @@ public class EnemyTest {
     Person personIce;
     Person personFire;
     Board board;
+    ArrayList<Enemy> enemies;
+
     @BeforeEach
     public void runBefore() {
         enemyFS = new Enemy("Foot Soldier");
@@ -23,6 +25,7 @@ public class EnemyTest {
         personFire = new Person("Fire Sorceress");
         board = new Board();
         board.setWallConfig(SquareWallConfigs.generateWallSetEmpty());
+        enemies = new ArrayList<>();
     }
 
     @Test
@@ -399,5 +402,33 @@ public class EnemyTest {
         board.addCharacter(12, enemyFS);
         board.addCharacter(18, personFire);
         assertEquals(Action.MOVE_RIGHT, enemyFS.decideAction(board));
+    }
+
+    @Test
+    public void testAddEnemies() {
+        Enemy fireDecoy = new Enemy("Fire Sorceress");
+        enemies.add(fireDecoy);
+        Enemy.addEnemies(3, enemies);
+        assertEquals(enemyFS, enemies.get(0));
+        assertEquals(enemyRS, enemies.get(1));
+        assertEquals(enemies.size(), 2);
+        assertFalse(enemies.contains(fireDecoy));
+
+        Enemy.addEnemies(0, enemies);
+        assertEquals(enemies.size(), 0);
+    }
+
+    @Test
+    public void testRemoveDeadEnemies() {
+        enemies.add(enemyFS);
+        enemies.add(enemyRS);
+        board.addCharacter(5, enemyFS);
+        board.addCharacter(20, enemyRS);
+        enemyRS.takeDamage(enemyRS.getHealth());
+
+        Enemy.removeDeadEnemies(board, enemies);
+        assertEquals(enemies.size(), 1);
+        assertTrue(enemies.contains(enemyFS));
+        assertFalse(enemies.contains(enemyRS));
     }
 }

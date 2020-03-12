@@ -9,19 +9,17 @@ import java.awt.*;
 
 public class BoardPanel extends JPanel {
 
-    private static final Color WALL_COLOR = new Color(38, 34, 44);
-    private static final Color SQUARE_COLOR = new Color(181, 181, 181);
-    private static final Color ENEMY_COLOR = new Color(169, 55, 49);
-    private static final Color PLAYER_COLOR = new Color(30, 153, 226);
-    private static final int SQUARE_SPACING = 60;
-    private static final int SQUARE_HEIGHT = 50;
-    private static final int VERT_TEXT_ADJUSTMENT = 5;
-    private static final int HORIZ_TEXT_ADJUSTMENT = 7;
+    protected static final int SQUARE_SPACING = 60;
+    protected static final int SQUARE_HEIGHT = 50;
+    protected static final int VERT_TEXT_ADJUSTMENT = 5;
+    protected static final int HORIZ_TEXT_ADJUSTMENT = 7;
+    protected static final int BOARD_WIDTH = SQUARE_SPACING * 7;
+    protected static final int BOARD_HEIGHT = SQUARE_SPACING * 7;
 
     private Board board;
 
     public BoardPanel(Board board) {
-        setPreferredSize(new Dimension(800, 600));
+        setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
         setBackground(Color.GRAY);
         this.board = board;
     }
@@ -33,11 +31,6 @@ public class BoardPanel extends JPanel {
     }
 
     private void drawBoard(Graphics g) {
-        drawEmptyBoard(g);
-
-    }
-
-    private void drawEmptyBoard(Graphics g) {
         SquareWall wall;
 
         for (int i = 0; i < 5; i++) {
@@ -55,9 +48,9 @@ public class BoardPanel extends JPanel {
     private void drawPerson(int rowY, int colX, Graphics g, Person person) {
         if (!(person == null)) {
             if (person.isEnemy()) {
-                g.setColor(ENEMY_COLOR);
+                g.setColor(Colors.ENEMY);
             } else {
-                g.setColor(PLAYER_COLOR);
+                g.setColor(Colors.PLAYER);
             }
             g.fillOval((colX + 1) * SQUARE_SPACING,(rowY + 1) * SQUARE_SPACING, SQUARE_HEIGHT, SQUARE_HEIGHT);
             g.setColor(Color.BLACK);
@@ -68,7 +61,7 @@ public class BoardPanel extends JPanel {
     }
 
     private void drawWall(int i, int j, Graphics g, SquareWall wall) {
-        g.setColor(WALL_COLOR);
+        g.setColor(Colors.WALL);
         if (wall.isRightWall()) {
             drawRightWall(i, j, g);
         }
@@ -104,7 +97,7 @@ public class BoardPanel extends JPanel {
     }
 
     private void drawSquare(int rowY, int colX, Graphics g) {
-        g.setColor(SQUARE_COLOR);
+        g.setColor(Colors.SQUARE);
         g.fillRect((colX + 1) * SQUARE_SPACING, (rowY + 1) * SQUARE_SPACING, SQUARE_HEIGHT, SQUARE_HEIGHT);
     }
 }

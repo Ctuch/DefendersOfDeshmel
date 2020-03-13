@@ -20,6 +20,8 @@ public class Person {
     protected boolean isEnemy;
     private int numSpecialActionCharges;
     private String specialActionString;
+    private int locationX;
+    private int locationY;
 
     //EFFECTS: creates a new person that is available to put on the map and sets their attributes
     public Person(String name) {
@@ -216,6 +218,27 @@ public class Person {
 
     public void setSpecialActionString(String specialActionString) {
         this.specialActionString = specialActionString;
+    }
+
+    public int getLocationX() {
+        return locationX;
+    }
+
+    public void setLocation(int locationX, int locationY) {
+        setLocationX(locationX);
+        setLocationY(locationY);
+    }
+
+    private void setLocationX(int locationX) {
+        this.locationX = locationX;
+    }
+
+    public int getLocationY() {
+        return locationY;
+    }
+
+    private void setLocationY(int locationY) {
+        this.locationY = locationY;
     }
 
 

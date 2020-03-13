@@ -1,12 +1,14 @@
 package model;
 
-//represents a single square with where each wall is represented
+//represents a single square with where each wall is represented and a location of the upper left corner
 public class SquareWall {
 
     private boolean leftWall;
     private boolean rightWall;
     private boolean upperWall;
     private boolean lowerWall;
+    private int locationX;
+    private int locationY;
 
     //EFFECTS: creates a square with no walls
     public SquareWall() {
@@ -39,4 +41,26 @@ public class SquareWall {
     public boolean isLowerWall() {
         return lowerWall;
     }
+
+    public int getLocationX() {
+        return locationX;
+    }
+
+    public void setLocation(int locationX, int locationY) {
+        setLocationX(locationX);
+        setLocationY(locationY);
+    }
+
+    private void setLocationX(int locationX) {
+        this.locationX = locationX;
+    }
+
+    public int getLocationY() {
+        return locationY;
+    }
+
+    private void setLocationY(int locationY) {
+        this.locationY = locationY;
+    }
+
 }

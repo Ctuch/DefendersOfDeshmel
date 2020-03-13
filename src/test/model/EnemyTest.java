@@ -408,13 +408,13 @@ public class EnemyTest {
     public void testAddEnemies() {
         Enemy fireDecoy = new Enemy("Fire Sorceress");
         enemies.add(fireDecoy);
-        Enemy.addEnemies(3, enemies);
+        Enemy.addEnemies(Difficulty.EASY, enemies);
         assertEquals(enemyFS, enemies.get(0));
         assertEquals(enemyRS, enemies.get(1));
         assertEquals(enemies.size(), 2);
         assertFalse(enemies.contains(fireDecoy));
 
-        Enemy.addEnemies(0, enemies);
+        Enemy.addEnemies(Difficulty.HARD, enemies);
         assertEquals(enemies.size(), 0);
     }
 

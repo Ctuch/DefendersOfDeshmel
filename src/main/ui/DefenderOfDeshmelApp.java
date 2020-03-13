@@ -95,11 +95,11 @@ public class DefenderOfDeshmelApp {
     //EFFECTS: processes user main menu command
     private boolean processMainMenuCommand(String command) {
         if (command.equals("e")) {
-            Enemy.addEnemies(3, enemies);
+            Enemy.addEnemies(Difficulty.EASY, enemies);
         } else if (command.equals("m")) {
-            Enemy.addEnemies(6, enemies);
+            Enemy.addEnemies(Difficulty.MEDIUM, enemies);
         } else if (command.equals("h")) {
-            Enemy.addEnemies(10, enemies);
+            Enemy.addEnemies(Difficulty.HARD, enemies);
         } else if (command.equals("l")) {
             return loadGame();
         } else if (command.equals("q")) {

@@ -120,9 +120,9 @@ public class Enemy extends Person {
     //REQUIRES: i = 3, 6, or 10
     //MODIFIES: this
     //EFFECTS: clears out all enemies, and adds i new enemies to enemies
-    public static void addEnemies(int i, ArrayList<Enemy> enemies) {
+    public static void addEnemies(Difficulty difficulty, ArrayList<Enemy> enemies) {
         enemies.clear();
-        if (i >= 3) {
+        if (difficulty == Difficulty.EASY) {
             enemies.add(new Enemy("Foot Soldier"));
             enemies.add(new Enemy("Ranged Shooter"));
             //add a third enemy

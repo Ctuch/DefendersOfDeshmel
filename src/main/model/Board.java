@@ -72,6 +72,20 @@ public class Board {
                 return false;
         }
     }
+
+    public boolean moveCharacter(int squareFrom, int squareTo) {
+        Person personToMove = board.get(squareFrom);
+        switch (squareFrom - squareTo) {
+            case 5:
+                return moveCharacter(UP, personToMove);
+            case -5:
+                return moveCharacter(DOWN, personToMove);
+            case 1:
+                return moveCharacter(LEFT, personToMove);
+            default:
+                return moveCharacter(RIGHT, personToMove);
+        }
+    }
     
     //REQUIRES: person is not null, and already on board, 0 <= direction <= 3
     //MODIFIES: this

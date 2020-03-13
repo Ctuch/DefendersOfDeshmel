@@ -20,7 +20,8 @@ public class BoardPanel extends JPanel {
     protected static final int BOARD_HEIGHT = SQUARE_SPACING * 7;
 
     private Board board;
-    private int selectedSquare = -1;
+    private int selectedSquare1st = -1;
+    private int selectedSquare2nd = -1;
 
     public BoardPanel(Board board) {
         setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
@@ -64,11 +65,21 @@ public class BoardPanel extends JPanel {
         ArrayList<SquareWall> walls = board.getWallConfig();
         for (int i = 0; i < walls.size(); i++) {
             if (isInWall(mouseX, mouseY, walls.get(i).getLocationX(), walls.get(i).getLocationY())) {
-                selectedSquare = i;
+                if (selectedSquare1st == -1 && selectedSquare2nd == -1) {
+                    selectedSquare2nd = i;
+                } else {
+                    selectedSquare1st = selectedSquare2nd;
+                    selectedSquare2nd = i;
+                }
+                System.out.println("selected square 1: " + selectedSquare1st);
+                System.out.println("selected square 2: " + selectedSquare2nd);
                 return;
             }
         }
-        selectedSquare = -1;
+        System.out.println("selected square 1: " + selectedSquare1st);
+        System.out.println("selected square 2: " + selectedSquare2nd);
+        selectedSquare1st = -1;
+        selectedSquare2nd = -1;
     }
 
     //TODO: exactly. the same as personPanel
@@ -137,7 +148,11 @@ public class BoardPanel extends JPanel {
         wall.setLocation((colX + 1) * SQUARE_SPACING, (rowY + 1) * SQUARE_SPACING);
     }
 
-    public int getSelectedSquare() {
-        return selectedSquare;
+    public int getSelectedSquare1st() {
+        return selectedSquare1st;
+    }
+
+    public int getSelectedSquare2nd() {
+        return selectedSquare2nd;
     }
 }

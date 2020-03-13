@@ -73,9 +73,13 @@ public class DefenderOfDeshmelDisplay extends JFrame {
 
     private void createGameMenuButtons(JComponent parent) {
         JButton addButton = new JButton("Add Character");
-        parent.add(addButton);
+        JButton moveButton = new JButton("Move Character");
 
-        addButton.addActionListener(new AddButtonActionListener());
+        parent.add(addButton);
+        parent.add(moveButton);
+
+        addButton.addActionListener(new GameMenuButtonActionListener());
+        moveButton.addActionListener(new GameMenuButtonActionListener());
     }
 
     private JPanel createMainMenu() {
@@ -128,21 +132,38 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         }
     }
 
-    private class AddButtonActionListener implements ActionListener {
+    private class GameMenuButtonActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            Person playerToAdd = personPanel.getSelectedPlayer();
-            if (playerToAdd != null) {
-                //TODO: have them select the square after button? Ie a timer to have them select a square...
-                int squareToAdd = boardPanel.getSelectedSquare();
-                if (squareToAdd != -1) {
-                    //TODO: have feedback for the user if unsuccessful?
-                    board.addCharacter(squareToAdd, playerToAdd);
-                    boardPanel.repaint();
-                    personPanel.repaint();
-                }
+            String command = e.getActionCommand();
+            if (command.equalsIgnoreCase("Add Character")) {
+                addCharacter();
+            } else if (command.equalsIgnoreCase("Move Character")) {
+                moveCharacter();
             }
+        }
+    }
 
+    private void moveCharacter() {
+        int squareFrom = boardPanel.getSelectedSquare1st();
+        int squareTo = boardPanel.getSelectedSquare2nd();
+        if (squareFrom != -1 && squareTo != -1) {
+            board.moveCharacter(squareFrom, squareTo);
+            boardPanel.repaint();
+        }
+    }
+
+    private void addCharacter() {
+        Person playerToAdd = personPanel.getSelectedPlayer();
+        if (playerToAdd != null) {
+            //TODO: have them select the square after button? Ie a timer to have them select a square...
+            int squareToAdd = boardPanel.getSelectedSquare2nd();
+            if (squareToAdd != -1) {
+                //TODO: have feedback for the user if unsuccessful?
+                board.addCharacter(squareToAdd, playerToAdd);
+                boardPanel.repaint();
+                personPanel.repaint();
+            }
         }
     }
 

@@ -28,6 +28,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     private JPanel mainMenuPanel;
     private JPanel gameMenuPanel;
     private JLabel displayLabel;
+    private JPopupMenu rulesPanel;
     private static Boolean playerTurn = true;
     private static Person selectedPlayer = null;
 
@@ -45,6 +46,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         displayLabel = new JLabel();
         mainMenuPanel = new JPanel();
         gameMenuPanel = new JPanel();
+        rulesPanel = new RulesPanel();
         mainMenuPanel = createMainMenu();
         gameMenuPanel = createGameMenu();
 
@@ -91,14 +93,17 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         JButton addButton = new JButton("Add Character");
         JButton moveButton = new JButton("Move Character");
         JButton displayButton = new JButton("Display Character Stats");
+        JButton helpButton = new JButton("Display help");
 
         parent.add(addButton);
         parent.add(moveButton);
         parent.add(displayButton);
+        parent.add(helpButton);
 
         addButton.addActionListener(new GameMenuButtonActionListener());
         moveButton.addActionListener(new GameMenuButtonActionListener());
         displayButton.addActionListener(new GameMenuButtonActionListener());
+        helpButton.addActionListener(new GameMenuButtonActionListener());
     }
 
     private JPanel createMainMenu() {
@@ -161,7 +166,19 @@ public class DefenderOfDeshmelDisplay extends JFrame {
                 moveCharacter();
             } else if (command.equalsIgnoreCase("Display Character Stats")) {
                 displayCharacter();
+            } else if (command.equalsIgnoreCase("Display help")) {
+                displayHelp();
             }
+        }
+    }
+
+    private void displayHelp() {
+        if (rulesPanel.isVisible()) {
+            remove(rulesPanel);
+            rulesPanel.setVisible(false);
+        } else {
+            add(rulesPanel);
+            rulesPanel.setVisible(true);
         }
     }
 

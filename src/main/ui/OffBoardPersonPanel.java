@@ -26,31 +26,16 @@ public class OffBoardPersonPanel extends JPanel {
     }
 
     private void addMouseControl() {
+        MouseSelectionManager selectionManager = new MouseSelectionManager();
         addMouseListener(new MouseAdapter() {
 
             @Override
             public void mousePressed(MouseEvent e) {
                 System.out.println(e.getX() + "," + e.getY());
-                updateSelectedPlayer(e.getX(), e.getY());
+                selectedPlayer = selectionManager.updateSelectedPlayer(e.getX(), e.getY(), players);
+                DefenderOfDeshmelDisplay.setSelectedPlayer(selectedPlayer);
             }
         });
-    }
-
-    private void updateSelectedPlayer(int mouseX, int mouseY) {
-        for (Person player : players) {
-            if (isInPlayer(mouseX, mouseY, player.getLocationX(), player.getLocationY())) {
-                selectedPlayer = player;
-                return;
-            }
-        }
-        selectedPlayer = null;
-    }
-
-    private boolean isInPlayer(int mouseX, int mouseY, int locationX, int locationY) {
-        int differenceX = mouseX - locationX;
-        int differenceY = mouseY - locationY;
-        int maxDifference = BoardPanel.SQUARE_HEIGHT;
-        return differenceX <= maxDifference && differenceX >= 0 && differenceY <= maxDifference && differenceY >= 0;
     }
 
     public Person getSelectedPlayer() {

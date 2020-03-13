@@ -22,11 +22,13 @@ public class BoardPanel extends JPanel {
     private Board board;
     private int selectedSquare1st = -1;
     private int selectedSquare2nd = -1;
+    private MouseSelectionManager mouseSelection;
 
     public BoardPanel(Board board) {
         setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
         setBackground(Color.GRAY);
         this.board = board;
+        mouseSelection = new MouseSelectionManager();
         addMouseControl();
     }
 
@@ -60,17 +62,16 @@ public class BoardPanel extends JPanel {
         });
     }
 
-    private void updateSelectedSquare(int mouseX, int mouseY) {
+    public void updateSelectedSquare(int mouseX, int mouseY) {
         //TODO: abstract this out since copying and pasting functionality from personPanel - selector class?
         ArrayList<SquareWall> walls = board.getWallConfig();
         for (int i = 0; i < walls.size(); i++) {
-            if (isInWall(mouseX, mouseY, walls.get(i).getLocationX(), walls.get(i).getLocationY())) {
-                if (selectedSquare1st == -1 && selectedSquare2nd == -1) {
-                    selectedSquare2nd = i;
-                } else {
+            if (mouseSelection.isInSpace(mouseX, mouseY, walls.get(i).getLocationX(), walls.get(i).getLocationY())) {
+                if (selectedSquare1st != -1 || selectedSquare2nd != -1) {
                     selectedSquare1st = selectedSquare2nd;
-                    selectedSquare2nd = i;
                 }
+                selectedSquare2nd = i;
+                DefenderOfDeshmelDisplay.setSelectedPlayer(board.getBoard().get(selectedSquare2nd));
                 System.out.println("selected square 1: " + selectedSquare1st);
                 System.out.println("selected square 2: " + selectedSquare2nd);
                 return;
@@ -80,14 +81,7 @@ public class BoardPanel extends JPanel {
         System.out.println("selected square 2: " + selectedSquare2nd);
         selectedSquare1st = -1;
         selectedSquare2nd = -1;
-    }
-
-    //TODO: exactly. the same as personPanel
-    private boolean isInWall(int mouseX, int mouseY, int locationX, int locationY) {
-        int differenceX = mouseX - locationX;
-        int differenceY = mouseY - locationY;
-        int maxDifference = BoardPanel.SQUARE_HEIGHT;
-        return differenceX <= maxDifference && differenceX >= 0 && differenceY <= maxDifference && differenceY >= 0;
+        DefenderOfDeshmelDisplay.setSelectedPlayer(null);
     }
 
     private void drawPerson(int rowY, int colX, Graphics g, Person person) {
@@ -99,6 +93,7 @@ public class BoardPanel extends JPanel {
             }
             g.fillOval((colX + 1) * SQUARE_SPACING,(rowY + 1) * SQUARE_SPACING, SQUARE_HEIGHT, SQUARE_HEIGHT);
             person.setLocation((colX + 1) * SQUARE_SPACING,(rowY + 1) * SQUARE_SPACING);
+            System.out.println("my new location: " + person.getName());
             g.setColor(Color.BLACK);
             g.drawString(person.getCharacterCode(),
                     (colX + 1) * SQUARE_SPACING + (SQUARE_HEIGHT / 2) - HORIZ_TEXT_ADJUSTMENT,

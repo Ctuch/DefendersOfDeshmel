@@ -267,15 +267,15 @@ public class Person {
     //EFFECTS: produces description of person
     @Override
     public String toString() {
-        String ts = "Name: " + name;
-        ts += "\nWeapon: " + weapon.toString();
-        ts += "\nAttack Power: " + attackPower;
-        ts += "\nHealth Status: ";
+        String ts = "<html>Name: " + name;
+        ts += "<br/>Weapon: " + weapon.toString();
+        ts += "<br/>Attack Power: " + attackPower;
+        ts += "<br/>Health Status: ";
         if (isDead()) {
             ts += "Dead";
         } else {
             ts += health + " remaining health";
-            ts += "\nIn Play: ";
+            ts += "<br/>In Play: ";
             if (isAvailable()) {
                 ts += "false";
             } else {
@@ -283,11 +283,11 @@ public class Person {
             }
         }
         if (!isEnemy) {
-            ts += "\nSpecial Action: Has " + numSpecialActionCharges
+            ts += "<br/>Special Action: Has " + numSpecialActionCharges
                     + " charges remaining. See the help menu for ability.";
         }
 
-        return ts;
+        return ts + "</html>";
     }
 
     //EFFECTS: overrides default equals method for Person objects, returns true if this and o are identical by fields

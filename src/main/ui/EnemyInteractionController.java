@@ -46,7 +46,7 @@ public class EnemyInteractionController {
 
     //MODIFIES: board, enemies or players if defender dies
     //EFFECTS: has defender take damage from attacker if in range, and removes defender from game if dead
-    private void attack(Person attacker, Person defender) {
+    private Boolean attack(Person attacker, Person defender) {
         if (board.isInWeaponRange(attacker, defender)) {
             defender.takeDamage(attacker.getAttackPower());
             System.out.println(defender.getName() + " has lost " + attacker.getAttackPower() + " health");
@@ -54,8 +54,20 @@ public class EnemyInteractionController {
                 System.out.println(defender.getName() + " is dead");
                 board.removeDeadDefender(defender, enemies, players);
             }
+            return true;
         } else {
             System.out.println("You are out of range to make that attack");
+            return false;
+        }
+    }
+
+    public Boolean attack(int squareFrom, int squareTo) {
+        Person attacker = board.getBoard().get(squareFrom);
+        Person defender = board.getBoard().get(squareTo);
+        if (attacker == null || defender == null && !attacker.isEnemy()) {
+            return false;
+        } else {
+            return attack(attacker, defender);
         }
     }
 
@@ -89,5 +101,4 @@ public class EnemyInteractionController {
             System.out.println(statement + "down");
         }
     }
-
 }

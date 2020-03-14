@@ -120,16 +120,19 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     private void createGameMenuButtons(JComponent parent) {
         JButton addButton = new JButton("Add Character");
         JButton moveButton = new JButton("Move Character");
+        JButton attackButton = new JButton("Attack Enemy");
         JButton displayButton = new JButton("Display Character Stats");
         JButton helpButton = new JButton("Display help");
 
         parent.add(addButton);
         parent.add(moveButton);
+        parent.add(attackButton);
         parent.add(displayButton);
         parent.add(helpButton);
 
         addButton.addActionListener(new GameMenuButtonActionListener());
         moveButton.addActionListener(new GameMenuButtonActionListener());
+        attackButton.addActionListener(new GameMenuButtonActionListener());
         displayButton.addActionListener(new GameMenuButtonActionListener());
         helpButton.addActionListener(new GameMenuButtonActionListener());
     }
@@ -192,6 +195,8 @@ public class DefenderOfDeshmelDisplay extends JFrame {
                 addCharacter();
             } else if (command.equalsIgnoreCase("Move Character")) {
                 moveCharacter();
+            } else if (command.equalsIgnoreCase("Attack Enemy")) {
+                attackEnemy();
             } else if (command.equalsIgnoreCase("Display Character Stats")) {
                 displayCharacter();
             } else if (command.equalsIgnoreCase("Display help")) {
@@ -225,6 +230,16 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         int squareTo = boardPanel.getSelectedSquare2nd();
         if (squareFrom != -1 && squareTo != -1) {
             if (board.moveCharacter(squareFrom, squareTo)) {
+                updatePanelsWithEnemyTurn();
+            }
+        }
+    }
+
+    private void attackEnemy() {
+        int squareFrom = boardPanel.getSelectedSquare1st();
+        int squareTo = boardPanel.getSelectedSquare2nd();
+        if (squareFrom != -1 && squareTo != -1) {
+            if (enemyInteractionController.attack(squareFrom, squareTo)) {
                 updatePanelsWithEnemyTurn();
             }
         }

@@ -28,7 +28,6 @@ public class DefenderOfDeshmelDisplay extends JFrame {
 
     private static Person selectedPlayer = null;
 
-    private static boolean gameOver;
     private EnemyInteractionController enemyInteractionController;
     private FileManager fileManager;
 
@@ -70,7 +69,6 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         board = new Board();
         enemies = new ArrayList<>();
         players = new ArrayList<>();
-        gameOver = false;
         enemyInteractionController = new EnemyInteractionController(board, players, enemies);
         fileManager = new FileManager(board, players, enemies);
 
@@ -78,6 +76,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
             enemyInteractionController.enemyTurn();
             boardPanel.repaint();
             personPanel.repaint();
+            checkGameOver();
         });
         timer.setRepeats(false);
 
@@ -189,14 +188,24 @@ public class DefenderOfDeshmelDisplay extends JFrame {
                 displayCharacter();
             } else if (command.equalsIgnoreCase("Display help")) {
                 displayHelp();
-            } else if (command.equalsIgnoreCase("Save and Quit")) {
+            }
+
+            checkGameOver();
+
+            if (command.equalsIgnoreCase("Save and Quit")) {
                 saveAndQuit();
             }
         }
     }
 
-    private void saveAndQuit() {
-        fileManager.saveGame();
+    private void checkGameOver() {
+        if (enemyInteractionController.checkGameOver()) {
+            fileManager.clearSave();
+            resetGame();
+        }
+    }
+
+    private void resetGame() {
         switchMenuPanel();
         board.resetBoard();
         players.clear();
@@ -204,6 +213,11 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         boardPanel.repaint();
         personPanel.repaint();
         mainMenuPanel.setLoadButtonState();
+    }
+
+    private void saveAndQuit() {
+        fileManager.saveGame();
+        resetGame();
     }
 
     private void displayHelp() {
@@ -307,9 +321,5 @@ public class DefenderOfDeshmelDisplay extends JFrame {
             remove(rulesPanel);
             rulesPanel.setVisible(false);
         }
-    }
-
-    public static void setGameOver(boolean gameOver) {
-        DefenderOfDeshmelDisplay.gameOver = gameOver;
     }
 }

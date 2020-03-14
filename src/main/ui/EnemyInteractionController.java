@@ -74,12 +74,8 @@ public class EnemyInteractionController {
     //MODIFIES: gameOver
     //EFFECTS: determines whether the game should end if there are no enemies or no players remaining
     //         displays phrase indicating winning team
-    private void checkGameOver() {
-        if (enemies.isEmpty()) {
-            DefenderOfDeshmelDisplay.setGameOver(true);
-        } else if (players.isEmpty()) {
-            DefenderOfDeshmelDisplay.setGameOver(true);
-        }
+    public boolean checkGameOver() {
+        return enemies.isEmpty() || players.isEmpty();
     }
 
     //REQUIRES: enemy is not null, action not null

@@ -1,4 +1,1 @@
-[null,null,null,null,null,null,null,null,null,null,{"name":"Ice Sorcerer","weapon":{"name":"Freeze Ray","range":3},"attackPower":5,"health":8,"available":false,"characterCode":"IC","isEnemy":false,"numSpecialActionCharges":2,"specialActionString":"Decrease all enemy attack power by 1","locationX":60,"locationY":180},null,null,null,null,null,null,null,null,null,null,null,null,{"name":"Foot Soldier","weapon":{"name":"Great Sword","range":1},"attackPower":6,"health":12,"available":false,"characterCode":"FS","isEnemy":true,"numSpecialActionCharges":0,"specialActionString":"","locationX":240,"locationY":300},null]
-[{"name":"Foot Soldier","weapon":{"name":"Great Sword","range":1},"attackPower":6,"health":12,"available":false,"characterCode":"FS","isEnemy":true,"numSpecialActionCharges":0,"specialActionString":"","locationX":240,"locationY":300}]
-[{"name":"Ice Sorcerer","weapon":{"name":"Freeze Ray","range":3},"attackPower":5,"health":8,"available":false,"characterCode":"IC","isEnemy":false,"numSpecialActionCharges":2,"specialActionString":"Decrease all enemy attack power by 1","locationX":60,"locationY":180}]
-1
+No save

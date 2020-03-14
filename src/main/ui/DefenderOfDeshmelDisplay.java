@@ -21,7 +21,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     private ArrayList<Enemy> enemies;
     private ArrayList<Person> players;
     private MainMenuPanel mainMenuPanel;
-    private JPanel gameMenuPanel;
+    private GameMenuPanel gameMenuPanel;
     private JLabel displayLabel;
     private JPopupMenu rulesPanel;
     private Timer timer;
@@ -58,14 +58,12 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         boardPanel = new BoardPanel(board);
         personPanel = new OffBoardPersonPanel(players, enemies);
         displayLabel = new JLabel();
-        gameMenuPanel = new JPanel();
 
         JButton closeButton = new JButton("Close");
         closeButton.addActionListener(new CloseButtonActionListener());
         rulesPanel = new RulesPanel(closeButton);
-        ArrayList<JButton> mainMenuButton = createMainMenuButtons();
-        mainMenuPanel = new MainMenuPanel(mainMenuButton, board, players, enemies);
-        gameMenuPanel = createGameMenu();
+        mainMenuPanel = new MainMenuPanel(createMainMenuButtons(), board, players, enemies);
+        gameMenuPanel = new GameMenuPanel(createGameMenuButtons(), displayLabel);
     }
 
     private void initFields() {
@@ -99,28 +97,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         setLocation((scrn.width - getWidth()) / 2, (scrn.height - getHeight()) / 2);
     }
 
-    private JPanel createGameMenu() {
-        gameMenuPanel.setPreferredSize(new Dimension(MENU_WIDTH, HEIGHT));
-        gameMenuPanel.setLayout(new GridLayout(0, 1, 20, 5));
-        gameMenuPanel.setBackground(Color.BLUE);
-        gameMenuPanel.setVisible(false);
-
-        //createMenuLabel(gameMenuPanel, "Game Menu");
-        createGameMenuButtons(gameMenuPanel);
-        createDisplayLabel(gameMenuPanel);
-        return gameMenuPanel;
-    }
-
-    private void createDisplayLabel(JPanel parent) {
-        JScrollPane displayPane = new JScrollPane(displayLabel, VERTICAL_SCROLLBAR_AS_NEEDED,
-                HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        displayPane.setPreferredSize(new Dimension(MENU_WIDTH, HEIGHT / 5));
-        displayLabel.setBackground(Color.GREEN);
-        displayLabel.setOpaque(true);
-        parent.add(displayPane);
-    }
-
-    private void createGameMenuButtons(JComponent parent) {
+    private ArrayList<JButton> createGameMenuButtons() {
         JButton addButton = new JButton("Add Character");
         JButton moveButton = new JButton("Move Character");
         JButton attackButton = new JButton("Attack Enemy");
@@ -137,15 +114,9 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         gameMenuButtons.add(helpButton);
         gameMenuButtons.add(saveQuitButton);
 
-        parent.add(addButton);
-        parent.add(moveButton);
-        parent.add(attackButton);
-        parent.add(specialActionButton);
-        parent.add(displayButton);
-        parent.add(helpButton);
-        parent.add(saveQuitButton);
-
         addActionListener(gameMenuButtons, new GameMenuButtonActionListener());
+
+        return gameMenuButtons;
     }
 
     private void addActionListener(ArrayList<JButton> buttons, ActionListener listener) {

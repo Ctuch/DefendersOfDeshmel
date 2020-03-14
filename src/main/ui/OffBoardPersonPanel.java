@@ -31,7 +31,6 @@ public class OffBoardPersonPanel extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                System.out.println(e.getX() + "," + e.getY());
                 selectedPlayer = selectionManager.updateSelectedPlayer(e.getX(), e.getY(), players);
                 DefenderOfDeshmelDisplay.setSelectedPlayer(selectedPlayer);
             }
@@ -80,7 +79,6 @@ public class OffBoardPersonPanel extends JPanel {
                 g.fillOval(count * BoardPanel.SQUARE_SPACING, getHeight() / 4,
                         BoardPanel.SQUARE_HEIGHT, BoardPanel.SQUARE_HEIGHT);
                 player.setLocation(count * BoardPanel.SQUARE_SPACING, getHeight() / 4);
-                System.out.println(player.getLocationX() + ", " + player.getLocationY());
                 g.setColor(Color.BLACK);
                 g.drawString(player.getCharacterCode(), count * BoardPanel.SQUARE_SPACING
                                 + (BoardPanel.SQUARE_HEIGHT / 2) - BoardPanel.HORIZ_TEXT_ADJUSTMENT,

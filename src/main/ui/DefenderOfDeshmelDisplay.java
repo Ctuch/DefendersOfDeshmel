@@ -9,8 +9,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import static javax.swing.ScrollPaneConstants.*;
@@ -29,36 +27,65 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     private JPanel gameMenuPanel;
     private JLabel displayLabel;
     private JPopupMenu rulesPanel;
-    private static Boolean playerTurn = true;
+    private Timer timer;
+
     private static Person selectedPlayer = null;
+
+    private static boolean gameOver;
+    private EnemyInteractionController enemyInteractionController;
 
     public DefenderOfDeshmelDisplay() {
         super("Defender's Of Deshmel");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
-        setMinimumSize(new Dimension(WIDTH, HEIGHT));
-        board = new Board();
-        enemies = new ArrayList<>();
-        players = new ArrayList<>();
+        setUpGame();
+    }
 
+    private void setUpGame() {
+        initMainFrame();
+        initFields();
+        initPanels();
+        addPanels();
+        pack();
+        centreOnScreen();
+        setVisible(true);
+    }
+
+    private void addPanels() {
+        add(boardPanel);
+        add(personPanel, BorderLayout.SOUTH);
+        add(gameMenuPanel, BorderLayout.EAST);
+        add(mainMenuPanel, BorderLayout.WEST);
+    }
+
+    private void initPanels() {
         boardPanel = new BoardPanel(board);
         personPanel = new OffBoardPersonPanel(players, enemies);
         displayLabel = new JLabel();
         mainMenuPanel = new JPanel();
         gameMenuPanel = new JPanel();
-        rulesPanel = new RulesPanel();
+
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(new CloseButtonActionListener());
+        rulesPanel = new RulesPanel(closeButton);
         mainMenuPanel = createMainMenu();
         gameMenuPanel = createGameMenu();
+    }
 
-        add(boardPanel);
-        add(personPanel, BorderLayout.SOUTH);
-        add(gameMenuPanel, BorderLayout.EAST);
-        gameMenuPanel.setVisible(false);
-        add(mainMenuPanel, BorderLayout.WEST);
+    private void initFields() {
+        board = new Board();
+        enemies = new ArrayList<>();
+        players = new ArrayList<>();
+        gameOver = false;
+        enemyInteractionController = new EnemyInteractionController(board, players, enemies);
 
-        pack();
-        centreOnScreen();
-        setVisible(true);
+        timer = new Timer(2000, null);
+        timer.setRepeats(false);
+
+    }
+
+    private void initMainFrame() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+        setMinimumSize(new Dimension(WIDTH, HEIGHT));
     }
 
     // Centres frame on desktop
@@ -73,6 +100,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         gameMenuPanel.setPreferredSize(new Dimension(MENU_WIDTH, HEIGHT));
         gameMenuPanel.setLayout(new GridLayout(0, 1, 20, 20));
         gameMenuPanel.setBackground(Color.BLUE);
+        gameMenuPanel.setVisible(false);
 
         createMenuLabel(gameMenuPanel, "Game Menu");
         createGameMenuButtons(gameMenuPanel);
@@ -196,8 +224,9 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         int squareFrom = boardPanel.getSelectedSquare1st();
         int squareTo = boardPanel.getSelectedSquare2nd();
         if (squareFrom != -1 && squareTo != -1) {
-            board.moveCharacter(squareFrom, squareTo);
-            boardPanel.repaint();
+            if (board.moveCharacter(squareFrom, squareTo)) {
+                updatePanelsWithEnemyTurn();
+            }
         }
     }
 
@@ -208,17 +237,33 @@ public class DefenderOfDeshmelDisplay extends JFrame {
             int squareToAdd = boardPanel.getSelectedSquare2nd();
             if (squareToAdd != -1) {
                 //TODO: have feedback for the user if unsuccessful?
-                board.addCharacter(squareToAdd, playerToAdd);
-                boardPanel.repaint();
-                personPanel.repaint();
+                if (board.addCharacter(squareToAdd, playerToAdd)) {
+                    updatePanelsWithEnemyTurn();
+                }
             }
         }
+    }
+
+    private void updatePanelsWithEnemyTurn() {
+        boardPanel.repaint();
+        personPanel.repaint();
+        //timeDelay();
+        enemyInteractionController.enemyTurn();
+        boardPanel.repaint();
+        personPanel.repaint();
+    }
+
+    private void timeDelay() {
+        timer.start();
+        while (timer.isRunning()) {
+            //continue execution
+        }
+        timer.stop();
     }
 
     public void startNewGame(Difficulty difficulty) {
         Enemy.addEnemies(difficulty, enemies);
         Person.addPlayers(players);
-        playerTurn = true;
         personPanel.repaint();
         switchMenuPanel();
     }
@@ -237,4 +282,15 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         DefenderOfDeshmelDisplay.selectedPlayer = selectedPlayer;
     }
 
+    private class CloseButtonActionListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            remove(rulesPanel);
+            rulesPanel.setVisible(false);
+        }
+    }
+
+    public static void setGameOver(boolean gameOver) {
+        DefenderOfDeshmelDisplay.gameOver = gameOver;
+    }
 }

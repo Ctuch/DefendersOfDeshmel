@@ -72,13 +72,9 @@ public class BoardPanel extends JPanel {
                 }
                 selectedSquare2nd = i;
                 DefenderOfDeshmelDisplay.setSelectedPlayer(board.getBoard().get(selectedSquare2nd));
-                System.out.println("selected square 1: " + selectedSquare1st);
-                System.out.println("selected square 2: " + selectedSquare2nd);
                 return;
             }
         }
-        System.out.println("selected square 1: " + selectedSquare1st);
-        System.out.println("selected square 2: " + selectedSquare2nd);
         selectedSquare1st = -1;
         selectedSquare2nd = -1;
         DefenderOfDeshmelDisplay.setSelectedPlayer(null);
@@ -93,7 +89,6 @@ public class BoardPanel extends JPanel {
             }
             g.fillOval((colX + 1) * SQUARE_SPACING,(rowY + 1) * SQUARE_SPACING, SQUARE_HEIGHT, SQUARE_HEIGHT);
             person.setLocation((colX + 1) * SQUARE_SPACING,(rowY + 1) * SQUARE_SPACING);
-            System.out.println("my new location: " + person.getName());
             g.setColor(Color.BLACK);
             g.drawString(person.getCharacterCode(),
                     (colX + 1) * SQUARE_SPACING + (SQUARE_HEIGHT / 2) - HORIZ_TEXT_ADJUSTMENT,

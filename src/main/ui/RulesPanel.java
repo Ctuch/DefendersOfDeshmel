@@ -1,17 +1,12 @@
 package ui;
 
-import model.Difficulty;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.*;
 
 public class RulesPanel extends JPopupMenu {
 
     private JTextArea rulesArea;
-    private JButton closeButton;
 
     public RulesPanel(JButton closeButton) {
         setPreferredSize(new Dimension(800, 700));
@@ -21,10 +16,9 @@ public class RulesPanel extends JPopupMenu {
         rulesArea.setLineWrap(true);
         rulesArea.setPreferredSize(this.getPreferredSize());
         rulesArea.setForeground(Color.BLACK);
-        this.closeButton = closeButton;
-
 
         add(rulesArea);
+        closeButton.setHorizontalAlignment(JLabel.CENTER);
         add(closeButton, BorderLayout.SOUTH);
 
     }

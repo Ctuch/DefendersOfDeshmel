@@ -5,7 +5,6 @@ import model.Board;
 import model.Enemy;
 import model.Person;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 

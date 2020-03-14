@@ -8,8 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import static javax.swing.ScrollPaneConstants.*;
-
 public class DefenderOfDeshmelDisplay extends JFrame {
     protected static final int MENU_WIDTH = 200;
     private static final int WIDTH = 7 * BoardPanel.SQUARE_SPACING;

@@ -98,7 +98,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
 
     private JPanel createGameMenu() {
         gameMenuPanel.setPreferredSize(new Dimension(MENU_WIDTH, HEIGHT));
-        gameMenuPanel.setLayout(new GridLayout(0, 1, 20, 20));
+        gameMenuPanel.setLayout(new GridLayout(0, 1, 20, 5));
         gameMenuPanel.setBackground(Color.BLUE);
         gameMenuPanel.setVisible(false);
 
@@ -121,18 +121,21 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         JButton addButton = new JButton("Add Character");
         JButton moveButton = new JButton("Move Character");
         JButton attackButton = new JButton("Attack Enemy");
+        JButton specialActionButton = new JButton("Special Action");
         JButton displayButton = new JButton("Display Character Stats");
         JButton helpButton = new JButton("Display help");
 
         parent.add(addButton);
         parent.add(moveButton);
         parent.add(attackButton);
+        parent.add(specialActionButton);
         parent.add(displayButton);
         parent.add(helpButton);
 
         addButton.addActionListener(new GameMenuButtonActionListener());
         moveButton.addActionListener(new GameMenuButtonActionListener());
         attackButton.addActionListener(new GameMenuButtonActionListener());
+        specialActionButton.addActionListener(new GameMenuButtonActionListener());
         displayButton.addActionListener(new GameMenuButtonActionListener());
         helpButton.addActionListener(new GameMenuButtonActionListener());
     }
@@ -197,6 +200,8 @@ public class DefenderOfDeshmelDisplay extends JFrame {
                 moveCharacter();
             } else if (command.equalsIgnoreCase("Attack Enemy")) {
                 attackEnemy();
+            } else if (command.equalsIgnoreCase("Special Action")) {
+                specialAction();
             } else if (command.equalsIgnoreCase("Display Character Stats")) {
                 displayCharacter();
             } else if (command.equalsIgnoreCase("Display help")) {
@@ -258,6 +263,16 @@ public class DefenderOfDeshmelDisplay extends JFrame {
             }
         }
     }
+
+    private void specialAction() {
+        int squareOfPerson = boardPanel.getSelectedSquare2nd();
+        Person person = board.getBoard().get(squareOfPerson);
+        if (person != null && person.hasChargesRemaining()) {
+            person.specialAction(board);
+            updatePanelsWithEnemyTurn();
+        }
+    }
+
 
     private void updatePanelsWithEnemyTurn() {
         boardPanel.repaint();

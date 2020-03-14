@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import static javax.swing.ScrollPaneConstants.*;
 
 public class DefenderOfDeshmelDisplay extends JFrame {
-    private static final int MENU_WIDTH = 200;
+    protected static final int MENU_WIDTH = 200;
     private static final int WIDTH = 7 * BoardPanel.SQUARE_SPACING;
     private static final int HEIGHT = 7 * BoardPanel.SQUARE_SPACING;
 
@@ -20,11 +20,10 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     private Board board;
     private ArrayList<Enemy> enemies;
     private ArrayList<Person> players;
-    private JPanel mainMenuPanel;
+    private MainMenuPanel mainMenuPanel;
     private JPanel gameMenuPanel;
     private JLabel displayLabel;
     private JPopupMenu rulesPanel;
-    private JButton loadButton;
     private Timer timer;
 
     private static Person selectedPlayer = null;
@@ -59,15 +58,13 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         boardPanel = new BoardPanel(board);
         personPanel = new OffBoardPersonPanel(players, enemies);
         displayLabel = new JLabel();
-        mainMenuPanel = new JPanel(); //TODO: put these into separate files by passing in arrayList of buttons
         gameMenuPanel = new JPanel();
 
         JButton closeButton = new JButton("Close");
         closeButton.addActionListener(new CloseButtonActionListener());
         rulesPanel = new RulesPanel(closeButton);
-
-        loadButton = new JButton("Load previous game");
-        mainMenuPanel = createMainMenu(loadButton);
+        ArrayList<JButton> mainMenuButton = createMainMenuButtons();
+        mainMenuPanel = new MainMenuPanel(mainMenuButton, board, players, enemies);
         gameMenuPanel = createGameMenu();
     }
 
@@ -108,7 +105,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         gameMenuPanel.setBackground(Color.BLUE);
         gameMenuPanel.setVisible(false);
 
-        createMenuLabel(gameMenuPanel, "Game Menu");
+        //createMenuLabel(gameMenuPanel, "Game Menu");
         createGameMenuButtons(gameMenuPanel);
         createDisplayLabel(gameMenuPanel);
         return gameMenuPanel;
@@ -131,6 +128,14 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         JButton displayButton = new JButton("Display Character Stats");
         JButton helpButton = new JButton("Display help");
         JButton saveQuitButton = new JButton("Save and Quit");
+        ArrayList<JButton> gameMenuButtons = new ArrayList<>();
+        gameMenuButtons.add(addButton);
+        gameMenuButtons.add(moveButton);
+        gameMenuButtons.add(attackButton);
+        gameMenuButtons.add(specialActionButton);
+        gameMenuButtons.add(displayButton);
+        gameMenuButtons.add(helpButton);
+        gameMenuButtons.add(saveQuitButton);
 
         parent.add(addButton);
         parent.add(moveButton);
@@ -140,60 +145,32 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         parent.add(helpButton);
         parent.add(saveQuitButton);
 
-        addButton.addActionListener(new GameMenuButtonActionListener());
-        moveButton.addActionListener(new GameMenuButtonActionListener());
-        attackButton.addActionListener(new GameMenuButtonActionListener());
-        specialActionButton.addActionListener(new GameMenuButtonActionListener());
-        displayButton.addActionListener(new GameMenuButtonActionListener());
-        helpButton.addActionListener(new GameMenuButtonActionListener());
-        saveQuitButton.addActionListener(new GameMenuButtonActionListener());
+        addActionListener(gameMenuButtons, new GameMenuButtonActionListener());
     }
 
-    private JPanel createMainMenu(JButton loadButton) {
-        mainMenuPanel.setPreferredSize(new Dimension(MENU_WIDTH, HEIGHT));
-        mainMenuPanel.setLayout(new GridLayout(0, 1, 20, 20));
-        mainMenuPanel.setBackground(Color.PINK);
-
-        createMenuLabel(mainMenuPanel, "Main Menu");
-        createMainMenuButtons(mainMenuPanel, loadButton);
-        return mainMenuPanel;
-    }
-
-    private void createMainMenuButtons(JComponent parent, JButton loadButton) {
-        JButton easyButton = new JButton("Easy");
-        JButton mediumButton = new JButton("Medium");
-        JButton hardButton = new JButton("Hard");
-        setLoadButtonState();
-        JButton quitButton = new JButton("Quit");
-
-        parent.add(easyButton);
-        parent.add(mediumButton);
-        parent.add(hardButton);
-        parent.add(loadButton);
-        parent.add(quitButton);
-
-        easyButton.addActionListener(new MainMenuButtonActionListener());
-        mediumButton.addActionListener(new MainMenuButtonActionListener());
-        hardButton.addActionListener(new MainMenuButtonActionListener());
-        loadButton.addActionListener(new MainMenuButtonActionListener());
-        quitButton.addActionListener(new MainMenuButtonActionListener());
-    }
-
-    private void setLoadButtonState() {
-        if (fileManager.checkIfGameToLoad()) {
-            loadButton.setEnabled(true);
-        } else {
-            loadButton.setEnabled(false);
+    private void addActionListener(ArrayList<JButton> buttons, ActionListener listener) {
+        for (JButton button : buttons) {
+            button.addActionListener(listener);
         }
     }
 
-    private void createMenuLabel(JComponent parent, String title) {
-        JLabel mainMenu = new JLabel(title);
-        mainMenu.setPreferredSize(new Dimension(MENU_WIDTH, BoardPanel.BOARD_HEIGHT / 6));
-        mainMenu.setForeground(Color.WHITE);
-        mainMenu.setHorizontalAlignment(JLabel.CENTER);
-        parent.add(mainMenu);
+    private ArrayList<JButton> createMainMenuButtons() {
+        JButton easyButton = new JButton("Easy");
+        JButton mediumButton = new JButton("Medium");
+        JButton hardButton = new JButton("Hard");
+        JButton loadButton = new JButton("Load previous game");
+        JButton quitButton = new JButton("Quit");
+        ArrayList<JButton> mainMenuButtons = new ArrayList<>();
+        mainMenuButtons.add(easyButton);
+        mainMenuButtons.add(mediumButton);
+        mainMenuButtons.add(hardButton);
+        mainMenuButtons.add(loadButton);
+        mainMenuButtons.add(quitButton);
+        addActionListener(mainMenuButtons, new MainMenuButtonActionListener());
+        return mainMenuButtons;
     }
+
+
 
     private class MainMenuButtonActionListener implements ActionListener {
         @Override
@@ -255,7 +232,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         enemies.clear();
         boardPanel.repaint();
         personPanel.repaint();
-        setLoadButtonState();
+        mainMenuPanel.setLoadButtonState();
     }
 
     private void displayHelp() {

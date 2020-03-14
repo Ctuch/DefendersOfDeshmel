@@ -24,6 +24,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     private JPanel gameMenuPanel;
     private JLabel displayLabel;
     private JPopupMenu rulesPanel;
+    private JButton loadButton;
     private Timer timer;
 
     private static Person selectedPlayer = null;
@@ -64,7 +65,9 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         JButton closeButton = new JButton("Close");
         closeButton.addActionListener(new CloseButtonActionListener());
         rulesPanel = new RulesPanel(closeButton);
-        mainMenuPanel = createMainMenu();
+
+        loadButton = new JButton("Load previous game");
+        mainMenuPanel = createMainMenu(loadButton);
         gameMenuPanel = createGameMenu();
     }
 
@@ -142,21 +145,21 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         saveQuitButton.addActionListener(new GameMenuButtonActionListener());
     }
 
-    private JPanel createMainMenu() {
+    private JPanel createMainMenu(JButton loadButton) {
         mainMenuPanel.setPreferredSize(new Dimension(MENU_WIDTH, HEIGHT));
         mainMenuPanel.setLayout(new GridLayout(0, 1, 20, 20));
         mainMenuPanel.setBackground(Color.PINK);
 
         createMenuLabel(mainMenuPanel, "Main Menu");
-        createMainMenuButtons(mainMenuPanel);
+        createMainMenuButtons(mainMenuPanel, loadButton);
         return mainMenuPanel;
     }
 
-    private void createMainMenuButtons(JComponent parent) {
+    private void createMainMenuButtons(JComponent parent, JButton loadButton) {
         JButton easyButton = new JButton("Easy");
         JButton mediumButton = new JButton("Medium");
         JButton hardButton = new JButton("Hard");
-        JButton loadButton = new JButton("Load previous game");
+        setLoadButtonState();
         JButton quitButton = new JButton("Quit");
 
         parent.add(easyButton);
@@ -168,6 +171,15 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         easyButton.addActionListener(new MainMenuButtonActionListener());
         mediumButton.addActionListener(new MainMenuButtonActionListener());
         hardButton.addActionListener(new MainMenuButtonActionListener());
+        loadButton.addActionListener(new MainMenuButtonActionListener());
+    }
+
+    private void setLoadButtonState() {
+        if (fileManager.checkIfGameToLoad()) {
+            loadButton.setEnabled(true);
+        } else {
+            loadButton.setEnabled(false);
+        }
     }
 
     private void createMenuLabel(JComponent parent, String title) {
@@ -188,7 +200,17 @@ public class DefenderOfDeshmelDisplay extends JFrame {
                 startNewGame(Difficulty.MEDIUM);
             } else if (command.equalsIgnoreCase("Hard")) {
                 startNewGame(Difficulty.HARD);
+            } else if (command.equalsIgnoreCase("Load previous game")) {
+                loadGame();
             }
+        }
+    }
+
+    private void loadGame() {
+        if (fileManager.loadGame()) {
+            boardPanel.repaint();
+            personPanel.repaint();
+            switchMenuPanel();
         }
     }
 
@@ -222,6 +244,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         enemies.clear();
         boardPanel.repaint();
         personPanel.repaint();
+        setLoadButtonState();
     }
 
     private void displayHelp() {

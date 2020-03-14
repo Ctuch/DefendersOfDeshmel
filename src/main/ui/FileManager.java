@@ -8,8 +8,7 @@ import model.SquareWallConfigs;
 import persistence.Reader;
 import persistence.Writer;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 public class FileManager {
@@ -53,8 +52,9 @@ public class FileManager {
         try {
             reader.readFile(new File(GAME_SAVE_FILE));
             board.setBoard(reader.getBoardState());
-            enemies = reader.getEnemies();
-            players = reader.getPlayers();
+            enemies.addAll(reader.getEnemies());
+            //enemies = reader.getEnemies();
+            players.addAll(reader.getPlayers());
             int wallConfigNum = reader.getWallConfigNumber();
             board.setWallConfig(SquareWallConfigs.generateRandomWallSet(wallConfigNum));
             System.out.println("Game Loaded");
@@ -66,5 +66,19 @@ public class FileManager {
             System.out.println("There is no game to load. Please start a new game");
             return false;
         }
+    }
+
+    public boolean checkIfGameToLoad() {
+        try {
+            BufferedReader fileReader = new BufferedReader(new FileReader(new File(GAME_SAVE_FILE)));
+            String firstLine = fileReader.readLine();
+            if (firstLine.equalsIgnoreCase("No save")) {
+                return false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }

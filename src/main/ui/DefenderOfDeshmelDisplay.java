@@ -79,7 +79,11 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         enemyInteractionController = new EnemyInteractionController(board, players, enemies);
         fileManager = new FileManager(board, players, enemies);
 
-        timer = new Timer(2000, null);
+        timer = new Timer(500, e -> {
+            enemyInteractionController.enemyTurn();
+            boardPanel.repaint();
+            personPanel.repaint();
+        });
         timer.setRepeats(false);
 
     }
@@ -172,6 +176,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         mediumButton.addActionListener(new MainMenuButtonActionListener());
         hardButton.addActionListener(new MainMenuButtonActionListener());
         loadButton.addActionListener(new MainMenuButtonActionListener());
+        quitButton.addActionListener(new MainMenuButtonActionListener());
     }
 
     private void setLoadButtonState() {
@@ -202,8 +207,14 @@ public class DefenderOfDeshmelDisplay extends JFrame {
                 startNewGame(Difficulty.HARD);
             } else if (command.equalsIgnoreCase("Load previous game")) {
                 loadGame();
+            } else if (command.equalsIgnoreCase("quit")) {
+                quitGame();
             }
         }
+    }
+
+    private void quitGame() {
+        this.dispose();
     }
 
     private void loadGame() {
@@ -314,18 +325,11 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     private void updatePanelsWithEnemyTurn() {
         boardPanel.repaint();
         personPanel.repaint();
-        //timeDelay();
-        enemyInteractionController.enemyTurn();
-        boardPanel.repaint();
-        personPanel.repaint();
+        timeDelay();
     }
 
     private void timeDelay() {
         timer.start();
-        while (timer.isRunning()) {
-            //continue execution
-        }
-        timer.stop();
     }
 
     public void startNewGame(Difficulty difficulty) {

@@ -1,9 +1,6 @@
 package ui;
 
-import model.Board;
-import model.Difficulty;
-import model.Enemy;
-import model.Person;
+import model.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,6 +30,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
 
     private static boolean gameOver;
     private EnemyInteractionController enemyInteractionController;
+    private FileManager fileManager;
 
     public DefenderOfDeshmelDisplay() {
         super("Defender's Of Deshmel");
@@ -60,7 +58,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         boardPanel = new BoardPanel(board);
         personPanel = new OffBoardPersonPanel(players, enemies);
         displayLabel = new JLabel();
-        mainMenuPanel = new JPanel();
+        mainMenuPanel = new JPanel(); //TODO: put these into separate files by passing in arrayList of buttons
         gameMenuPanel = new JPanel();
 
         JButton closeButton = new JButton("Close");
@@ -76,6 +74,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         players = new ArrayList<>();
         gameOver = false;
         enemyInteractionController = new EnemyInteractionController(board, players, enemies);
+        fileManager = new FileManager(board, players, enemies);
 
         timer = new Timer(2000, null);
         timer.setRepeats(false);
@@ -124,6 +123,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         JButton specialActionButton = new JButton("Special Action");
         JButton displayButton = new JButton("Display Character Stats");
         JButton helpButton = new JButton("Display help");
+        JButton saveQuitButton = new JButton("Save and Quit");
 
         parent.add(addButton);
         parent.add(moveButton);
@@ -131,6 +131,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         parent.add(specialActionButton);
         parent.add(displayButton);
         parent.add(helpButton);
+        parent.add(saveQuitButton);
 
         addButton.addActionListener(new GameMenuButtonActionListener());
         moveButton.addActionListener(new GameMenuButtonActionListener());
@@ -138,6 +139,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         specialActionButton.addActionListener(new GameMenuButtonActionListener());
         displayButton.addActionListener(new GameMenuButtonActionListener());
         helpButton.addActionListener(new GameMenuButtonActionListener());
+        saveQuitButton.addActionListener(new GameMenuButtonActionListener());
     }
 
     private JPanel createMainMenu() {
@@ -206,8 +208,20 @@ public class DefenderOfDeshmelDisplay extends JFrame {
                 displayCharacter();
             } else if (command.equalsIgnoreCase("Display help")) {
                 displayHelp();
+            } else if (command.equalsIgnoreCase("Save and Quit")) {
+                saveAndQuit();
             }
         }
+    }
+
+    private void saveAndQuit() {
+        fileManager.saveGame();
+        switchMenuPanel();
+        board.resetBoard();
+        players.clear();
+        enemies.clear();
+        boardPanel.repaint();
+        personPanel.repaint();
     }
 
     private void displayHelp() {

@@ -5,6 +5,9 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
 
+// class for managing sound effects in the game
+// all sounds were downloaded from freesound.org and are not under copyright.
+// sounds were edited for use in this program after downloaded
 public class SoundPlayer {
     private static final String EXPLOSION_SOUND = "./data/sounds/explosion.wav";
     private static final String SWORD_FIGHT_SOUND = "./data/sounds/.wav";
@@ -14,7 +17,9 @@ public class SoundPlayer {
     private static final String ARROW_SOUND = "./data/sounds/arrow.wav";
     private static final String ADD_SOUND = "./data/sounds/add.wav";
 
+
     //from https://stackoverflow.com/questions/6045384/playing-mp3-and-wav-in-java
+    //EFFECTS: plays the sound clip associated with filePath
     private void playSound(String filePath) {
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
@@ -27,34 +32,24 @@ public class SoundPlayer {
         }
     }
 
+    //EFFECTS: plays the sound associated with sound
     public void playSound(Sound sound) {
-        switch (sound) {
-            case EXPLOSION:
-                playSound(EXPLOSION_SOUND);
-                break;
-            case SWORD_FIGHT:
-                break;
-            case DEAD:
-                break;
-            case WIN_PLAYER:
-                playSound(WIN_SOUND);
-                break;
-            case WIN_ENEMY:
-                playSound(LOSE_SOUND);
-                break;
-            case ARCHER:
-                playSound(ARROW_SOUND);
-                break;
-            case MOVE:
-                playSound(MOVE_SOUND);
-                break;
-            case ADD:
-                playSound(ADD_SOUND);
-                break;
+        if (sound == Sound.EXPLOSION) {
+            playSound(EXPLOSION_SOUND);
+        } else if (sound == Sound.SWORD_FIGHT) {
+            //
+        } else if (sound == Sound.DEAD) {
+            //
+        } else if (sound == Sound.WIN_PLAYER) {
+            playSound(WIN_SOUND);
+        } else if (sound == Sound.WIN_ENEMY) {
+            playSound(LOSE_SOUND);
+        } else if (sound == Sound.ARCHER) {
+            playSound(ARROW_SOUND);
+        } else if (sound == Sound.MOVE) {
+            playSound(MOVE_SOUND);
+        } else if (sound == Sound.ADD) {
+            playSound(ADD_SOUND);
         }
-    }
-
-    public enum Sound {
-        EXPLOSION, SWORD_FIGHT, DEAD, WIN_PLAYER, WIN_ENEMY, ARCHER, MOVE, ADD
     }
 }

@@ -4,10 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 
+//popup window for displaying the rules to the player that overlays the game
 public class RulesPanel extends JPopupMenu {
 
     private JTextArea rulesArea;
 
+    //EFFECTS: sets the size of the panel and reads the rules file and displays its text
     public RulesPanel() {
         setPreferredSize(new Dimension(800, 700));
 
@@ -20,6 +22,7 @@ public class RulesPanel extends JPopupMenu {
         add(rulesArea);
     }
 
+    //MODIFIES: this
     //EFFECTS: reads in rules from the rules.txt file
     public String readInHelp() {
         File rulesFile = new File("data/rules.txt");

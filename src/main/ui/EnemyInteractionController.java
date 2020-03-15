@@ -8,6 +8,7 @@ import model.Person;
 import java.util.ArrayList;
 import java.util.Random;
 
+//Manages interaction with enemies by players and enemy actions
 public class EnemyInteractionController {
 
     private Random random;
@@ -15,6 +16,7 @@ public class EnemyInteractionController {
     private ArrayList<Person> players;
     private ArrayList<Enemy> enemies;
 
+    //creates a new random, and assigns game variables (board, players, enemies)
     public EnemyInteractionController(Board board, ArrayList<Person> players, ArrayList<Enemy> enemies) {
         random = new Random();
         this.board = board;
@@ -22,9 +24,9 @@ public class EnemyInteractionController {
         this.enemies = enemies;
     }
 
-    //REQUIRES: enemy is not null
+    //REQUIRES: enemies is not empty
     //MODIFIES: this
-    //EFFECTS: Selects and enemy action and performs it, printing out a message to indicate to the player the action
+    //EFFECTS: Selects and enemy action and performs it,
     //         either: adds enemy to the board in a random unoccupied location
     //                 attacks a player in range
     //                 moves the enemy toward a player if possible
@@ -59,6 +61,11 @@ public class EnemyInteractionController {
         }
     }
 
+
+    //MODIFIES: board, enemies or players if defender dies
+    //EFFECTS: gets the characters on squareFrom and squareTo, and attacks if legal
+    //                          (neither are null and the attacker is not an enemy)
+    //         attack - has defender take damage from attacker if in range, and removes defender from game if dead
     public Boolean attack(int squareFrom, int squareTo) {
         Person attacker = board.getBoard().get(squareFrom);
         Person defender = board.getBoard().get(squareTo);
@@ -69,14 +76,11 @@ public class EnemyInteractionController {
         }
     }
 
-    //MODIFIES: gameOver
     //EFFECTS: determines whether the game should end if there are no enemies or no players remaining
-    //         displays phrase indicating winning team
     public boolean checkGameOver() {
         return enemies.isEmpty() || players.isEmpty();
     }
 
-    //REQUIRES: enemy is not null, action not null
     //MODIFIES: board
     //EFFECTS: moves enemy in the direction specified by the action
     private void enemyMoveInDirection(Action action, Enemy enemy) {

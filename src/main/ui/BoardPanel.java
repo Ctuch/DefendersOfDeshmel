@@ -10,8 +10,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
+//panel for displaying characters, walls and board squares on board
 public class BoardPanel extends JPanel {
-
+//TODO: create a parent class that has an implementation for drawing the characters (board panel, offboard panel?)
     protected static final int SQUARE_SPACING = 60;
     protected static final int SQUARE_HEIGHT = 50;
     protected static final int VERT_TEXT_ADJUSTMENT = 5;
@@ -24,6 +25,7 @@ public class BoardPanel extends JPanel {
     private int selectedSquare2nd = -1;
     private MouseSelectionManager mouseSelection;
 
+    //EFFECTS: sets the panel layout, initializes variables, and adds mouse control to the panel
     public BoardPanel(Board board) {
         setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
         setBackground(Color.GRAY);
@@ -32,6 +34,8 @@ public class BoardPanel extends JPanel {
         addMouseControl();
     }
 
+    //MODIFIES: display
+    //EFFECTS: redraws the players, enemies, squares and walls onto the display
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -52,6 +56,8 @@ public class BoardPanel extends JPanel {
         }
     }
 
+    //MODIFIES: this
+    //EFFECTS: adds a mouse listener to the board that remembers the last 2 selected squares by the user
     private void addMouseControl() {
         addMouseListener(new MouseAdapter() {
 
@@ -62,8 +68,15 @@ public class BoardPanel extends JPanel {
         });
     }
 
+    //MODIFIES: this, display (selectedPlayer)
+    //EFFECTS: if there is a square where the mouse selects,
+    //                  sets the second selected square to that value
+    //                  the display selected player to that player
+    //                  and the first selected player to the previously selected square (2nd selected)
+    //         if there is no square where the mouse selects,
+    //                  sets the selected squares to -1
+    //                  sets the selected player on the display to null
     public void updateSelectedSquare(int mouseX, int mouseY) {
-        //TODO: abstract this out since copying and pasting functionality from personPanel - selector class?
         ArrayList<SquareWall> walls = board.getWallConfig();
         for (int i = 0; i < walls.size(); i++) {
             if (mouseSelection.isInSpace(mouseX, mouseY, walls.get(i).getLocationX(), walls.get(i).getLocationY())) {
@@ -80,6 +93,8 @@ public class BoardPanel extends JPanel {
         DefenderOfDeshmelDisplay.setSelectedPlayer(null);
     }
 
+    //MODIFIES: this
+    //EFFECTS: draws the enemies and players onto the board
     private void drawPerson(int rowY, int colX, Graphics g, Person person) {
         if (!(person == null)) {
             if (person.isEnemy()) {
@@ -96,6 +111,8 @@ public class BoardPanel extends JPanel {
         }
     }
 
+    //MODIFIES: this
+    //EFFECTS: draws the walls onto the board
     private void drawWall(int i, int j, Graphics g, SquareWall wall) {
         g.setColor(Colors.WALL);
         if (wall.isRightWall()) {
@@ -112,26 +129,36 @@ public class BoardPanel extends JPanel {
         }
     }
 
+    //MODIFIES: this
+    //EFFECTS: draws the right walls onto the board
     private void drawRightWall(int rowY, int colX, Graphics g) {
         g.fillRect((colX + 1) * SQUARE_SPACING + SQUARE_HEIGHT, (rowY + 1) * SQUARE_SPACING,
                 SQUARE_SPACING - SQUARE_HEIGHT, SQUARE_HEIGHT);
     }
 
+    //MODIFIES: this
+    //EFFECTS: draws the left walls onto the board
     private void drawLeftWall(int rowY, int colX, Graphics g) {
         g.fillRect((colX + 1) * SQUARE_SPACING - (SQUARE_SPACING - SQUARE_HEIGHT), (rowY + 1) * SQUARE_SPACING,
                 SQUARE_SPACING - SQUARE_HEIGHT, SQUARE_HEIGHT);
     }
 
+    //MODIFIES: this
+    //EFFECTS: draws the lower walls onto the board
     private void drawLowerWall(int rowY, int colX, Graphics g) {
         g.fillRect((colX + 1) * SQUARE_SPACING, (rowY + 1) * SQUARE_SPACING + SQUARE_HEIGHT,
                 SQUARE_HEIGHT, SQUARE_SPACING - SQUARE_HEIGHT);
     }
 
+    //MODIFIES: this
+    //EFFECTS: draws the upper walls onto the board
     private void drawUpperWall(int rowY, int colX, Graphics g) {
         g.fillRect((colX + 1) * SQUARE_SPACING, (rowY + 1) * SQUARE_SPACING - (SQUARE_SPACING - SQUARE_HEIGHT),
                 SQUARE_HEIGHT, SQUARE_SPACING - SQUARE_HEIGHT);
     }
 
+    //MODIFIES: this
+    //EFFECTS: draws the squares onto the board
     private void drawSquare(int rowY, int colX, Graphics g, SquareWall wall) {
         g.setColor(Colors.SQUARE);
         g.fillRect((colX + 1) * SQUARE_SPACING, (rowY + 1) * SQUARE_SPACING, SQUARE_HEIGHT, SQUARE_HEIGHT);

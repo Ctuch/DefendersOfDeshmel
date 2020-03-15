@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
+//panel for displaying characters not currently on the board
 public class OffBoardPersonPanel extends JPanel {
 
     private ArrayList<Person> players;
@@ -16,6 +17,7 @@ public class OffBoardPersonPanel extends JPanel {
 
     private Person selectedPlayer;
 
+    //EFFECTS: sets the panel layout, initializes variables, and adds mouse control to the panel
     public OffBoardPersonPanel(ArrayList<Person> players, ArrayList<Enemy> enemies) {
         this.players = players;
         this.enemies = enemies;
@@ -25,6 +27,8 @@ public class OffBoardPersonPanel extends JPanel {
         addMouseControl();
     }
 
+    //MODIFIES: this
+    //EFFECTS: adds a mouse listener to the board that remembers the last selected person by the user
     private void addMouseControl() {
         MouseSelectionManager selectionManager = new MouseSelectionManager();
         addMouseListener(new MouseAdapter() {
@@ -37,21 +41,23 @@ public class OffBoardPersonPanel extends JPanel {
         });
     }
 
-    public Person getSelectedPlayer() {
-        return selectedPlayer;
-    }
-
+    //MODIFIES: display
+    //EFFECTS: redraws the players and enemies onto the display
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         drawCharacters(g);
     }
 
+    //MODIFIES: display
+    //EFFECTS: redraws the players and enemies onto the display
     private void drawCharacters(Graphics g) {
         drawPlayers(g);
         drawEnemies(g);
     }
 
+    //MODIFIES: display
+    //EFFECTS: redraws the enemies onto the display
     private void drawEnemies(Graphics g) {
         int count = 0;
         for (Enemy enemy : enemies) {
@@ -71,6 +77,8 @@ public class OffBoardPersonPanel extends JPanel {
         }
     }
 
+    //MODIFIES: display
+    //EFFECTS: redraws the players onto the display
     private void drawPlayers(Graphics g) {
         int count = 0;
         for (Person player : players) {
@@ -88,4 +96,7 @@ public class OffBoardPersonPanel extends JPanel {
         }
     }
 
+    public Person getSelectedPlayer() {
+        return selectedPlayer;
+    }
 }

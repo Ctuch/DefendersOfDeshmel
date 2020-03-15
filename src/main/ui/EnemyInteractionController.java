@@ -37,7 +37,6 @@ public class EnemyInteractionController {
         } else if (action == Action.ATTACK) {
             Person defender = enemy.canAttackPerson(board);
             attack(enemy, defender);
-            checkGameOver();
         } else {
             enemyMoveInDirection(action, enemy);
         }

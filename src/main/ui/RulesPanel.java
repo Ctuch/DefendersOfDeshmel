@@ -8,7 +8,7 @@ public class RulesPanel extends JPopupMenu {
 
     private JTextArea rulesArea;
 
-    public RulesPanel(JButton closeButton) {
+    public RulesPanel() {
         setPreferredSize(new Dimension(800, 700));
 
         rulesArea = new JTextArea();
@@ -18,13 +18,10 @@ public class RulesPanel extends JPopupMenu {
         rulesArea.setForeground(Color.BLACK);
 
         add(rulesArea);
-        closeButton.setHorizontalAlignment(JLabel.CENTER);
-        add(closeButton, BorderLayout.SOUTH);
-
     }
 
     //EFFECTS: reads in rules from the rules.txt file
-    private void readInHelp() {
+    public String readInHelp() {
         File rulesFile = new File("data/rules.txt");
         try {
             BufferedReader br = new BufferedReader(new FileReader(rulesFile));
@@ -33,5 +30,6 @@ public class RulesPanel extends JPopupMenu {
             e.printStackTrace();
             System.out.println("I'm sorry I guess you'll have to play without rules");
         }
+        return rulesArea.getText();
     }
 }

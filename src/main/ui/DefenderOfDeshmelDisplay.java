@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import static ui.SoundPlayer.Sound.*;
+
 public class DefenderOfDeshmelDisplay extends JFrame {
     protected static final int MENU_WIDTH = 200;
     private static final int WIDTH = 7 * BoardPanel.SQUARE_SPACING;
@@ -21,8 +23,9 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     private MainMenuPanel mainMenuPanel;
     private GameMenuPanel gameMenuPanel;
     private JLabel displayLabel;
-    private JPopupMenu rulesPanel;
+    private RulesPanel rulesPanel;
     private Timer timer;
+    private SoundPlayer soundPlayer;
 
     private static Person selectedPlayer = null;
 
@@ -56,9 +59,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         personPanel = new OffBoardPersonPanel(players, enemies);
         displayLabel = new JLabel();
 
-        JButton closeButton = new JButton("Close");
-        closeButton.addActionListener(new CloseButtonActionListener());
-        rulesPanel = new RulesPanel(closeButton);
+        rulesPanel = new RulesPanel();
         mainMenuPanel = new MainMenuPanel(createMainMenuButtons(), board, players, enemies);
         gameMenuPanel = new GameMenuPanel(createGameMenuButtons(), displayLabel);
     }
@@ -69,6 +70,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         players = new ArrayList<>();
         enemyInteractionController = new EnemyInteractionController(board, players, enemies);
         fileManager = new FileManager(board, players, enemies);
+        soundPlayer = new SoundPlayer();
 
         timer = new Timer(500, e -> {
             enemyInteractionController.enemyTurn();
@@ -139,7 +141,6 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     }
 
 
-
     private class MainMenuButtonActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -185,22 +186,27 @@ public class DefenderOfDeshmelDisplay extends JFrame {
             } else if (command.equalsIgnoreCase("Display Character Stats")) {
                 displayCharacter();
             } else if (command.equalsIgnoreCase("Display help")) {
-                displayHelp();
-            }
-
-            checkGameOver();
-
-            if (command.equalsIgnoreCase("Save and Quit")) {
+                JOptionPane.showMessageDialog(rulesPanel,
+                        rulesPanel.readInHelp(),
+                        "Rules",
+                        JOptionPane.PLAIN_MESSAGE);
+            } else if (command.equalsIgnoreCase("Save and Quit")) {
                 saveAndQuit();
             }
         }
     }
 
-    private void checkGameOver() {
+    private Boolean checkGameOver() {
         if (enemyInteractionController.checkGameOver()) {
+            if (enemies.isEmpty()) {
+                soundPlayer.playSound(SoundPlayer.Sound.WIN_PLAYER);
+            } else if (players.isEmpty()) {
+                soundPlayer.playSound(SoundPlayer.Sound.WIN_ENEMY);
+            }
             fileManager.clearSave();
             resetGame();
         }
+        return enemies.isEmpty();
     }
 
     private void resetGame() {
@@ -218,16 +224,6 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         resetGame();
     }
 
-    private void displayHelp() {
-        if (rulesPanel.isVisible()) {
-            remove(rulesPanel);
-            rulesPanel.setVisible(false);
-        } else {
-            add(rulesPanel);
-            rulesPanel.setVisible(true);
-        }
-    }
-
     private void displayCharacter() {
         Person toDisplay = selectedPlayer;
         if (toDisplay != null) {
@@ -239,10 +235,12 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     }
 
     private void moveCharacter() {
+        //TODO: moves player without checking squarefrom has a person on it
         int squareFrom = boardPanel.getSelectedSquare1st();
         int squareTo = boardPanel.getSelectedSquare2nd();
         if (squareFrom != -1 && squareTo != -1) {
             if (board.moveCharacter(squareFrom, squareTo)) {
+                soundPlayer.playSound(MOVE);
                 updatePanelsWithEnemyTurn();
             }
         }
@@ -253,6 +251,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         int squareTo = boardPanel.getSelectedSquare2nd();
         if (squareFrom != -1 && squareTo != -1) {
             if (enemyInteractionController.attack(squareFrom, squareTo)) {
+                soundPlayer.playSound(EXPLOSION);
                 updatePanelsWithEnemyTurn();
             }
         }
@@ -266,6 +265,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
             if (squareToAdd != -1) {
                 //TODO: have feedback for the user if unsuccessful?
                 if (board.addCharacter(squareToAdd, playerToAdd)) {
+                    soundPlayer.playSound(ADD);
                     updatePanelsWithEnemyTurn();
                 }
             }
@@ -283,9 +283,12 @@ public class DefenderOfDeshmelDisplay extends JFrame {
 
 
     private void updatePanelsWithEnemyTurn() {
-        boardPanel.repaint();
-        personPanel.repaint();
-        timeDelay();
+        boolean didWinPlayer = checkGameOver();
+        if (!didWinPlayer) {
+            boardPanel.repaint();
+            personPanel.repaint();
+            timeDelay();
+        }
     }
 
     private void timeDelay() {
@@ -311,13 +314,5 @@ public class DefenderOfDeshmelDisplay extends JFrame {
 
     public static void setSelectedPlayer(Person selectedPlayer) {
         DefenderOfDeshmelDisplay.selectedPlayer = selectedPlayer;
-    }
-
-    private class CloseButtonActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            remove(rulesPanel);
-            rulesPanel.setVisible(false);
-        }
     }
 }

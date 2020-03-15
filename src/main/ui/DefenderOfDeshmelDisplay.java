@@ -247,8 +247,13 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         int squareFrom = boardPanel.getSelectedSquare1st();
         int squareTo = boardPanel.getSelectedSquare2nd();
         if (squareFrom != BoardPanel.INVALID && squareTo != BoardPanel.INVALID) {
+            int enemyNumber = enemies.size();
             if (enemyInteractionController.attack(squareFrom, squareTo)) {
                 soundPlayer.playSound(EXPLOSION);
+                if (enemyNumber - enemies.size() == 1) {
+                    soundPlayer.playSound(DEAD);
+                }
+
                 updatePanelsWithEnemyTurn();
             }
         }
@@ -262,6 +267,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         Person person = board.getBoard().get(squareOfPerson);
         if (person != null && person.hasChargesRemaining()) {
             person.specialAction(board);
+            soundPlayer.playSound(SPECIAL_ACTION);
             updatePanelsWithEnemyTurn();
         }
     }

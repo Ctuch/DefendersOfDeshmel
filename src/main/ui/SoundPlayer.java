@@ -10,12 +10,14 @@ import java.io.File;
 // sounds were edited for use in this program after downloaded
 public class SoundPlayer {
     private static final String EXPLOSION_SOUND = "./data/sounds/explosion.wav";
-    private static final String SWORD_FIGHT_SOUND = "./data/sounds/.wav";
+    private static final String SWORD_FIGHT_SOUND = "./data/sounds/swordClash.wav";
     private static final String LOSE_SOUND = "./data/sounds/lose.wav";
     private static final String WIN_SOUND = "./data/sounds/victory.wav";
     private static final String MOVE_SOUND = "./data/sounds/move.wav";
     private static final String ARROW_SOUND = "./data/sounds/arrow.wav";
     private static final String ADD_SOUND = "./data/sounds/add.wav";
+    private static final String DEAD_SOUND =  "./data/sounds/dead.wav";
+    private static final String SPECIAL_ACTION_SOUND =  "./data/sounds/dead.wav";
 
 
     //from https://stackoverflow.com/questions/6045384/playing-mp3-and-wav-in-java
@@ -32,14 +34,15 @@ public class SoundPlayer {
         }
     }
 
+    //TODO: finish implementing all sounds for all actions INCLUDING ENEMIES
     //EFFECTS: plays the sound associated with sound
     public void playSound(Sound sound) {
         if (sound == Sound.EXPLOSION) {
             playSound(EXPLOSION_SOUND);
         } else if (sound == Sound.SWORD_FIGHT) {
-            //TODO: finish implementing all sounds for all actions INCLUDING ENEMIES
+            playSound(SWORD_FIGHT_SOUND);
         } else if (sound == Sound.DEAD) {
-            //
+            playSound(DEAD_SOUND);
         } else if (sound == Sound.WIN_PLAYER) {
             playSound(WIN_SOUND);
         } else if (sound == Sound.WIN_ENEMY) {
@@ -50,6 +53,8 @@ public class SoundPlayer {
             playSound(MOVE_SOUND);
         } else if (sound == Sound.ADD) {
             playSound(ADD_SOUND);
+        } else if (sound == Sound.SPECIAL_ACTION) {
+            playSound(SPECIAL_ACTION_SOUND);
         }
     }
 }

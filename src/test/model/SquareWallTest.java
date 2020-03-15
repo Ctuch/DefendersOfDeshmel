@@ -40,4 +40,11 @@ public class SquareWallTest {
         assertFalse(customWall.isLowerWall());
     }
 
+    @Test
+    public void testWallLocation() {
+        defaultWall.setLocation(13, 977);
+        assertEquals(13, defaultWall.getLocationX());
+        assertEquals(977, defaultWall.getLocationY());
+    }
+
 }

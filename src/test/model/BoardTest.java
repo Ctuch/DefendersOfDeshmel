@@ -191,6 +191,35 @@ class BoardTest {
     }
 
     @Test
+    public void testMoveCharacterSquareFromSquareToUp() {
+        board.addCharacter(12, iceSor);
+        assertTrue(board.moveCharacter(12, 7));
+        assertEquals(board.getBoard().get(7), iceSor);
+    }
+
+
+    @Test
+    public void testMoveCharacterSquareFromSquareToDown() {
+        board.addCharacter(15, iceSor);
+        assertTrue(board.moveCharacter(15, 20));
+        assertEquals(board.getBoard().get(20), iceSor);
+    }
+
+    @Test
+    public void testMoveCharacterSquareFromSquareToRight() {
+        board.addCharacter(2, iceSor);
+        assertTrue(board.moveCharacter(2, 3));
+        assertEquals(board.getBoard().get(3), iceSor);
+    }
+
+    @Test
+    public void testMoveCharacterSquareFromSquareToLeft() {
+        board.addCharacter(6, iceSor);
+        assertTrue(board.moveCharacter(6, 5));
+        assertEquals(board.getBoard().get(5), iceSor);
+    }
+
+    @Test
     public void testIsInWeaponRangeOneRightLeft() {
         board.addCharacter(9, iceSor);
         board.addCharacter(8, soldier);

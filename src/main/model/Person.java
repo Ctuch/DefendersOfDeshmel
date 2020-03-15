@@ -267,6 +267,32 @@ public class Person {
     //EFFECTS: produces description of person
     @Override
     public String toString() {
+        String ts = "Name: " + name;
+        ts += "\nWeapon: " + weapon.toString();
+        ts += "\nAttack Power: " + attackPower;
+        ts += "\nHealth Status: ";
+        if (isDead()) {
+            ts += "Dead";
+        } else {
+            ts += health + " remaining health";
+            ts += "\nIn Play: ";
+            if (isAvailable()) {
+                ts += "false";
+            } else {
+                ts += "true";
+            }
+        }
+        if (!isEnemy) {
+            ts += "\nSpecial Action: Has " + numSpecialActionCharges
+                    + " charges remaining. See the help menu for ability.";
+        }
+
+        return ts;
+    }
+
+
+    //EFFECTS: produces description of person with html tags
+    public String toStringHtml() {
         String ts = "<html>Name: " + name;
         ts += "<br/>Weapon: " + weapon.toString();
         ts += "<br/>Attack Power: " + attackPower;

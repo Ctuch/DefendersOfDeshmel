@@ -108,11 +108,36 @@ public class PersonTest {
     }
 
     @Test
-    public void testToStringNotDeadANotvailable() {
+    public void testToStringNotDeadNotAvailable() {
         soldier.takeDamage(4);
         soldier.setAvailable(false);
         assertEquals(soldier.toString(), "Name: Foot Soldier\nWeapon: " + soldier.getWeapon().toString()
                 + "\nAttack Power: 6\nHealth Status: 8 remaining health\nIn Play: true");
+    }
+
+    @Test
+    public void testToStringHtmlDead() {
+        fire.takeDamage(30);
+        assertEquals(fire.toStringHtml(), "<html>Name: Fire Sorceress<br/>Weapon: " + fire.getWeapon().toString()
+                + "<br/>Attack Power: 3<br/>Health Status: Dead<br/>Special Action: Has 2 charges remaining. "
+                + "See the help menu for ability.</html>");
+    }
+
+    @Test
+    public void testToStringHtmlNotDeadAvailableNoCharges() {
+        fire.takeDamage(3);
+        fire.setNumSpecialActionCharges(0);
+        assertEquals(fire.toStringHtml(), "<html>Name: Fire Sorceress<br/>Weapon: " + fire.getWeapon().toString()
+                + "<br/>Attack Power: 3<br/>Health Status: 7 remaining health<br/>In Play: false" +
+                "<br/>Special Action: Has 0 charges remaining. See the help menu for ability.</html>");
+    }
+
+    @Test
+    public void testToStringHtmlNotDeadNotAvailable() {
+        soldier.takeDamage(4);
+        soldier.setAvailable(false);
+        assertEquals(soldier.toStringHtml(), "<html>Name: Foot Soldier<br/>Weapon: " + soldier.getWeapon().toString()
+                + "<br/>Attack Power: 6<br/>Health Status: 8 remaining health<br/>In Play: true</html>");
     }
 
     @Test
@@ -292,5 +317,12 @@ public class PersonTest {
         assertNull(Person.selectCharacterByCharacterCode("__", board, players));
         assertEquals(fire, Person.selectCharacterByCharacterCode("fr", board, players));
         assertEquals(ice, Person.selectCharacterByCharacterCode("ic", board, players));
+    }
+
+    @Test
+    public void testWallLocation() {
+        ice.setLocation(933, 47);
+        assertEquals(933, ice.getLocationX());
+        assertEquals(47, ice.getLocationY());
     }
 }

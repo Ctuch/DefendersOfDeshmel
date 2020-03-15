@@ -272,7 +272,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     private void displayCharacter() {
         Person toDisplay = selectedPlayer;
         if (toDisplay != null) {
-            displayLabel.setText(toDisplay.toString());
+            displayLabel.setText(toDisplay.toStringHtml());
         } else {
             displayLabel.setText("");
         }

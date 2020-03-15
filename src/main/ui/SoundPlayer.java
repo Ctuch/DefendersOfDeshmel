@@ -37,7 +37,7 @@ public class SoundPlayer {
         if (sound == Sound.EXPLOSION) {
             playSound(EXPLOSION_SOUND);
         } else if (sound == Sound.SWORD_FIGHT) {
-            //
+            //TODO: finish implementing all sounds for all actions INCLUDING ENEMIES
         } else if (sound == Sound.DEAD) {
             //
         } else if (sound == Sound.WIN_PLAYER) {

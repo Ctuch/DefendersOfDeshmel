@@ -68,8 +68,10 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         enemyInteractionController = new EnemyInteractionController(board, players, enemies);
         fileManager = new FileManager(board, players, enemies);
         soundPlayer = new SoundPlayer();
+        createTimer();
+    }
 
-        //TODO: create a method for this
+    private void createTimer() {
         timer = new Timer(500, e -> {
             enemyInteractionController.enemyTurn();
             boardPanel.repaint();
@@ -77,7 +79,6 @@ public class DefenderOfDeshmelDisplay extends JFrame {
             checkGameOver();
         });
         timer.setRepeats(false);
-
     }
 
     //MODIFIES: this
@@ -175,8 +176,8 @@ public class DefenderOfDeshmelDisplay extends JFrame {
             } else if (command.equalsIgnoreCase("Display Character Stats")) {
                 displayCharacter();
             } else if (command.equalsIgnoreCase("Display help")) {
-                JOptionPane.showMessageDialog(rulesPanel,
-                        rulesPanel.readInHelp(),
+                JOptionPane.showMessageDialog(null,
+                        rulesPanel.getRulesScrollPane(),
                         "Rules",
                         JOptionPane.PLAIN_MESSAGE);
             } else if (command.equalsIgnoreCase("Save and Quit")) {
@@ -213,7 +214,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         if (playerToAdd != null) {
             //TODO: have them select the square after button? Ie a timer to have them select a square...
             int squareToAdd = boardPanel.getSelectedSquare2nd();
-            if (squareToAdd != -1) {
+            if (squareToAdd != BoardPanel.INVALID) {
                 //TODO: have feedback for the user if unsuccessful?
                 if (board.addCharacter(squareToAdd, playerToAdd)) {
                     soundPlayer.playSound(ADD);
@@ -227,11 +228,11 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     //EFFECTS: if both panels are valid and first one has a player on it, tries to move character
     //         if the player can move in that direction, triggers player sound and enemy turn
     private void moveCharacter() {
-        //TODO: moves player without checking squarefrom has a person on it
         int squareFrom = boardPanel.getSelectedSquare1st();
         int squareTo = boardPanel.getSelectedSquare2nd();
-        if (squareFrom != -1 && squareTo != -1) {
-            if (board.moveCharacter(squareFrom, squareTo)) {
+        if (squareFrom != BoardPanel.INVALID && squareTo != BoardPanel.INVALID) {
+            Person person = board.getBoard().get(squareFrom);
+            if (person != null && !person.isEnemy() && board.moveCharacter(squareFrom, squareTo)) {
                 soundPlayer.playSound(MOVE);
                 updatePanelsWithEnemyTurn();
             }
@@ -245,7 +246,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     private void attackEnemy() {
         int squareFrom = boardPanel.getSelectedSquare1st();
         int squareTo = boardPanel.getSelectedSquare2nd();
-        if (squareFrom != -1 && squareTo != -1) {
+        if (squareFrom != BoardPanel.INVALID && squareTo != BoardPanel.INVALID) {
             if (enemyInteractionController.attack(squareFrom, squareTo)) {
                 soundPlayer.playSound(EXPLOSION);
                 updatePanelsWithEnemyTurn();
@@ -352,15 +353,8 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     //MODIFIES: this
     //EFFECTS: switches which menu panel is visible
     private void switchMenuPanel() {
-        //TODO: test the commented out code to simplify method
-        //mainMenuPanel.setVisible(!mainMenuPanel.isVisible());
-        if (mainMenuPanel.isVisible()) {
-            mainMenuPanel.setVisible(false);
-            gameMenuPanel.setVisible(true);
-        } else {
-            mainMenuPanel.setVisible(true);
-            gameMenuPanel.setVisible(false);
-        }
+        mainMenuPanel.setVisible(!mainMenuPanel.isVisible());
+        gameMenuPanel.setVisible(!gameMenuPanel.isVisible());
     }
 
     public static void setSelectedPlayer(Person selectedPlayer) {

@@ -8,18 +8,22 @@ import java.io.*;
 public class RulesPanel extends JPopupMenu {
 
     private JTextArea rulesArea;
+    private JScrollPane rulesScrollPane;
 
     //EFFECTS: sets the size of the panel and reads the rules file and displays its text
     public RulesPanel() {
-        setPreferredSize(new Dimension(800, 700));
+        setPreferredSize(new Dimension(800, 600));
 
         rulesArea = new JTextArea();
         readInHelp();
         rulesArea.setLineWrap(true);
-        rulesArea.setPreferredSize(this.getPreferredSize());
-        rulesArea.setForeground(Color.BLACK);
+        rulesArea.setWrapStyleWord(true);
 
-        add(rulesArea);
+        rulesArea.setForeground(Color.BLACK);
+        rulesScrollPane = new JScrollPane(rulesArea, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        rulesScrollPane.setPreferredSize(this.getPreferredSize());
+        add(rulesScrollPane);
     }
 
     //MODIFIES: this
@@ -34,5 +38,9 @@ public class RulesPanel extends JPopupMenu {
             System.out.println("I'm sorry I guess you'll have to play without rules");
         }
         return rulesArea.getText();
+    }
+
+    public JScrollPane getRulesScrollPane() {
+        return rulesScrollPane;
     }
 }

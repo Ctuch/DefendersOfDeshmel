@@ -19,10 +19,11 @@ public class BoardPanel extends JPanel {
     protected static final int HORIZ_TEXT_ADJUSTMENT = 7;
     protected static final int BOARD_WIDTH = SQUARE_SPACING * 7;
     protected static final int BOARD_HEIGHT = SQUARE_SPACING * 7;
+    protected static final int INVALID = -1;
 
     private Board board;
-    private int selectedSquare1st = -1;
-    private int selectedSquare2nd = -1;
+    private int selectedSquare1st = INVALID;
+    private int selectedSquare2nd = INVALID;
     private MouseSelectionManager mouseSelection;
 
     //EFFECTS: sets the panel layout, initializes variables, and adds mouse control to the panel
@@ -80,7 +81,7 @@ public class BoardPanel extends JPanel {
         ArrayList<SquareWall> walls = board.getWallConfig();
         for (int i = 0; i < walls.size(); i++) {
             if (mouseSelection.isInSpace(mouseX, mouseY, walls.get(i).getLocationX(), walls.get(i).getLocationY())) {
-                if (selectedSquare1st != -1 || selectedSquare2nd != -1) {
+                if (selectedSquare1st != INVALID || selectedSquare2nd != INVALID) {
                     selectedSquare1st = selectedSquare2nd;
                 }
                 selectedSquare2nd = i;
@@ -88,8 +89,8 @@ public class BoardPanel extends JPanel {
                 return;
             }
         }
-        selectedSquare1st = -1;
-        selectedSquare2nd = -1;
+        selectedSquare1st = INVALID;
+        selectedSquare2nd = INVALID;
         DefenderOfDeshmelDisplay.setSelectedPlayer(null);
     }
 

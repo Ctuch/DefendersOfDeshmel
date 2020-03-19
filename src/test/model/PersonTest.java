@@ -3,6 +3,7 @@ package model;
 import javafx.print.PageLayout;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ui.Sound;
 
 import java.util.ArrayList;
 
@@ -15,6 +16,8 @@ public class PersonTest {
     Person fire;
     Enemy soldier;
     Enemy archer;
+    Enemy sharpArch;
+    Enemy knight;
     Board board;
     ArrayList<Person> players;
 
@@ -26,6 +29,8 @@ public class PersonTest {
         fire = new Person("Fire Sorceress");
         soldier = new Enemy("Foot Soldier");
         archer = new Enemy("Ranged Shooter");
+        sharpArch = new Enemy("Sharp Shooter");
+        knight = new Enemy("Warped Knight");
         board = new Board();
         players = new ArrayList<>();
 
@@ -166,18 +171,18 @@ public class PersonTest {
         board.addCharacter(2, fire);
         int soldierAP = soldier.getAttackPower();
 
-        board.addCharacter(3, archer);
-        int archerAP = archer.getAttackPower();
+        board.addCharacter(3, knight);
+        int knightAP = knight.getAttackPower();
 
         ice.specialAction(board);
         assertTrue(ice.hasChargesRemaining());
         assertEquals(soldierAP - 1, soldier.getAttackPower());
-        assertEquals(archerAP - 1, archer.getAttackPower());
+        assertEquals(knightAP - 1, knight.getAttackPower());
 
         ice.specialAction(board);
         assertFalse(ice.hasChargesRemaining());
         assertEquals(soldierAP - 2, soldier.getAttackPower());
-        assertEquals(archerAP - 2, archer.getAttackPower());
+        assertEquals(1, knight.getAttackPower());
     }
 
     @Test
@@ -324,5 +329,11 @@ public class PersonTest {
         ice.setLocation(933, 47);
         assertEquals(933, ice.getLocationX());
         assertEquals(47, ice.getLocationY());
+    }
+
+    @Test
+    public void testGetAttackSound() {
+        assertEquals(knight.getAttackSound(), Sound.SWORD_FIGHT);
+        assertEquals(sharpArch.getAttackSound(), Sound.ARCHER);
     }
 }

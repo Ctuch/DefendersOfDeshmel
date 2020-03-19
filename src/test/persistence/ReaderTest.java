@@ -118,4 +118,32 @@ public class ReaderTest {
             fail();
         }
     }
+
+    @Test
+    public void testCheckIfGameToLoadYes() {
+        try {
+            assertTrue(reader.checkIfGameToLoad(new File("./data/testGameSave1.txt")));
+        } catch (IOException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testCheckIfGameToLoadNo() {
+        try {
+            assertFalse(reader.checkIfGameToLoad(new File("./data/testGameSave3.txt")));
+        } catch (IOException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testCheckIfGameToLoadException() {
+        try {
+            reader.checkIfGameToLoad(new File("not a file"));
+            fail();
+        } catch (IOException e) {
+            //good
+        }
+    }
 }

@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import static ui.Sound.*;
-//TODO: replace all SOP with display messages for player in display box
 
 //Main panel for displaying application into a GUI using Swing.
 //Controls background actions based on action listeners linked to associated buttons
@@ -65,14 +64,15 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         board = new Board();
         enemies = new ArrayList<>();
         players = new ArrayList<>();
-        enemyInteractionController = new EnemyInteractionController(board, players, enemies);
-        fileManager = new FileManager(board, players, enemies);
-        soundPlayer = new SoundPlayer();
+        displayLabel = new JLabel();
+        enemyInteractionController = new EnemyInteractionController(board, players, enemies, displayLabel);
+        fileManager = new FileManager(board, players, enemies, displayLabel);
+        soundPlayer = new SoundPlayer(displayLabel);
         createTimer();
     }
 
     private void createTimer() {
-        timer = new Timer(500, e -> {
+        timer = new Timer(1000, e -> {
             enemyInteractionController.enemyTurn();
             boardPanel.repaint();
             personPanel.repaint();
@@ -86,10 +86,8 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     private void initPanels() {
         boardPanel = new BoardPanel(board);
         personPanel = new OffBoardPersonPanel(players, enemies);
-        displayLabel = new JLabel();
-
-        rulesPanel = new RulesPanel();
-        mainMenuPanel = new MainMenuPanel(createMainMenuButtons(), board, players, enemies);
+        rulesPanel = new RulesPanel(displayLabel);
+        mainMenuPanel = new MainMenuPanel(createMainMenuButtons(), board, players, enemies, displayLabel);
         gameMenuPanel = new GameMenuPanel(createGameMenuButtons(), displayLabel);
     }
 
@@ -249,7 +247,6 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         if (squareFrom != BoardPanel.INVALID && squareTo != BoardPanel.INVALID) {
             int enemyNumber = enemies.size();
             if (enemyInteractionController.attack(squareFrom, squareTo)) {
-                soundPlayer.playSound(EXPLOSION);
                 if (enemyNumber - enemies.size() == 1) {
                     soundPlayer.playSound(DEAD);
                 }
@@ -297,6 +294,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     public void startNewGame(Difficulty difficulty) {
         Enemy.addEnemies(difficulty, enemies);
         Person.addPlayers(players);
+        personPanel.setGameOver(0);
         personPanel.repaint();
         switchMenuPanel();
     }
@@ -322,8 +320,10 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     private Boolean checkGameOver() {
         if (enemyInteractionController.checkGameOver()) {
             if (enemies.isEmpty()) {
+                personPanel.setGameOver(1);
                 soundPlayer.playSound(WIN_PLAYER);
             } else if (players.isEmpty()) {
+                personPanel.setGameOver(2);
                 soundPlayer.playSound(WIN_ENEMY);
             }
             fileManager.clearSave();

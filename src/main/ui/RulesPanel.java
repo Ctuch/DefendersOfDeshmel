@@ -9,10 +9,12 @@ public class RulesPanel extends JPopupMenu {
 
     private JTextArea rulesArea;
     private JScrollPane rulesScrollPane;
+    private JLabel displayLabel;
 
     //EFFECTS: sets the size of the panel and reads the rules file and displays its text
-    public RulesPanel() {
+    public RulesPanel(JLabel displayLabel) {
         setPreferredSize(new Dimension(800, 600));
+        this.displayLabel = displayLabel;
 
         rulesArea = new JTextArea();
         readInHelp();
@@ -35,7 +37,7 @@ public class RulesPanel extends JPopupMenu {
             rulesArea.read(br, "rulesArea");
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("I'm sorry I guess you'll have to play without rules");
+            displayLabel.setText("I'm sorry I guess you'll have to play without rules");
         }
         return rulesArea.getText();
     }

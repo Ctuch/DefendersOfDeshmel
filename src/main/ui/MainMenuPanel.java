@@ -17,13 +17,13 @@ public class MainMenuPanel extends JPanel {
 
     //EFFECTS: sets the layout of the panel, adds its title and buttons
     public MainMenuPanel(ArrayList<JButton> mainMenuButtons, Board board,
-                         ArrayList<Person> players, ArrayList<Enemy> enemies) {
+                         ArrayList<Person> players, ArrayList<Enemy> enemies, JLabel displayLabel) {
         setPreferredSize(new Dimension(DefenderOfDeshmelDisplay.MENU_WIDTH, HEIGHT));
         setLayout(new GridLayout(0, 1, 20, 20));
         setBackground(Color.PINK);
         createMenuLabel();
         buttons = mainMenuButtons;
-        fileManager = new FileManager(board, players, enemies);
+        fileManager = new FileManager(board, players, enemies, displayLabel);
 
         createMainMenuButtons();
     }

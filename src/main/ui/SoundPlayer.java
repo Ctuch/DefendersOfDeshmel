@@ -3,6 +3,7 @@ package ui;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.swing.*;
 import java.io.File;
 
 // class for managing sound effects in the game
@@ -17,8 +18,14 @@ public class SoundPlayer {
     private static final String ARROW_SOUND = "./data/sounds/arrow.wav";
     private static final String ADD_SOUND = "./data/sounds/add.wav";
     private static final String DEAD_SOUND =  "./data/sounds/dead.wav";
-    private static final String SPECIAL_ACTION_SOUND =  "./data/sounds/dead.wav";
+    private static final String SPECIAL_ACTION_SOUND =  "./data/sounds/specialAction.wav";
 
+    private JLabel displayLabel;
+
+    //EFFECTS: constructs a sound player with a display label for error messages
+    public SoundPlayer(JLabel displayLabel) {
+        this.displayLabel = displayLabel;
+    }
 
     //from https://stackoverflow.com/questions/6045384/playing-mp3-and-wav-in-java
     //EFFECTS: plays the sound clip associated with filePath
@@ -29,8 +36,7 @@ public class SoundPlayer {
             clip.open(audioInputStream);
             clip.start();
         } catch (Exception e) {
-            System.out.println("Error with playing sound.");
-            e.printStackTrace();
+            displayLabel.setText("Error playing sound - tell the developer there is a bug!");
         }
     }
 

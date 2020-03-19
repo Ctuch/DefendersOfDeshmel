@@ -1,5 +1,7 @@
 package model;
 
+import ui.Sound;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -22,6 +24,7 @@ public class Person {
     private String specialActionString;
     private int locationX;
     private int locationY;
+    private Sound attackSound;
 
     //EFFECTS: creates a new person that is available to put on the map and sets their attributes
     public Person(String name) {
@@ -80,6 +83,7 @@ public class Person {
         this.characterCode = "RS";
         this.numSpecialActionCharges = 0;
         this.specialActionString = "";
+        this.attackSound = Sound.ARCHER;
     }
 
     //MODIFIES: this
@@ -91,6 +95,7 @@ public class Person {
         this.characterCode = "IC";
         this.numSpecialActionCharges = 2;
         this.specialActionString = "Decrease all enemy attack power by 1";
+        this.attackSound = Sound.EXPLOSION;
     }
 
     //MODIFIES: this
@@ -102,6 +107,7 @@ public class Person {
         this.characterCode = "FR";
         this.numSpecialActionCharges = 2;
         this.specialActionString = "Damage all enemies by 3";
+        this.attackSound = Sound.EXPLOSION;
     }
 
     //MODIFIES: this
@@ -113,6 +119,7 @@ public class Person {
         this.characterCode = "FS";
         this.numSpecialActionCharges = 0;
         this.specialActionString = "";
+        this.attackSound = Sound.SWORD_FIGHT;
     }
 
     //REQUIRES: board is not null
@@ -241,6 +248,9 @@ public class Person {
         this.locationY = locationY;
     }
 
+    public Sound getAttackSound() {
+        return attackSound;
+    }
 
     //MODIFIES: this
     //EFFECTS: clears out players, and adds the persons to players (resets the list to default state)

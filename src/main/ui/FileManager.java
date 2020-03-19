@@ -8,6 +8,7 @@ import model.SquareWallConfigs;
 import persistence.Reader;
 import persistence.Writer;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -19,12 +20,14 @@ public class FileManager {
     private Board board;
     private ArrayList<Person> players;
     private ArrayList<Enemy> enemies;
+    private JLabel displayLabel;
 
     //EFFECTS: gets a copy of the board, players and enemies
-    public FileManager(Board board, ArrayList<Person> players, ArrayList<Enemy> enemies) {
+    public FileManager(Board board, ArrayList<Person> players, ArrayList<Enemy> enemies, JLabel displayLabel) {
         this.board = board;
         this.players = players;
         this.enemies = enemies;
+        this.displayLabel = displayLabel;
     }
 
     //EFFECTS: saves the game to the GAME_SAVE_FILE if no exception thrown
@@ -33,7 +36,7 @@ public class FileManager {
             Writer writer = new Writer(new File(GAME_SAVE_FILE));
             writer.write(board, players, enemies, SquareWallConfigs.getWallSetNum());
         } catch (IOException e) {
-            System.out.println("uh oh, your game could not be saved.");
+            displayLabel.setText("uh oh, your game could not be saved.");
         }
     }
 
@@ -43,7 +46,7 @@ public class FileManager {
             Writer writer = new Writer(new File(GAME_SAVE_FILE));
             writer.clearSave();
         } catch (IOException e) {
-            System.out.println("Something went wrong cleaning up old data. Keep on playing");
+            displayLabel.setText("Something went wrong cleaning up old data. Keep on playing");
         }
     }
 
@@ -59,13 +62,13 @@ public class FileManager {
             players.addAll(reader.getPlayers());
             int wallConfigNum = reader.getWallConfigNumber();
             board.setWallConfig(SquareWallConfigs.generateRandomWallSet(wallConfigNum));
-            System.out.println("Game Loaded");
+            displayLabel.setText("Game Loaded");
             return true;
         } catch (IOException e) {
-            System.out.println("I'm sorry, your game cannot be loaded. Please start a new game");
+            displayLabel.setText("I'm sorry, your game cannot be loaded. Please start a new game");
             return false;
         } catch (NullPointerException | JsonSyntaxException e) {
-            System.out.println("There is no game to load. Please start a new game");
+            displayLabel.setText("There is no game to load. Please start a new game");
             return false;
         }
     }

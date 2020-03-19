@@ -15,6 +15,8 @@ public class OffBoardPersonPanel extends JPanel {
     private ArrayList<Person> players;
     private ArrayList<Enemy> enemies;
 
+    private int gameOver = 0;
+
     private Person selectedPlayer;
 
     //EFFECTS: sets the panel layout, initializes variables, and adds mouse control to the panel
@@ -47,6 +49,10 @@ public class OffBoardPersonPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         drawCharacters(g);
+
+        if (enemies.isEmpty() && players.isEmpty() && gameOver >= 1) {
+            gameOver(g);
+        }
     }
 
     //MODIFIES: display
@@ -96,7 +102,39 @@ public class OffBoardPersonPanel extends JPanel {
         }
     }
 
+    //MODIFIES: g
+    //EFFECTS: displays the game over and winner or loser strings
+    private void gameOver(Graphics g) {
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", 20, 15));
+        FontMetrics fm = g.getFontMetrics();
+        centerString("Game Over!", g, fm, getHeight() / 2);
+
+        String winning;
+        if (gameOver == 1) {
+            winning = "You won!";
+        } else {
+            winning = "You lost.";
+        }
+        centerString(winning, g, fm, getHeight() / 2 + 20);
+    }
+
+    // Centers a string on the screen
+    // MODIFIES: g
+    // EFFECTS:  centres the string str horizontally onto g at vertical position yPos
+    // code from https://github.students.cs.ubc.ca/CPSC210/B02-SpaceInvadersBase/
+    //         specifically the GamePanel.java class in the UI package
+    private void centerString(String str, Graphics g, FontMetrics fm, int posY) {
+        int width = fm.stringWidth(str);
+        g.drawString(str, (getWidth() - width) / 2, posY);
+    }
+
     public Person getSelectedPlayer() {
         return selectedPlayer;
+    }
+
+
+    public void setGameOver(int gameOver) {
+        this.gameOver = gameOver;
     }
 }

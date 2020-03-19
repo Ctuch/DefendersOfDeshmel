@@ -5,6 +5,7 @@ import model.Board;
 import model.Enemy;
 import model.Person;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -15,13 +16,18 @@ public class EnemyInteractionController {
     private Board board;
     private ArrayList<Person> players;
     private ArrayList<Enemy> enemies;
+    private JLabel displayLabel;
+    private SoundPlayer soundPlayer;
 
     //creates a new random, and assigns game variables (board, players, enemies)
-    public EnemyInteractionController(Board board, ArrayList<Person> players, ArrayList<Enemy> enemies) {
+    public EnemyInteractionController(Board board, ArrayList<Person> players, ArrayList<Enemy> enemies,
+                                      JLabel displayLabel) {
         random = new Random();
         this.board = board;
         this.players = players;
         this.enemies = enemies;
+        this.displayLabel = displayLabel;
+        soundPlayer = new SoundPlayer(displayLabel);
     }
 
     //REQUIRES: enemies is not empty
@@ -35,7 +41,7 @@ public class EnemyInteractionController {
         Action action = enemy.decideAction(board);
         if (action == Action.ADD) {
             board.findEmptySquare(enemy);
-            System.out.println("Enemy " + enemy.getName() + " has been added to the board.");
+            displayLabel.setText("Enemy " + enemy.getName() + "!");
         } else if (action == Action.ATTACK) {
             Person defender = enemy.canAttackPerson(board);
             attack(enemy, defender);
@@ -49,14 +55,15 @@ public class EnemyInteractionController {
     private Boolean attack(Person attacker, Person defender) {
         if (board.isInWeaponRange(attacker, defender)) {
             defender.takeDamage(attacker.getAttackPower());
-            System.out.println(defender.getName() + " has lost " + attacker.getAttackPower() + " health");
+            displayLabel.setText(defender.getName() + " has lost " + attacker.getAttackPower() + " health");
+            soundPlayer.playSound(attacker.getAttackSound());
             if (defender.isDead()) {
-                System.out.println(defender.getName() + " is dead");
+                soundPlayer.playSound(Sound.DEAD);
                 board.removeDeadDefender(defender, enemies, players);
             }
             return true;
         } else {
-            System.out.println("You are out of range to make that attack");
+            displayLabel.setText("You are out of range to make that attack");
             return false;
         }
     }
@@ -84,19 +91,14 @@ public class EnemyInteractionController {
     //MODIFIES: board
     //EFFECTS: moves enemy in the direction specified by the action
     private void enemyMoveInDirection(Action action, Enemy enemy) {
-        String statement = enemy.getName() + " has moved ";
         if (action == Action.MOVE_LEFT) {
             board.moveCharacter(Board.LEFT, enemy);
-            System.out.println(statement + "left");
         } else if (action == Action.MOVE_RIGHT) {
             board.moveCharacter(Board.RIGHT, enemy);
-            System.out.println(statement + "right");
         } else if (action == Action.MOVE_UP) {
             board.moveCharacter(Board.UP, enemy);
-            System.out.println(statement + "up");
         } else if (action == Action.MOVE_DOWN) {
             board.moveCharacter(Board.DOWN, enemy);
-            System.out.println(statement + "down");
         }
     }
 }

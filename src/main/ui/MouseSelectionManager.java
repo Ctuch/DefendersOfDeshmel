@@ -19,7 +19,6 @@ public class MouseSelectionManager {
     public Person updateSelectedPlayer(int mouseX, int mouseY, ArrayList<Person> players) {
         for (Person player : players) {
             if (isInSpace(mouseX, mouseY, player.getLocationX(), player.getLocationY())) {
-                System.out.println("selected player " + player.getName());
                 return player;
             }
         }

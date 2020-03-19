@@ -36,3 +36,22 @@ As a user I want to be able to:
 - be able to save their game with all character location and stats preserved
 - be able to reload their previous game and start playing where they left off
 - clear the users save when they finish a game
+
+## Instructions for Grader
+
+- You can generate the first required event by first clicking on the blue circle representing the character you want to 
+  add to the board from the lower panel, then clicking on the square you would like to add them to, and finally clicking 
+  on the 'Add Character' button in the game panel.
+- You can generate the second required event by deciding to move a character you have added to the board. To do this, 
+  first click on the character you want to move, then on the square you want them to move to, then finally clicking
+  the 'Move Character' button.
+- You can trigger my audio component by taking any in game action successfully. Each is linked to a thematic sound 
+  effect. You can also trigger an audio component by finishing a game.
+- You can save the state of my application by clicking the 'Save and Quit' button on the game menu.
+- You can reload the state of my application by clicking the 'load previous game' button on the main menu.
+    
+    *Note if this button is greyed out, there is no save to load (because you either just finished a game or it is your
+    first time playing). If this is the case, you must start a new game, save it, and then you will be able to use this
+     functionality.
+     
+Additional game instructions can be found by clicking the 'Display help' button on the game menu

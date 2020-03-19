@@ -122,18 +122,14 @@ public class Enemy extends Person {
     //EFFECTS: clears out all enemies, and adds i new enemies to enemies
     public static void addEnemies(Difficulty difficulty, ArrayList<Enemy> enemies) {
         enemies.clear();
-        if (difficulty == Difficulty.EASY) {
-            enemies.add(new Enemy("Foot Soldier"));
-            enemies.add(new Enemy("Ranged Shooter"));
-            //add a third enemy
-            //TODO: design 8 more enemies
+        enemies.add(new Enemy("Foot Soldier"));
+        enemies.add(new Enemy("Ranged Shooter"));
+        if (difficulty == Difficulty.MEDIUM || difficulty == Difficulty.HARD) {
+            enemies.add(new Enemy("Sharp Shooter"));
         }
-//        if (i >= 6) {
-//            //add 3 more enemies
-//        }
-//        if (i == 10) {
-//            //add 4 more enemies
-//        }
+        if (difficulty == Difficulty.HARD) {
+            enemies.add(new Enemy("Warped Knight"));
+        }
     }
 
     //MODIFIES: this

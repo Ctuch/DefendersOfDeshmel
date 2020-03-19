@@ -40,7 +40,6 @@ public class SoundPlayer {
         }
     }
 
-    //TODO: finish implementing all sounds for all actions INCLUDING ENEMIES
     //EFFECTS: plays the sound associated with sound
     public void playSound(Sound sound) {
         if (sound == Sound.EXPLOSION) {

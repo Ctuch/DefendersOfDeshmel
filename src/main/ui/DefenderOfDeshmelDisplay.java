@@ -210,7 +210,6 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     private void addCharacter() {
         Person playerToAdd = personPanel.getSelectedPlayer();
         if (playerToAdd != null) {
-            //TODO: have them select the square after button? Ie a timer to have them select a square...
             int squareToAdd = boardPanel.getSelectedSquare2nd();
             if (squareToAdd != BoardPanel.INVALID) {
                 //TODO: have feedback for the user if unsuccessful?

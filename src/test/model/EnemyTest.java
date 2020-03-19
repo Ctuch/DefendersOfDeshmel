@@ -414,8 +414,13 @@ public class EnemyTest {
         assertEquals(enemies.size(), 2);
         assertFalse(enemies.contains(fireDecoy));
 
+        Enemy.addEnemies(Difficulty.MEDIUM, enemies);
+        assertEquals(enemies.size(), 3);
+        assertEquals(new Enemy("Sharp Shooter"), enemies.get(2));
+
         Enemy.addEnemies(Difficulty.HARD, enemies);
-        assertEquals(enemies.size(), 0);
+        assertEquals(enemies.size(), 4);
+        assertEquals(new Enemy("Warped Knight"), enemies.get(3));
     }
 
     @Test

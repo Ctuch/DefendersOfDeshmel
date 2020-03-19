@@ -76,6 +76,16 @@ public class Reader {
         }
     }
 
+    //EFFECTS: returns true if there is a game to load, false otherwise or if an exception is thrown
+    public boolean checkIfGameToLoad(File file) throws IOException {
+        BufferedReader fileReader = new BufferedReader(new FileReader(file));
+        String firstLine = fileReader.readLine();
+        if (firstLine.equalsIgnoreCase(Writer.EMPTY_FILE)) {
+            return false;
+        }
+        return true;
+    }
+
     public ArrayList<Person> getBoardState() {
         return boardState;
     }

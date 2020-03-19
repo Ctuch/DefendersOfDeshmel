@@ -68,6 +68,12 @@ public class Person {
             case "Ranged Shooter":
                 createRangedShooter();
                 break;
+            case "Sharp Shooter":
+                createSharpShooter();
+                break;
+            case "Warped Knight":
+                createWarpedKnight();
+                break;
             default:
                 createFootSoldier();
                 break;
@@ -122,6 +128,30 @@ public class Person {
         this.attackSound = Sound.SWORD_FIGHT;
     }
 
+    //MODIFIES: this
+    //EFFECTS: adds weapon, attackPower and health attributes for an sharp shooter
+    private void createSharpShooter() {
+        this.weapon = new Weapon("Pistol Crossbow", 2);
+        this.attackPower = 5;
+        this.health = 9;
+        this.characterCode = "SS";
+        this.numSpecialActionCharges = 0;
+        this.specialActionString = "";
+        this.attackSound = Sound.ARCHER;
+    }
+
+    //MODIFIES: this
+    //EFFECTS: adds weapon, attackPower and health attributes for an foot soldier
+    private void createWarpedKnight() {
+        this.weapon = new Weapon("Lance", 1);
+        this.attackPower = 2;
+        this.health = 16;
+        this.characterCode = "WN";
+        this.numSpecialActionCharges = 0;
+        this.specialActionString = "";
+        this.attackSound = Sound.SWORD_FIGHT;
+    }
+
     //REQUIRES: board is not null
     //MODIFIES: board
     //EFFECTS: triggers special action associated with this person
@@ -157,6 +187,9 @@ public class Person {
         for (Person person: board.getBoard()) {
             if (person != null && person.isEnemy()) {
                 person.setAttackPower(person.getAttackPower() - attackPower);
+                if (person.getAttackPower() <= 0) {
+                    person.setAttackPower(1);
+                }
             }
         }
     }

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 
 //panel for displaying characters, walls and board squares on board
 public class BoardPanel extends JPanel {
-//TODO: create a parent class that has an implementation for drawing the characters (board panel, offboard panel?)
     protected static final int SQUARE_SPACING = 60;
     protected static final int SQUARE_HEIGHT = 50;
     protected static final int VERT_TEXT_ADJUSTMENT = 5;

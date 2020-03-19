@@ -12,7 +12,6 @@ import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 
-//TODO: add different feedback than SOP! (display panel?)
 //manages ui interaction with the files through the Reader and Writer classes
 public class FileManager {
 
@@ -21,6 +20,7 @@ public class FileManager {
     private ArrayList<Person> players;
     private ArrayList<Enemy> enemies;
     private JLabel displayLabel;
+    private Reader reader;
 
     //EFFECTS: gets a copy of the board, players and enemies
     public FileManager(Board board, ArrayList<Person> players, ArrayList<Enemy> enemies, JLabel displayLabel) {
@@ -28,6 +28,7 @@ public class FileManager {
         this.players = players;
         this.enemies = enemies;
         this.displayLabel = displayLabel;
+        reader = new Reader();
     }
 
     //EFFECTS: saves the game to the GAME_SAVE_FILE if no exception thrown
@@ -54,7 +55,6 @@ public class FileManager {
     //EFFECTS: loads game from the GAME_SAVE_FILE. returns true if the game is loaded, false if the user needs to start
     //         a new one
     public boolean loadGame() {
-        Reader reader = new Reader();
         try {
             reader.readFile(new File(GAME_SAVE_FILE));
             board.setBoard(reader.getBoardState());
@@ -73,19 +73,13 @@ public class FileManager {
         }
     }
 
-    //TODO: move this into reader class, (keep method and call it from here)
     //EFFECTS: returns true if there is a game to load, false otherwise or if an exception is thrown
     public boolean checkIfGameToLoad() {
         try {
-            BufferedReader fileReader = new BufferedReader(new FileReader(new File(GAME_SAVE_FILE)));
-            String firstLine = fileReader.readLine();
-            if (firstLine.equalsIgnoreCase("No save")) {
-                return false;
-            }
+            return reader.checkIfGameToLoad(new File(GAME_SAVE_FILE));
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
-        return true;
     }
 }

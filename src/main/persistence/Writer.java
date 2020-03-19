@@ -10,7 +10,9 @@ import java.util.ArrayList;
 
 // A writer that writes JSON objects in to a game save text file
 public class Writer {
+    protected static final String EMPTY_FILE = "No save";
     private BufferedWriter bufferedWriter;
+
 
     //EFFECTS: creates a new writer to write to the file
     public Writer(File file) throws IOException {
@@ -40,7 +42,7 @@ public class Writer {
     //EFFECTS: writes over past save so that nothing can be read in if attempted to load file
     //         throws IOException if exception is raised writing to file
     public void clearSave() throws IOException {
-        bufferedWriter.write("No save");
+        bufferedWriter.write(EMPTY_FILE);
         close();
     }
 

@@ -55,3 +55,7 @@ As a user I want to be able to:
      functionality.
      
 Additional game instructions can be found by clicking the 'Display help' button on the game menu
+
+## Phase 4: Task 2
+
+I have chosen to test and design a class that is robust. My Enemy.java class in the model class is robust, with particular focus on the moveTowardTarget method which throws a NoViableDirectionException if the enemy cannot move, and the findClosestPerson method which throws a PersonNotOnBoardException. You can find corresponding tests in the EnemyTest.java file in the test module.

@@ -2,6 +2,7 @@ package ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import static ui.DefenderOfDeshmelDisplay.MENU_WIDTH;
@@ -12,11 +13,11 @@ public abstract class MenuPanel extends JPanel {
     protected ArrayList<JButton> buttons;
 
     //EFFECTS: sets the size, layout, and background color for the panel
-    protected MenuPanel(ArrayList<JButton> menuButtons, int vgap) {
+    protected MenuPanel(ActionListener listener, int vgap) {
         setPreferredSize(new Dimension(DefenderOfDeshmelDisplay.MENU_WIDTH, HEIGHT));
         setLayout(new GridLayout(0, 1, 20, vgap));
         setBackground(Colors.MENU);
-        buttons = menuButtons;
+        buttons = createMenuButtons(listener);
     }
 
     //MODIFIES: this
@@ -37,4 +38,14 @@ public abstract class MenuPanel extends JPanel {
             add(button);
         }
     }
+
+    // EFFECTS: adds the ActionListener listener to each button
+    protected void addActionListener(ArrayList<JButton> buttons, ActionListener listener) {
+        for (JButton button : buttons) {
+            button.addActionListener(listener);
+        }
+    }
+
+    protected abstract ArrayList<JButton> createMenuButtons(ActionListener listener);
+
 }

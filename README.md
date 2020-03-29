@@ -74,4 +74,9 @@ identical method for creating the label for the panel other than the text, and a
 buttons to the gridLayout, and same size profile, I decided to create an abstract parent class called MenuPanel. 
 MenuPanel provides the above functionality and allows changes to the design of the menu panels to only be necessary in 
 one class, decreasing coupling.
+2. The second problem I identified was that DefendersOfDeshmelDisplay had more than a single responsibility. It was
+managing the button action listeners through triggering the corresponding actions, as well as creating the buttons
+themselves and sending them off to the panels to be created. I fixed this cohesion issue by moving the creation of the 
+buttons to each of GameMenuPanel and MainMenuPanel (where each overrides an abstract method created in MenuPanel to 
+avoid issues with coupling), and moved the addListener code to the MenuPanel abstract class.
 

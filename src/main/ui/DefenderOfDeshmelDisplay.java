@@ -87,8 +87,8 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         boardPanel = new BoardPanel(board);
         personPanel = new OffBoardPersonPanel(players, enemies);
         rulesPanel = new RulesPanel(displayLabel);
-        mainMenuPanel = new MainMenuPanel(createMainMenuButtons(), board, players, enemies, displayLabel);
-        gameMenuPanel = new GameMenuPanel(createGameMenuButtons(), displayLabel);
+        mainMenuPanel = new MainMenuPanel(new MainMenuButtonActionListener(), board, players, enemies, displayLabel);
+        gameMenuPanel = new GameMenuPanel(new GameMenuButtonActionListener(), displayLabel);
     }
 
     //MODIFIES: this
@@ -109,57 +109,9 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         setLocation((screen.width - getWidth()) / 2, (screen.height - getHeight()) / 2);
     }
 
-    // EFFECTS: creates the game menu buttons and adds an action listener to each, returning the list of buttons
-    private ArrayList<JButton> createGameMenuButtons() {
-        JButton addButton = new JButton("Add Character");
-        JButton moveButton = new JButton("Move Character");
-        JButton attackButton = new JButton("Attack Enemy");
-        JButton specialActionButton = new JButton("Special Action");
-        JButton displayButton = new JButton("Display Character Stats");
-        JButton helpButton = new JButton("Display help");
-        JButton saveQuitButton = new JButton("Save and Quit");
-        ArrayList<JButton> gameMenuButtons = new ArrayList<>();
-        gameMenuButtons.add(addButton);
-        gameMenuButtons.add(moveButton);
-        gameMenuButtons.add(attackButton);
-        gameMenuButtons.add(specialActionButton);
-        gameMenuButtons.add(displayButton);
-        gameMenuButtons.add(helpButton);
-        gameMenuButtons.add(saveQuitButton);
-
-        addActionListener(gameMenuButtons, new GameMenuButtonActionListener());
-
-        return gameMenuButtons;
-    }
-
-    // EFFECTS: creates the main menu buttons and adds an action listener to each, returning the list of buttons
-    private ArrayList<JButton> createMainMenuButtons() {
-        JButton easyButton = new JButton("Easy");
-        JButton mediumButton = new JButton("Medium");
-        JButton hardButton = new JButton("Hard");
-        JButton loadButton = new JButton("Load previous game");
-        JButton quitButton = new JButton("Quit");
-        ArrayList<JButton> mainMenuButtons = new ArrayList<>();
-        mainMenuButtons.add(easyButton);
-        mainMenuButtons.add(mediumButton);
-        mainMenuButtons.add(hardButton);
-        mainMenuButtons.add(loadButton);
-        mainMenuButtons.add(quitButton);
-        addActionListener(mainMenuButtons, new MainMenuButtonActionListener());
-        return mainMenuButtons;
-    }
-
-
-    // EFFECTS: adds the ActionListener listener to each button
-    private void addActionListener(ArrayList<JButton> buttons, ActionListener listener) {
-        for (JButton button : buttons) {
-            button.addActionListener(listener);
-        }
-    }
-
     //MODIFIES: this
     //EFFECTS: selects and runs the method associated with the triggered action from the game buttons
-    private class GameMenuButtonActionListener implements ActionListener {
+    protected class GameMenuButtonActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             String command = e.getActionCommand();

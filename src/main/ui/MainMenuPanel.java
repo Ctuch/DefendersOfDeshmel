@@ -5,35 +5,28 @@ import model.Enemy;
 import model.Person;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 
 //panel that displays all the play (main menu) options for the user
-public class MainMenuPanel extends JPanel {
+public class MainMenuPanel extends MenuPanel {
 
-    //TODO: create a class that both this and game menu panel extend
-    private ArrayList<JButton> buttons;
     private FileManager fileManager;
 
     //EFFECTS: sets the layout of the panel, adds its title and buttons
     public MainMenuPanel(ArrayList<JButton> mainMenuButtons, Board board,
                          ArrayList<Person> players, ArrayList<Enemy> enemies, JLabel displayLabel) {
-        setPreferredSize(new Dimension(DefenderOfDeshmelDisplay.MENU_WIDTH, HEIGHT));
-        setLayout(new GridLayout(0, 1, 20, 20));
-        setBackground(Color.PINK);
-        createMenuLabel();
-        buttons = mainMenuButtons;
+        super(mainMenuButtons, 20);
+        createMenuLabel("Main Menu");
         fileManager = new FileManager(board, players, enemies, displayLabel);
 
-        createMainMenuButtons();
+        createMenuButtons();
     }
 
     //MODIFIES: this
     //EFFECTS: adds buttons to this and sets the load button state
-    private void createMainMenuButtons() {
-        for (JButton button : buttons) {
-            add(button);
-        }
+    @Override
+    protected void createMenuButtons() {
+        super.createMenuButtons();
         setLoadButtonState();
     }
 
@@ -47,16 +40,4 @@ public class MainMenuPanel extends JPanel {
             loadButton.setEnabled(false);
         }
     }
-
-    //MODIFIES: this
-    //EFFECTS: creates a main menu label to display on the panel
-    private void createMenuLabel() {
-        JLabel mainMenu = new JLabel("Main Menu");
-        mainMenu.setPreferredSize(new Dimension(DefenderOfDeshmelDisplay.MENU_WIDTH,
-                BoardPanel.BOARD_HEIGHT / 6));
-        mainMenu.setForeground(Color.WHITE);
-        mainMenu.setHorizontalAlignment(JLabel.CENTER);
-        add(mainMenu);
-    }
-
 }

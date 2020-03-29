@@ -9,41 +9,16 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 import static ui.DefenderOfDeshmelDisplay.MENU_WIDTH;
 
 //panel that displays all the play (game menu) options for the user
-public class GameMenuPanel extends JPanel {
-
-    private ArrayList<JButton> buttons;
+public class GameMenuPanel extends MenuPanel {
 
     //EFFECTS: sets the layout of the panel, adds its title and buttons
-    public GameMenuPanel(ArrayList<JButton> mainMenuButtons, JLabel displayLabel) {
-        setPreferredSize(new Dimension(MENU_WIDTH, HEIGHT));
-        setLayout(new GridLayout(0, 1, 20, 5));
-        setBackground(Color.BLUE);
+    public GameMenuPanel(ArrayList<JButton> gameMenuButtons, JLabel displayLabel) {
+        super(gameMenuButtons, 5);
         setVisible(false);
 
-        createMenuLabel();
-        buttons = mainMenuButtons;
-
-        createGameMenuButtons();
+        createMenuLabel("Game Menu");
+        createMenuButtons();
         createDisplayLabel(displayLabel);
-    }
-
-    //MODIFIES: this
-    //EFFECTS: adds buttons to this
-    private void createGameMenuButtons() {
-        for (JButton button : buttons) {
-            add(button);
-        }
-    }
-
-    //MODIFIES: this
-    //EFFECTS: creates a game menu label to display on the panel
-    private void createMenuLabel() {
-        JLabel mainMenu = new JLabel("Game Menu");
-        mainMenu.setPreferredSize(new Dimension(MENU_WIDTH,
-                BoardPanel.BOARD_HEIGHT / 6));
-        mainMenu.setForeground(Color.WHITE);
-        mainMenu.setHorizontalAlignment(JLabel.CENTER);
-        add(mainMenu);
     }
 
     //MODIFIES: this

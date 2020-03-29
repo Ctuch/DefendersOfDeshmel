@@ -56,6 +56,22 @@ As a user I want to be able to:
      
 Additional game instructions can be found by clicking the 'Display help' button on the game menu
 
-## Phase 4: Task 2
+## Phase 4
 
-I have chosen to test and design a class that is robust. My Enemy.java class in the model class is robust, with particular focus on the moveTowardTarget method which throws a NoViableDirectionException if the enemy cannot move, and the findClosestPerson method which throws a PersonNotOnBoardException. You can find corresponding tests in the EnemyTest.java file in the test module.
+### Phase 4: Task 2
+
+I have chosen to test and design a class that is robust. My Enemy.java class in the model class is robust, with 
+particular focus on the moveTowardTarget method which throws a NoViableDirectionException if the enemy cannot move, 
+and the findClosestPerson method which throws a PersonNotOnBoardException. You can find corresponding tests in the 
+EnemyTest.java file in the test module.
+
+### Phase 4: Task 3
+
+1. The first problem I identified was that their wasn't a single point of control and code duplication for the 
+GameMenuPanel and MainMenuPanel which are meant to have similar functionality but present different button options and
+have a minor difference in display, as well as show at different times. Since they had so much overlap, with a virtually
+identical method for creating the label for the panel other than the text, and a very similar method for adding the
+buttons to the gridLayout, and same size profile, I decided to create an abstract parent class called MenuPanel. 
+MenuPanel provides the above functionality and allows changes to the design of the menu panels to only be necessary in 
+one class, decreasing coupling.
+

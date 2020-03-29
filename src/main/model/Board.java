@@ -174,17 +174,6 @@ public class Board {
         return positionP1 % 5;
     }
 
-
-    //EFFECTS: returns the Person object associated with the given character code
-    public Person findPersonByCharacterCode(String code) {
-        for (int i = 0; i < 25; i++) {
-            if (board.get(i) != null && board.get(i).getCharacterCode().equalsIgnoreCase(code)) {
-                return board.get(i);
-            }
-        }
-        return null;
-    }
-
     //MODIFIES: board. savedGame
     //EFFECTS: clears all characters off the board, fills each square with null, and sets a new wall config,
     //         removes save from file

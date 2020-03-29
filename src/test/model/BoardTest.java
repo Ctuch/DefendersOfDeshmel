@@ -306,15 +306,6 @@ class BoardTest {
     }
 
     @Test
-    public void testFindCharacterCode() {
-        board.addCharacter(3, iceSor);
-        Person findable = board.findPersonByCharacterCode("iC");
-        assertEquals(findable, iceSor);
-        Person notFindable = board.findPersonByCharacterCode("ww");
-        assertNull(notFindable);
-    }
-
-    @Test
     public void testGetWallConfig() {
         assertEquals(board.getWallConfig().size(), 25);
     }

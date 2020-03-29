@@ -293,20 +293,6 @@ public class Person {
         players.add(new Person("Ice Sorcerer"));
     }
 
-    //EFFECTS: produces the associated character with chrCode or null if doesn't exist/ is already dead
-    public static Person selectCharacterByCharacterCode(String chrCode, Board board, ArrayList<Person> players) {
-        Person person = board.findPersonByCharacterCode(chrCode);
-        if (person != null) {
-            return person;
-        }
-        for (Person player : players) {
-            if (player.getCharacterCode().equalsIgnoreCase(chrCode)) {
-                return player;
-            }
-        }
-        return null;
-    }
-
     //EFFECTS: produces description of person
     @Override
     public String toString() {

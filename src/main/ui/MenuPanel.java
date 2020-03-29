@@ -11,6 +11,7 @@ public abstract class MenuPanel extends JPanel {
 
     protected ArrayList<JButton> buttons;
 
+    //EFFECTS: sets the size, layout, and background color for the panel
     protected MenuPanel(ArrayList<JButton> menuButtons, int vgap) {
         setPreferredSize(new Dimension(DefenderOfDeshmelDisplay.MENU_WIDTH, HEIGHT));
         setLayout(new GridLayout(0, 1, 20, vgap));

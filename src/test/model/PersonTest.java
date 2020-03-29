@@ -316,15 +316,6 @@ public class PersonTest {
     }
 
     @Test
-    public void testSelectCharacterByCode() {
-        Person.addPlayers(players);
-        board.addCharacter(3, fire);
-        assertNull(Person.selectCharacterByCharacterCode("__", board, players));
-        assertEquals(fire, Person.selectCharacterByCharacterCode("fr", board, players));
-        assertEquals(ice, Person.selectCharacterByCharacterCode("ic", board, players));
-    }
-
-    @Test
     public void testWallLocation() {
         ice.setLocation(933, 47);
         assertEquals(933, ice.getLocationX());

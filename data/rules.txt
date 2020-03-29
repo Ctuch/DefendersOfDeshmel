@@ -1,6 +1,7 @@
 Welcome to Defenders of Deshmel!
 
-You control the players - a bank of characters that you can add to the board, move around, and attack enemies with.
+You control the players - a bank of characters (BLUE circles) that you can add to the board, move around, and attack
+enemies with.
 
 In this simple turn based application, you take an action and the enemies will retaliate.
 

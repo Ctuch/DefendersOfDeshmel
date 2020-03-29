@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 
 //represents a 5v5 grid with filled or empty squares, some separated by walls
@@ -20,7 +21,7 @@ public class Board {
     public static final int DOWN = 3;
 
     private ArrayList<Person> board;
-    private ArrayList<SquareWall> wallConfig;
+    private Map<Integer, SquareWall> wallConfig;
     private SquareWallConfigs squareWallConfigs;
 
     //EFFECTS: An empty board grid is generated and a wall configuration is created
@@ -220,7 +221,7 @@ public class Board {
         }
     }
 
-    public ArrayList<SquareWall> getWallConfig() {
+    public Map<Integer, SquareWall> getWallConfig() {
         return wallConfig;
     }
 
@@ -232,7 +233,7 @@ public class Board {
         this.board = board;
     }
 
-    public void setWallConfig(ArrayList<SquareWall> wallConfig) {
+    public void setWallConfig(Map<Integer, SquareWall> wallConfig) {
         this.wallConfig = wallConfig;
     }
 

@@ -1,6 +1,9 @@
 package model;
 
 
+import model.exceptions.IndexNotInBoundsException;
+import model.exceptions.NoViableDirectionException;
+import model.exceptions.PersonNotOnBoardException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -272,49 +275,77 @@ public class EnemyTest {
     public void testMoveTowardTargetUp() {
         board.addCharacter(12, enemyFS);
         board.addCharacter(2, personIce);
-        assertEquals(enemyFS.moveTowardTarget(board, 2, 2, 2), Action.MOVE_UP);
+        try {
+            assertEquals(enemyFS.moveTowardTarget(board, 2, 2, 2), Action.MOVE_UP);
+        } catch (IndexNotInBoundsException | NoViableDirectionException e) {
+            fail();
+        }
     }
 
     @Test
     public void testMoveTowardTargetDown() {
         board.addCharacter(2, enemyFS);
         board.addCharacter(12, personIce);
-        assertEquals(enemyFS.moveTowardTarget(board, 12, 0, 2), Action.MOVE_DOWN);
+        try {
+            assertEquals(enemyFS.moveTowardTarget(board, 12, 0, 2), Action.MOVE_DOWN);
+        } catch (IndexNotInBoundsException | NoViableDirectionException e) {
+            fail();
+        }
     }
 
     @Test
     public void testMoveTowardTargetLeft() {
         board.addCharacter(12, enemyFS);
         board.addCharacter(10, personIce);
-        assertEquals(enemyFS.moveTowardTarget(board, 10, 2, 2), Action.MOVE_LEFT);
+        try {
+            assertEquals(enemyFS.moveTowardTarget(board, 10, 2, 2), Action.MOVE_LEFT);
+        } catch (IndexNotInBoundsException | NoViableDirectionException e) {
+            fail();
+        }
     }
 
     @Test
     public void testMoveTowardTargetRight() {
         board.addCharacter(10, enemyFS);
         board.addCharacter(12, personIce);
-        assertEquals(Action.MOVE_RIGHT, enemyFS.moveTowardTarget(board, 12, 2, 0));
+        try {
+            assertEquals(Action.MOVE_RIGHT, enemyFS.moveTowardTarget(board, 12, 2, 0));
+        } catch (IndexNotInBoundsException | NoViableDirectionException e) {
+            fail();
+        }
     }
 
     @Test
     public void testMoveTowardTargetRightColGreater() {
         board.addCharacter(10, enemyFS);
         board.addCharacter(17, personIce);
-        assertEquals(Action.MOVE_RIGHT, enemyFS.moveTowardTarget(board, 17, 2, 0));
+        try {
+            assertEquals(Action.MOVE_RIGHT, enemyFS.moveTowardTarget(board, 17, 2, 0));
+        } catch (IndexNotInBoundsException | NoViableDirectionException e) {
+            fail();
+        }
     }
 
     @Test
     public void testMoveTowardTargetLeftColRowSame() {
         board.addCharacter(14, enemyFS);
         board.addCharacter(22, personIce);
-        assertEquals(Action.MOVE_LEFT, enemyFS.moveTowardTarget(board, 22, 2, 4));
+        try {
+            assertEquals(Action.MOVE_LEFT, enemyFS.moveTowardTarget(board, 22, 2, 4));
+        } catch (IndexNotInBoundsException | NoViableDirectionException e) {
+            fail();
+        }
     }
 
     @Test
     public void testMoveTowardTargetDownRowGreater() {
         board.addCharacter(3, enemyFS);
         board.addCharacter(22, personIce);
-        assertEquals(Action.MOVE_LEFT, enemyFS.moveTowardTarget(board, 22, 0, 3));
+        try {
+            assertEquals(Action.MOVE_LEFT, enemyFS.moveTowardTarget(board, 22, 0, 3));
+        } catch (IndexNotInBoundsException | NoViableDirectionException e) {
+            fail();
+        }
     }
 
     @Test
@@ -322,13 +353,92 @@ public class EnemyTest {
         board.setWallConfig(SquareWallConfigs.generateWallSetOne());
         board.addCharacter(8, enemyFS);
         board.addCharacter(19, personIce);
-        assertEquals(Action.MOVE_UP, enemyFS.moveTowardTarget(board, 19, 3, 2));
+        try {
+            assertEquals(Action.MOVE_UP, enemyFS.moveTowardTarget(board, 19, 1, 3));
+        } catch (IndexNotInBoundsException | NoViableDirectionException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testMoveTowardTargetIndexNotValidLow() {
+        board.addCharacter(8, enemyFS);
+        board.addCharacter(19, personIce);
+        try {
+            enemyFS.moveTowardTarget(board, -7, 3, 2);
+            fail();
+        } catch (IndexNotInBoundsException e) {
+            //good
+        } catch (NoViableDirectionException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testMoveTowardTargetIndexNotValidHighBorderCase() {
+        board.addCharacter(2, enemyFS);
+        board.addCharacter(1, personIce);
+        try {
+            enemyFS.moveTowardTarget(board, 25, 3, 2);
+            fail();
+        } catch (IndexNotInBoundsException e) {
+            //good
+        } catch (NoViableDirectionException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testMoveTowardTargetIndexNotValidHigh() {
+        board.addCharacter(3, enemyFS);
+        board.addCharacter(21, personIce);
+        try {
+            enemyFS.moveTowardTarget(board, 100, 3, 2);
+            fail();
+        } catch (IndexNotInBoundsException e) {
+            //good
+        } catch (NoViableDirectionException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testMoveTowardTargetIndexNotValidLowBorderCase() {
+        board.addCharacter(15, enemyFS);
+        board.addCharacter(6, personIce);
+        try {
+            enemyFS.moveTowardTarget(board, -1, 3, 2);
+            fail();
+        } catch (IndexNotInBoundsException e) {
+            //good
+        } catch (NoViableDirectionException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testMoveTowardTargetNoViableDirections() {
+        board.setWallConfig(SquareWallConfigs.generateWallSetOne());
+        board.addCharacter(8, enemyFS);
+        board.addCharacter(3, personIce);
+        try {
+            enemyFS.moveTowardTarget(board, 3, 1, 3);
+            fail();
+        } catch (IndexNotInBoundsException e) {
+            fail();
+        } catch (NoViableDirectionException e) {
+            //good
+        }
     }
 
     @Test
     public void testFindClosestPersonNoOneElseOnBoard() {
         board.addCharacter(14, enemyRS);
-        assertEquals(Action.MOVE_LEFT, enemyRS.findClosestPerson(board));
+        try {
+            assertEquals(Action.MOVE_LEFT, enemyRS.findClosestPerson(board));
+        } catch (PersonNotOnBoardException | IndexNotInBoundsException | NoViableDirectionException e) {
+            fail();
+        }
     }
 
     @Test
@@ -337,7 +447,11 @@ public class EnemyTest {
         board.addCharacter(13, enemyFS);
         board.addCharacter(3, personIce);
         board.addCharacter(20, personFire);
-        assertEquals(Action.MOVE_UP, enemyRS.findClosestPerson(board));
+        try {
+            assertEquals(Action.MOVE_UP, enemyRS.findClosestPerson(board));
+        } catch (PersonNotOnBoardException | IndexNotInBoundsException | NoViableDirectionException e) {
+            fail();
+        }
     }
 
     @Test
@@ -346,7 +460,12 @@ public class EnemyTest {
         board.addCharacter(14, enemyFS);
         board.addCharacter(24, personIce);
         board.addCharacter(0, personFire);
-        Action findClosest = enemyRS.findClosestPerson(board);
+        Action findClosest = null;
+        try {
+            findClosest = enemyRS.findClosestPerson(board);
+        } catch (PersonNotOnBoardException | IndexNotInBoundsException | NoViableDirectionException e) {
+            fail();
+        }
         assertEquals(Action.MOVE_DOWN, findClosest);
     }
 
@@ -356,7 +475,11 @@ public class EnemyTest {
         board.addCharacter(14, enemyFS);
         board.addCharacter(6, personIce);
         board.addCharacter(24, personFire);
-        assertEquals(Action.MOVE_LEFT, enemyRS.findClosestPerson(board));
+        try {
+            assertEquals(Action.MOVE_LEFT, enemyRS.findClosestPerson(board));
+        } catch (PersonNotOnBoardException | IndexNotInBoundsException | NoViableDirectionException e) {
+            fail();
+        }
     }
 
     @Test
@@ -365,7 +488,11 @@ public class EnemyTest {
         board.addCharacter(14, enemyFS);
         board.addCharacter(4, personIce);
         board.addCharacter(18, personFire);
-        assertEquals(Action.MOVE_RIGHT, enemyRS.findClosestPerson(board));
+        try {
+            assertEquals(Action.MOVE_RIGHT, enemyRS.findClosestPerson(board));
+        } catch (PersonNotOnBoardException | IndexNotInBoundsException | NoViableDirectionException e) {
+            fail();
+        }
     }
 
     @Test
@@ -373,7 +500,11 @@ public class EnemyTest {
         board.setWallConfig(SquareWallConfigs.generateWallSetOne());
         board.addCharacter(13, enemyRS);
         board.addCharacter(4, personIce);
-        assertEquals(Action.MOVE_RIGHT, enemyRS.findClosestPerson(board));
+        try {
+            assertEquals(Action.MOVE_RIGHT, enemyRS.findClosestPerson(board));
+        } catch (PersonNotOnBoardException | IndexNotInBoundsException | NoViableDirectionException e) {
+            fail();
+        }
     }
 
     @Test
@@ -381,27 +512,56 @@ public class EnemyTest {
         board.setWallConfig(SquareWallConfigs.generateWallSetOne());
         board.addCharacter(11, enemyRS);
         board.addCharacter(22, personIce);
-        assertEquals(Action.MOVE_DOWN, enemyRS.findClosestPerson(board));
+        try {
+            assertEquals(Action.MOVE_DOWN, enemyRS.findClosestPerson(board));
+        } catch (PersonNotOnBoardException | IndexNotInBoundsException | NoViableDirectionException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testFindClosestPersonEnemyNotOnBoard() {
+        board.addCharacter(22, personIce);
+        try {
+            enemyRS.findClosestPerson(board);
+            fail();
+        } catch (PersonNotOnBoardException e) {
+            //good
+        } catch (IndexNotInBoundsException | NoViableDirectionException e) {
+            fail();
+        }
     }
 
     @Test
     public void testDecideActionNotOnBoard() {
-        assertEquals(Action.ADD, enemyRS.decideAction(board));
-        assertEquals(Action.ADD, enemyFS.decideAction(board));
+        try {
+            assertEquals(Action.ADD, enemyRS.decideAction(board));
+            assertEquals(Action.ADD, enemyFS.decideAction(board));
+        } catch (IndexNotInBoundsException | PersonNotOnBoardException | NoViableDirectionException e) {
+            fail();
+        }
     }
 
     @Test
     public void testDecideActionAttack() {
         board.addCharacter(12, enemyFS);
         board.addCharacter(17, personFire);
+        try {
         assertEquals(Action.ATTACK, enemyFS.decideAction(board));
+        } catch (IndexNotInBoundsException | PersonNotOnBoardException | NoViableDirectionException e) {
+            fail();
+        }
     }
 
     @Test
     public void testDecideActionMove() {
         board.addCharacter(12, enemyFS);
         board.addCharacter(18, personFire);
+        try {
         assertEquals(Action.MOVE_RIGHT, enemyFS.decideAction(board));
+        } catch (IndexNotInBoundsException | PersonNotOnBoardException | NoViableDirectionException e) {
+            fail();
+        }
     }
 
     @Test
@@ -421,19 +581,5 @@ public class EnemyTest {
         Enemy.addEnemies(Difficulty.HARD, enemies);
         assertEquals(enemies.size(), 4);
         assertEquals(new Enemy("Warped Knight"), enemies.get(3));
-    }
-
-    @Test
-    public void testRemoveDeadEnemies() {
-        enemies.add(enemyFS);
-        enemies.add(enemyRS);
-        board.addCharacter(5, enemyFS);
-        board.addCharacter(20, enemyRS);
-        enemyRS.takeDamage(enemyRS.getHealth());
-
-        Enemy.removeDeadEnemies(board, enemies);
-        assertEquals(enemies.size(), 1);
-        assertTrue(enemies.contains(enemyFS));
-        assertFalse(enemies.contains(enemyRS));
     }
 }

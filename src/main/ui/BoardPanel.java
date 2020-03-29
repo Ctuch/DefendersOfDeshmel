@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+import java.util.Map;
 
 //panel for displaying characters, walls and board squares on board
 public class BoardPanel extends JPanel {
@@ -77,7 +77,7 @@ public class BoardPanel extends JPanel {
     //                  sets the selected squares to -1
     //                  sets the selected player on the display to null
     public void updateSelectedSquare(int mouseX, int mouseY) {
-        ArrayList<SquareWall> walls = board.getWallConfig();
+        Map<Integer, SquareWall> walls = board.getWallConfig();
         for (int i = 0; i < walls.size(); i++) {
             if (mouseSelection.isInSpace(mouseX, mouseY, walls.get(i).getLocationX(), walls.get(i).getLocationY())) {
                 if (selectedSquare1st != INVALID || selectedSquare2nd != INVALID) {

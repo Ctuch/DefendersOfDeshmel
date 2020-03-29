@@ -1,13 +1,11 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 
 //Represents a set of wall configuration sets, and randomly generates one for the board when instantiated
 public class SquareWallConfigs {
 
-    private ArrayList<SquareWall> walls;
+    private Map<Integer, SquareWall> walls;
     private static int wallSetNum;
 
     //EFFECTS: generates a random wall set
@@ -17,7 +15,7 @@ public class SquareWallConfigs {
     }
 
     //EFFECTS: randomly selects on of the wall configs
-    public static ArrayList<SquareWall> generateRandomWallSet(int i) {
+    public static Map<Integer, SquareWall> generateRandomWallSet(int i) {
         wallSetNum = i;
         switch (i) {
             case 1:
@@ -28,42 +26,48 @@ public class SquareWallConfigs {
     }
 
     //EFFECTS: generates a squareWall for each square of the board, configuration 1
-    public static ArrayList<SquareWall> generateWallSetOne() {
-        return new ArrayList<>(Arrays.asList(new SquareWall(true, false, true, false), //0
-                new SquareWall(),  new SquareWall(), //1 //2
-                new SquareWall(), new SquareWall(),  //3 //4
-                new SquareWall(), //5
-                new SquareWall(), //6
-                new SquareWall(false, true, false, false), //7
-                new SquareWall(true, true, false, true), //8
-                new SquareWall(true, true, false, false), //9
-                new SquareWall(), //10
-                new SquareWall(false, true, false, false), //11
-                new SquareWall(true, false, false, false), //12
-                new SquareWall(false, false, true, false), //13
-                new SquareWall(false, true, false, false), //14
-                new SquareWall(false, true, false, false), //15
-                new SquareWall(true, false, false, true), //16
-                new SquareWall(false, true, false, false), //17
-                new SquareWall(true, false, false, false), //18
-                new SquareWall(false, true, false, false), //19
-                new SquareWall(), //20
-                new SquareWall(false, true, true, false), //21
-                new SquareWall(true, true, false, false), //22
-                new SquareWall(true, false, false, true), //23
-                new SquareWall())); //24
+    public static Map<Integer, SquareWall> generateWallSetOne() {
+        Map<Integer, SquareWall> wallMap = new HashMap<>();
+        wallMap.put(0, new SquareWall(true, false, true, false));
+        wallMap.put(7, new SquareWall(false, true, false, false));
+        wallMap.put(8, new SquareWall(true, true, false, true));
+        wallMap.put(9, new SquareWall(true, true, false, false));
+        wallMap.put(11, new SquareWall(false, true, false, false));
+        wallMap.put(12, new SquareWall(true, false, false, false));
+        wallMap.put(13, new SquareWall(false, false, true, false));
+        wallMap.put(14, new SquareWall(false, true, false, false));
+        wallMap.put(15, new SquareWall(false, true, false, false));
+        wallMap.put(16, new SquareWall(true, false, false, true));
+        wallMap.put(17, new SquareWall(false, true, false, false));
+        wallMap.put(18, new SquareWall(true, false, false, false));
+        wallMap.put(19, new SquareWall(false, true, false, false));
+        wallMap.put(21, new SquareWall(false, true, true, false));
+        wallMap.put(22, new SquareWall(true, true, false, false));
+        wallMap.put(23, new SquareWall(true, false, false, true));
+
+        List<Integer> emptyKeys = Arrays.asList(1, 2, 3, 4, 5, 6, 10, 20, 24);
+        fillEmptyWalls(emptyKeys, wallMap);
+        return wallMap;
+    }
+
+    //MODIFIES: wallMap
+    //EFFECTS: adds empty walls for the wall set given a list of empty positions
+    private static void fillEmptyWalls(List<Integer> emptyKeys, Map<Integer, SquareWall> wallMap) {
+        for (Integer key : emptyKeys) {
+            wallMap.put(key, new SquareWall());
+        }
     }
 
     //EFFECTS: generates a squareWall for each square of the board, configuration empty (no walls)
-    public static ArrayList<SquareWall> generateWallSetEmpty() {
-        ArrayList<SquareWall> wallSet = new ArrayList<>();
+    public static Map<Integer, SquareWall> generateWallSetEmpty() {
+        Map<Integer, SquareWall> wallSet = new HashMap<>();;
         for (int i = 0; i < 25; i++) {
-            wallSet.add(new SquareWall());
+            wallSet.put(i, new SquareWall());
         }
-        return  wallSet;
+        return wallSet;
     }
 
-    public ArrayList<SquareWall> getWalls() {
+    public Map<Integer, SquareWall> getWalls() {
         return walls;
     }
 

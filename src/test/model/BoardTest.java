@@ -329,7 +329,8 @@ class BoardTest {
         assertTrue(board.getWallConfig().get(16).isLeftWall());
 
         board.setWallConfig(SquareWallConfigs.generateWallSetEmpty());
-        for (SquareWall wall : board.getWallConfig()) {
+        for (int i = 0; i < board.getWallConfig().size(); i++) {
+            SquareWall wall = board.getWallConfig().get(i);
             assertFalse(wall.isLeftWall());
             assertFalse(wall.isRightWall());
             assertFalse(wall.isUpperWall());

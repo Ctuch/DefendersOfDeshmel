@@ -3,7 +3,7 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,9 +14,10 @@ public class SquareWallConfigsTest {
     public void runBefore() {
         sqCon = new SquareWallConfigs();
 }
+
     @Test
     public void testGenerateWallSetOne() {
-        ArrayList<SquareWall> wallOne = sqCon.generateRandomWallSet(1);
+        Map<Integer, SquareWall> wallOne = sqCon.generateRandomWallSet(1);
 
         SquareWall square19 = wallOne.get(19);
         assertFalse(square19.isLeftWall());
@@ -33,7 +34,7 @@ public class SquareWallConfigsTest {
 
     @Test
     public void generateWallSetDefault() {
-        ArrayList<SquareWall> wallEmpty = sqCon.generateRandomWallSet(-1);
+        Map<Integer, SquareWall> wallEmpty = sqCon.generateRandomWallSet(-1);
         for (int i = 0; i < 25; i++) {
             assertFalse(wallEmpty.get(i).isLowerWall());
             assertFalse(wallEmpty.get(i).isUpperWall());

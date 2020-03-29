@@ -4,6 +4,9 @@ import model.Action;
 import model.Board;
 import model.Enemy;
 import model.Person;
+import model.exceptions.IndexNotInBoundsException;
+import model.exceptions.NoViableDirectionException;
+import model.exceptions.PersonNotOnBoardException;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -37,17 +40,46 @@ public class EnemyInteractionController {
     //                 attacks a player in range
     //                 moves the enemy toward a player if possible
     public void enemyTurn() {
-        Enemy enemy = enemies.get(random.nextInt(enemies.size()));
-        Action action = enemy.decideAction(board);
+        Object[] actionEnemy = selectEnemyAction();
+        Action action = (Action) actionEnemy[0];
+        Enemy enemy = (Enemy) actionEnemy[1];
+
         if (action == Action.ADD) {
             board.findEmptySquare(enemy);
             displayLabel.setText("Enemy " + enemy.getName() + "!");
         } else if (action == Action.ATTACK) {
             Person defender = enemy.canAttackPerson(board);
             attack(enemy, defender);
-        } else {
+        } else if (action != Action.DO_NOTHING) {
             enemyMoveInDirection(action, enemy);
         }
+    }
+
+    //EFFECTS: returns an array with the enemy randomly chosen to act [1] and the appropriate action [0]
+    private Object[] selectEnemyAction() {
+        ArrayList<Enemy> availEnemies = (ArrayList<Enemy>) enemies.clone();
+        Object[] actionEnemy = new Object[2];
+        while (availEnemies.size() > 0) {
+            Enemy enemy = availEnemies.get(random.nextInt(enemies.size()));
+            actionEnemy[1] = enemy;
+            try {
+                actionEnemy[0] = enemy.decideAction(board);
+                return actionEnemy;
+            } catch (IndexNotInBoundsException e) {
+                displayLabel.setText("Uh oh the enemies couldn't decided which one was gonna go");
+                actionEnemy[0] = Action.DO_NOTHING;
+                return actionEnemy;
+            } catch (PersonNotOnBoardException e) {
+                displayLabel.setText("The enemies are trying to cheat!");
+                actionEnemy[0] = Action.ADD;
+                return actionEnemy;
+            } catch (NoViableDirectionException e) {
+                availEnemies.remove(enemy);
+            }
+        }
+        actionEnemy[1] = null;
+        actionEnemy[0] = Action.DO_NOTHING;
+        return actionEnemy;
     }
 
     //MODIFIES: board, enemies or players if defender dies

@@ -39,13 +39,14 @@ public abstract class MenuPanel extends JPanel {
         }
     }
 
+    //create buttons and assign the listener as the action listener
+    protected abstract ArrayList<JButton> createMenuButtons(ActionListener listener);
+
     // EFFECTS: adds the ActionListener listener to each button
     protected void addActionListener(ArrayList<JButton> buttons, ActionListener listener) {
         for (JButton button : buttons) {
             button.addActionListener(listener);
         }
     }
-
-    protected abstract ArrayList<JButton> createMenuButtons(ActionListener listener);
 
 }

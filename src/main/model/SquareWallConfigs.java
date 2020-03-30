@@ -74,4 +74,9 @@ public class SquareWallConfigs {
     public static int getWallSetNum() {
         return wallSetNum;
     }
+
+    public void setWalls(Map<Integer, SquareWall> walls) {
+        this.walls = walls;
+    }
+
 }

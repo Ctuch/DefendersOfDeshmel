@@ -21,7 +21,6 @@ public class Board {
     public static final int DOWN = 3;
 
     private ArrayList<Person> board;
-    private Map<Integer, SquareWall> wallConfig;
     private SquareWallConfigs squareWallConfigs;
 
     //EFFECTS: An empty board grid is generated and a wall configuration is created
@@ -29,8 +28,6 @@ public class Board {
         board = new ArrayList<>(25);
         fillBoardWithNull();
         squareWallConfigs = new SquareWallConfigs();
-        wallConfig = squareWallConfigs.getWalls();
-
     }
 
     //MODIFIES: this
@@ -93,7 +90,7 @@ public class Board {
     //EFFECTS:  moves character one square left and returns true, or false if square is full or
     //          or off the board, or through a wall
     private boolean moveLeft(int currentPosition, Person person) {
-        boolean isWall = wallConfig.get(currentPosition).isLeftWall();
+        boolean isWall = squareWallConfigs.getWalls().get(currentPosition).isLeftWall();
         if (currentPosition % 5 == 0 || board.get(currentPosition - 1) != null || isWall) {
             return false;
         }
@@ -107,7 +104,7 @@ public class Board {
     //EFFECTS:  moves character one square right and returns true, or false if square is full or
     //          or off the board, or through a wall
     private boolean moveRight(int currentPosition, Person person) {
-        boolean isWall = wallConfig.get(currentPosition).isRightWall();
+        boolean isWall = squareWallConfigs.getWalls().get(currentPosition).isRightWall();
         if (currentPosition % 5 == 4 || board.get(currentPosition + 1) != null || isWall) {
             return false;
         }
@@ -121,7 +118,7 @@ public class Board {
     //EFFECTS:  moves character one square up and returns true, or false if square is full or
     //          or off the board, or through a wall
     private boolean moveUp(int currentPosition, Person person) {
-        boolean isWall = wallConfig.get(currentPosition).isUpperWall();
+        boolean isWall = squareWallConfigs.getWalls().get(currentPosition).isUpperWall();
         if (currentPosition <= 4 || board.get(currentPosition - 5) != null || isWall) {
             return false;
         }
@@ -135,7 +132,7 @@ public class Board {
     //EFFECTS:  moves character one square down and returns true, or false if square is full or
     //          or off the board, or through a wall
     private boolean moveDown(int currentPosition, Person person) {
-        boolean isWall = wallConfig.get(currentPosition).isLowerWall();
+        boolean isWall = squareWallConfigs.getWalls().get(currentPosition).isLowerWall();
         if (currentPosition >= 20 || board.get(currentPosition + 5) != null || isWall) {
             return false;
         }
@@ -211,7 +208,7 @@ public class Board {
     }
 
     public Map<Integer, SquareWall> getWallConfig() {
-        return wallConfig;
+        return squareWallConfigs.getWalls();
     }
 
     public ArrayList<Person> getBoard() {
@@ -223,7 +220,7 @@ public class Board {
     }
 
     public void setWallConfig(Map<Integer, SquareWall> wallConfig) {
-        this.wallConfig = wallConfig;
+        squareWallConfigs.setWalls(wallConfig);
     }
 
 }

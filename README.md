@@ -83,4 +83,7 @@ avoid issues with coupling), and moved the addListener code to the MenuPanel abs
 stores the instance of the players, enemies and board objects that were passed throughout all of the ui elements so 
 that they could each access the instance without direct coupling. Now they can all statically access the GameComponents
 without establishing their own reference.
+4. The fourth problem I identified was that Board.java had both a reference to the Map member of SquareWallConfigs and a
+instance of it. To reduce coupling, Board.java now only has the SquareWallConfigs object and references the map through
+it.
 

@@ -71,6 +71,9 @@ public class Board {
         }
     }
 
+    //MODIFIES: this
+    //EFFECTS:  moves character one square in specified direction and returns true, or false if square is full or
+    //          or off the board
     public boolean moveCharacter(int squareFrom, int squareTo) {
         Person personToMove = board.get(squareFrom);
         switch (squareFrom - squareTo) {

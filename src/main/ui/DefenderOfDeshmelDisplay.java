@@ -6,8 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
+import static model.GameComponents.*;
 import static ui.Sound.*;
 
 //Main panel for displaying application into a GUI using Swing.
@@ -19,9 +19,6 @@ public class DefenderOfDeshmelDisplay extends JFrame {
 
     private BoardPanel boardPanel;
     private OffBoardPersonPanel personPanel;
-    private Board board;
-    private ArrayList<Enemy> enemies;
-    private ArrayList<Person> players;
     private MainMenuPanel mainMenuPanel;
     private GameMenuPanel gameMenuPanel;
     private JLabel displayLabel;
@@ -61,12 +58,11 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     //MODIFIES: this
     //EFFECTS: initializes the fields, setting the timer up with an action listener to delay enemy turns
     private void initFields() {
-        board = new Board();
-        enemies = new ArrayList<>();
-        players = new ArrayList<>();
+        //initializes game components
+        GameComponents game = new GameComponents();
         displayLabel = new JLabel();
-        enemyInteractionController = new EnemyInteractionController(board, players, enemies, displayLabel);
-        fileManager = new FileManager(board, players, enemies, displayLabel);
+        enemyInteractionController = new EnemyInteractionController(displayLabel);
+        fileManager = new FileManager(displayLabel);
         soundPlayer = new SoundPlayer(displayLabel);
         createTimer();
     }
@@ -84,10 +80,10 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     //MODIFIES: this
     //EFFECTS: initializes the panels and with the display label, creating the buttons
     private void initPanels() {
-        boardPanel = new BoardPanel(board);
-        personPanel = new OffBoardPersonPanel(players, enemies);
+        boardPanel = new BoardPanel();
+        personPanel = new OffBoardPersonPanel();
         rulesPanel = new RulesPanel(displayLabel);
-        mainMenuPanel = new MainMenuPanel(new MainMenuButtonActionListener(), board, players, enemies, displayLabel);
+        mainMenuPanel = new MainMenuPanel(new MainMenuButtonActionListener(), fileManager);
         gameMenuPanel = new GameMenuPanel(new GameMenuButtonActionListener(), displayLabel);
     }
 
@@ -165,7 +161,7 @@ public class DefenderOfDeshmelDisplay extends JFrame {
             int squareToAdd = boardPanel.getSelectedSquare2nd();
             if (squareToAdd != BoardPanel.INVALID) {
                 //TODO: have feedback for the user if unsuccessful?
-                if (board.addCharacter(squareToAdd, playerToAdd)) {
+                if (getGameBoard().addCharacter(squareToAdd, playerToAdd)) {
                     soundPlayer.playSound(ADD);
                     updatePanelsWithEnemyTurn();
                 }
@@ -180,8 +176,8 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         int squareFrom = boardPanel.getSelectedSquare1st();
         int squareTo = boardPanel.getSelectedSquare2nd();
         if (squareFrom != BoardPanel.INVALID && squareTo != BoardPanel.INVALID) {
-            Person person = board.getBoard().get(squareFrom);
-            if (person != null && !person.isEnemy() && board.moveCharacter(squareFrom, squareTo)) {
+            Person person = getGameBoard().getBoard().get(squareFrom);
+            if (person != null && !person.isEnemy() && getGameBoard().moveCharacter(squareFrom, squareTo)) {
                 soundPlayer.playSound(MOVE);
                 updatePanelsWithEnemyTurn();
             }
@@ -196,9 +192,9 @@ public class DefenderOfDeshmelDisplay extends JFrame {
         int squareFrom = boardPanel.getSelectedSquare1st();
         int squareTo = boardPanel.getSelectedSquare2nd();
         if (squareFrom != BoardPanel.INVALID && squareTo != BoardPanel.INVALID) {
-            int enemyNumber = enemies.size();
+            int enemyNumber = getEnemies().size();
             if (enemyInteractionController.attack(squareFrom, squareTo)) {
-                if (enemyNumber - enemies.size() == 1) {
+                if (enemyNumber - getEnemies().size() == 1) {
                     soundPlayer.playSound(DEAD);
                 }
 
@@ -212,9 +208,9 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     //          triggers special action, player sound and enemy turn
     private void specialAction() {
         int squareOfPerson = boardPanel.getSelectedSquare2nd();
-        Person person = board.getBoard().get(squareOfPerson);
+        Person person = getGameBoard().getBoard().get(squareOfPerson);
         if (person != null && person.hasChargesRemaining()) {
-            person.specialAction(board);
+            person.specialAction(getGameBoard());
             soundPlayer.playSound(SPECIAL_ACTION);
             updatePanelsWithEnemyTurn();
         }
@@ -243,8 +239,8 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     //EFFECTS: adds all of the enemies and players to their lists based on the difficulty and to the display,
     //         switching to the game panel
     public void startNewGame(Difficulty difficulty) {
-        Enemy.addEnemies(difficulty, enemies);
-        Person.addPlayers(players);
+        Enemy.addEnemies(difficulty, getEnemies());
+        Person.addPlayers(getPlayers());
         personPanel.setGameOver(0);
         personPanel.repaint();
         switchMenuPanel();
@@ -270,26 +266,26 @@ public class DefenderOfDeshmelDisplay extends JFrame {
     //         clearing out any saves and resetting the game back to the main menu
     private Boolean checkGameOver() {
         if (enemyInteractionController.checkGameOver()) {
-            if (enemies.isEmpty()) {
+            if (getEnemies().isEmpty()) {
                 personPanel.setGameOver(1);
                 soundPlayer.playSound(WIN_PLAYER);
-            } else if (players.isEmpty()) {
+            } else if (getPlayers().isEmpty()) {
                 personPanel.setGameOver(2);
                 soundPlayer.playSound(WIN_ENEMY);
             }
             fileManager.clearSave();
             resetGame();
         }
-        return enemies.isEmpty();
+        return getEnemies().isEmpty();
     }
 
     //MODIFIES: this
     //EFFECTS: resets all game elements to their default state, and the load button based on if there is a save
     private void resetGame() {
         switchMenuPanel();
-        board.resetBoard();
-        players.clear();
-        enemies.clear();
+        getGameBoard().resetBoard();
+        getPlayers().clear();
+        getEnemies().clear();
         boardPanel.repaint();
         personPanel.repaint();
         mainMenuPanel.setLoadButtonState();

@@ -1,32 +1,24 @@
 package ui;
 
 import com.google.gson.JsonSyntaxException;
-import model.Board;
-import model.Enemy;
-import model.Person;
 import model.SquareWallConfigs;
 import persistence.Reader;
 import persistence.Writer;
 
 import javax.swing.*;
 import java.io.*;
-import java.util.ArrayList;
+
+import static model.GameComponents.*;
 
 //manages ui interaction with the files through the Reader and Writer classes
 public class FileManager {
 
     private static final String GAME_SAVE_FILE = "./data/savedGame.txt";
-    private Board board;
-    private ArrayList<Person> players;
-    private ArrayList<Enemy> enemies;
     private JLabel displayLabel;
     private Reader reader;
 
     //EFFECTS: gets a copy of the board, players and enemies
-    public FileManager(Board board, ArrayList<Person> players, ArrayList<Enemy> enemies, JLabel displayLabel) {
-        this.board = board;
-        this.players = players;
-        this.enemies = enemies;
+    public FileManager(JLabel displayLabel) {
         this.displayLabel = displayLabel;
         reader = new Reader();
     }
@@ -35,7 +27,7 @@ public class FileManager {
     public void saveGame() {
         try {
             Writer writer = new Writer(new File(GAME_SAVE_FILE));
-            writer.write(board, players, enemies, SquareWallConfigs.getWallSetNum());
+            writer.write(getGameBoard(), getPlayers(), getEnemies(), SquareWallConfigs.getWallSetNum());
         } catch (IOException e) {
             displayLabel.setText("uh oh, your game could not be saved.");
         }
@@ -57,11 +49,11 @@ public class FileManager {
     public boolean loadGame() {
         try {
             reader.readFile(new File(GAME_SAVE_FILE));
-            board.setBoard(reader.getBoardState());
-            enemies.addAll(reader.getEnemies());
-            players.addAll(reader.getPlayers());
+            getGameBoard().setBoard(reader.getBoardState());
+            getEnemies().addAll(reader.getEnemies());
+            getPlayers().addAll(reader.getPlayers());
             int wallConfigNum = reader.getWallConfigNumber();
-            board.setWallConfig(SquareWallConfigs.generateRandomWallSet(wallConfigNum));
+            getGameBoard().setWallConfig(SquareWallConfigs.generateRandomWallSet(wallConfigNum));
             displayLabel.setText("Game Loaded");
             return true;
         } catch (IOException e) {

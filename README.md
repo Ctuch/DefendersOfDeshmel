@@ -79,4 +79,8 @@ managing the button action listeners through triggering the corresponding action
 themselves and sending them off to the panels to be created. I fixed this cohesion issue by moving the creation of the 
 buttons to each of GameMenuPanel and MainMenuPanel (where each overrides an abstract method created in MenuPanel to 
 avoid issues with coupling), and moved the addListener code to the MenuPanel abstract class.
+3. The third problem I identified was the large amount of coupling across the packages. That is, I created a class that
+stores the instance of the players, enemies and board objects that were passed throughout all of the ui elements so 
+that they could each access the instance without direct coupling. Now they can all statically access the GameComponents
+without establishing their own reference.
 

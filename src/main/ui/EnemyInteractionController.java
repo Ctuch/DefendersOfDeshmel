@@ -12,23 +12,18 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static model.GameComponents.*;
+
 //Manages interaction with enemies by players and enemy actions
 public class EnemyInteractionController {
 
     private Random random;
-    private Board board;
-    private ArrayList<Person> players;
-    private ArrayList<Enemy> enemies;
     private JLabel displayLabel;
     private SoundPlayer soundPlayer;
 
     //creates a new random, and assigns game variables (board, players, enemies)
-    public EnemyInteractionController(Board board, ArrayList<Person> players, ArrayList<Enemy> enemies,
-                                      JLabel displayLabel) {
+    public EnemyInteractionController(JLabel displayLabel) {
         random = new Random();
-        this.board = board;
-        this.players = players;
-        this.enemies = enemies;
         this.displayLabel = displayLabel;
         soundPlayer = new SoundPlayer(displayLabel);
     }
@@ -40,6 +35,7 @@ public class EnemyInteractionController {
     //                 attacks a player in range
     //                 moves the enemy toward a player if possible
     public void enemyTurn() {
+        Board board = getGameBoard();
         Object[] actionEnemy = selectEnemyAction();
         Action action = (Action) actionEnemy[0];
         Enemy enemy = (Enemy) actionEnemy[1];
@@ -57,13 +53,13 @@ public class EnemyInteractionController {
 
     //EFFECTS: returns an array with the enemy randomly chosen to act [1] and the appropriate action [0]
     private Object[] selectEnemyAction() {
-        ArrayList<Enemy> availEnemies = (ArrayList<Enemy>) enemies.clone();
+        ArrayList<Enemy> availEnemies = (ArrayList<Enemy>) getEnemies().clone();
         Object[] actionEnemy = new Object[2];
         while (availEnemies.size() > 0) {
-            Enemy enemy = availEnemies.get(random.nextInt(enemies.size()));
+            Enemy enemy = availEnemies.get(random.nextInt(getEnemies().size()));
             actionEnemy[1] = enemy;
             try {
-                actionEnemy[0] = enemy.decideAction(board);
+                actionEnemy[0] = enemy.decideAction(getGameBoard());
                 return actionEnemy;
             } catch (IndexNotInBoundsException e) {
                 displayLabel.setText("Uh oh the enemies couldn't decided which one was gonna go");
@@ -85,13 +81,13 @@ public class EnemyInteractionController {
     //MODIFIES: board, enemies or players if defender dies
     //EFFECTS: has defender take damage from attacker if in range, and removes defender from game if dead
     private Boolean attack(Person attacker, Person defender) {
-        if (board.isInWeaponRange(attacker, defender)) {
+        if (getGameBoard().isInWeaponRange(attacker, defender)) {
             defender.takeDamage(attacker.getAttackPower());
             displayLabel.setText(defender.getName() + " has lost " + attacker.getAttackPower() + " health");
             soundPlayer.playSound(attacker.getAttackSound());
             if (defender.isDead()) {
                 soundPlayer.playSound(Sound.DEAD);
-                board.removeDeadDefender(defender, enemies, players);
+                getGameBoard().removeDeadDefender(defender, getEnemies(), getPlayers());
             }
             return true;
         } else {
@@ -106,8 +102,8 @@ public class EnemyInteractionController {
     //                          (neither are null and the attacker is not an enemy)
     //         attack - has defender take damage from attacker if in range, and removes defender from game if dead
     public Boolean attack(int squareFrom, int squareTo) {
-        Person attacker = board.getBoard().get(squareFrom);
-        Person defender = board.getBoard().get(squareTo);
+        Person attacker = getGameBoard().getBoard().get(squareFrom);
+        Person defender = getGameBoard().getBoard().get(squareTo);
         if (attacker == null || defender == null && !attacker.isEnemy()) {
             return false;
         } else {
@@ -117,12 +113,13 @@ public class EnemyInteractionController {
 
     //EFFECTS: determines whether the game should end if there are no enemies or no players remaining
     public boolean checkGameOver() {
-        return enemies.isEmpty() || players.isEmpty();
+        return getEnemies().isEmpty() || getPlayers().isEmpty();
     }
 
     //MODIFIES: board
     //EFFECTS: moves enemy in the direction specified by the action
     private void enemyMoveInDirection(Action action, Enemy enemy) {
+        Board board = getGameBoard();
         if (action == Action.MOVE_LEFT) {
             board.moveCharacter(Board.LEFT, enemy);
         } else if (action == Action.MOVE_RIGHT) {

@@ -10,6 +10,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Map;
 
+import static model.GameComponents.getGameBoard;
+
 //panel for displaying characters, walls and board squares on board
 public class BoardPanel extends JPanel {
     protected static final int SQUARE_SPACING = 60;
@@ -20,16 +22,14 @@ public class BoardPanel extends JPanel {
     protected static final int BOARD_HEIGHT = SQUARE_SPACING * 7;
     protected static final int INVALID = -1;
 
-    private Board board;
     private int selectedSquare1st = INVALID;
     private int selectedSquare2nd = INVALID;
     private MouseSelectionManager mouseSelection;
 
     //EFFECTS: sets the panel layout, initializes variables, and adds mouse control to the panel
-    public BoardPanel(Board board) {
+    public BoardPanel() {
         setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
         setBackground(Color.GRAY);
-        this.board = board;
         mouseSelection = new MouseSelectionManager();
         addMouseControl();
     }
@@ -44,6 +44,7 @@ public class BoardPanel extends JPanel {
 
     private void drawBoard(Graphics g) {
         SquareWall wall;
+        Board board = getGameBoard();
 
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
@@ -77,6 +78,7 @@ public class BoardPanel extends JPanel {
     //                  sets the selected squares to -1
     //                  sets the selected player on the display to null
     public void updateSelectedSquare(int mouseX, int mouseY) {
+        Board board = getGameBoard();
         Map<Integer, SquareWall> walls = board.getWallConfig();
         for (int i = 0; i < walls.size(); i++) {
             if (mouseSelection.isInSpace(mouseX, mouseY, walls.get(i).getLocationX(), walls.get(i).getLocationY())) {

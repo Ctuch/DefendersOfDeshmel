@@ -7,22 +7,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+
+import static model.GameComponents.*;
 
 //panel for displaying characters not currently on the board
 public class OffBoardPersonPanel extends JPanel {
 
-    private ArrayList<Person> players;
-    private ArrayList<Enemy> enemies;
-
     private int gameOver = 0;
-
     private Person selectedPlayer;
 
     //EFFECTS: sets the panel layout, initializes variables, and adds mouse control to the panel
-    public OffBoardPersonPanel(ArrayList<Person> players, ArrayList<Enemy> enemies) {
-        this.players = players;
-        this.enemies = enemies;
+    public OffBoardPersonPanel() {
         selectedPlayer = null;
         setPreferredSize(new Dimension(BoardPanel.BOARD_WIDTH, 100));
         setBackground(Color.DARK_GRAY);
@@ -37,7 +32,7 @@ public class OffBoardPersonPanel extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                selectedPlayer = selectionManager.updateSelectedPlayer(e.getX(), e.getY(), players);
+                selectedPlayer = selectionManager.updateSelectedPlayer(e.getX(), e.getY(), getPlayers());
                 DefenderOfDeshmelDisplay.setSelectedPlayer(selectedPlayer);
             }
         });
@@ -50,7 +45,7 @@ public class OffBoardPersonPanel extends JPanel {
         super.paintComponent(g);
         drawCharacters(g);
 
-        if (enemies.isEmpty() && players.isEmpty() && gameOver >= 1) {
+        if (getEnemies().isEmpty() && getPlayers().isEmpty() && gameOver >= 1) {
             gameOver(g);
         }
     }
@@ -66,7 +61,7 @@ public class OffBoardPersonPanel extends JPanel {
     //EFFECTS: redraws the enemies onto the display
     private void drawEnemies(Graphics g) {
         int count = 0;
-        for (Enemy enemy : enemies) {
+        for (Enemy enemy : getEnemies()) {
             if (enemy.isAvailable()) {
                 g.setColor(Colors.ENEMY);
                 g.fillOval(getWidth() / 2 + count * BoardPanel.SQUARE_SPACING, getHeight() / 4,
@@ -87,7 +82,7 @@ public class OffBoardPersonPanel extends JPanel {
     //EFFECTS: redraws the players onto the display
     private void drawPlayers(Graphics g) {
         int count = 0;
-        for (Person player : players) {
+        for (Person player : getPlayers()) {
             if (player.isAvailable()) {
                 g.setColor(Colors.PLAYER);
                 g.fillOval(count * BoardPanel.SQUARE_SPACING, getHeight() / 4,

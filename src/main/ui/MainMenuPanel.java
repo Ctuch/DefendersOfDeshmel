@@ -1,9 +1,5 @@
 package ui;
 
-import model.Board;
-import model.Enemy;
-import model.Person;
-
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -14,11 +10,10 @@ public class MainMenuPanel extends MenuPanel {
     private FileManager fileManager;
 
     //EFFECTS: sets the layout of the panel, adds its title and buttons
-    public MainMenuPanel(ActionListener listener, Board board,
-                         ArrayList<Person> players, ArrayList<Enemy> enemies, JLabel displayLabel) {
+    public MainMenuPanel(ActionListener listener, FileManager fileManager) {
         super(listener, 20);
         createMenuLabel("Main Menu");
-        fileManager = new FileManager(board, players, enemies, displayLabel);
+        this.fileManager = fileManager;
 
         createMenuButtons();
     }
